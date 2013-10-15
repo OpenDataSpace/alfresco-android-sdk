@@ -464,6 +464,11 @@
 				<artifactId>junit</artifactId>
 				<version>${junit.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.alfresco.cmis.client</groupId>
+				<artifactId>alfresco-opencmis-extension</artifactId>
+				<version>${alfresco.opencmis.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 </project>
