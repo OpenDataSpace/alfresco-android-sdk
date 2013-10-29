@@ -344,7 +344,8 @@ public class CloudSiteServiceImpl extends AbstractSiteServiceImpl
         return requestList;
     }
 
-    protected PagingResult<JoinSiteRequestImpl> getJoinSiteRequests(ListingContext listingContext)
+    @SuppressWarnings("unchecked")
+	protected PagingResult<JoinSiteRequestImpl> getJoinSiteRequests(ListingContext listingContext)
     {
         List<JoinSiteRequestImpl> requestList = new ArrayList<JoinSiteRequestImpl>();
         // build URL

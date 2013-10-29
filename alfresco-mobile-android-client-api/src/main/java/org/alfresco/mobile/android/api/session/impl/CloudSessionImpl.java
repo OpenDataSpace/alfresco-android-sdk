@@ -124,7 +124,8 @@ public class CloudSessionImpl extends CloudSession
     }
 
     /** Start the authentication proces. */
-    private void authenticate(AuthenticationProvider authProvider)
+    @SuppressWarnings("deprecation")
+	private void authenticate(AuthenticationProvider authProvider)
     {
         try
         {

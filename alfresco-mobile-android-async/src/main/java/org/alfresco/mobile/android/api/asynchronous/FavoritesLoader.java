@@ -27,6 +27,7 @@ import android.content.Context;
  * 
  * @author Jean Marie Pascal
  */
+@SuppressWarnings("rawtypes")
 public class FavoritesLoader extends AbstractPagingLoader<LoaderResult<PagingResult>>
 {
 
@@ -48,7 +49,6 @@ public class FavoritesLoader extends AbstractPagingLoader<LoaderResult<PagingRes
         this.mode = mode;
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
     public LoaderResult<PagingResult> loadInBackground()
     {

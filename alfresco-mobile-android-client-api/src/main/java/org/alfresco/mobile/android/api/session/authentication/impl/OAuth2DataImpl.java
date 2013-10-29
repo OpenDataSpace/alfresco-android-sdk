@@ -27,6 +27,7 @@ import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
  * 
  * @author Jean Marie Pascal
  */
+@SuppressWarnings("unused")
 public final class OAuth2DataImpl implements OAuthData
 {
     private static final long serialVersionUID = 1L;
@@ -47,7 +48,7 @@ public final class OAuth2DataImpl implements OAuthData
 
     private String accessToken;
 
-    private String tokenType;
+	private String tokenType;
 
     private String expiresIn;
 

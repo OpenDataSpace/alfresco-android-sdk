@@ -18,7 +18,6 @@
 package org.alfresco.mobile.android.api.utils;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
-import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 
 /**

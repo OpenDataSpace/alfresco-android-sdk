@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.ui.fragments;
 
 import java.lang.reflect.Constructor;
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +27,6 @@ import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -150,20 +150,20 @@ public abstract class BaseListAdapter<T, VH> extends ArrayAdapter<T>
         }
     }
 
-    public String formatDate(Context c, Date date)
+	public String formatDate(Context c, Date date)
     {
+    	
         switch (dateFormatType)
         {
             case DISPLAY_DATE_RELATIVE:
                 return Formatter.formatToRelativeDate(getContext(), date);
             case DISPLAY_DATE_NONE:
-                return "";
             case DISPLAY_DATE_DATE:
-                return DateFormat.getLongDateFormat(c).format(date);
+                return DateFormat.getDateInstance(DateFormat.LONG, c.getResources().getConfiguration().locale).format(date);
             case DISPLAY_DATE_DATETIME:
-                return date.toLocaleString();
+                return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, c.getResources().getConfiguration().locale).format(date);// date.toLocaleString();
             case DISPLAY_DATE_TIME:
-                return DateFormat.getTimeFormat(c).format(date);
+                return DateFormat.getTimeInstance(DateFormat.SHORT, c.getResources().getConfiguration().locale).format(date);
             default:
                 break;
         }

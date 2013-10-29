@@ -29,6 +29,7 @@ import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.oauth.listener.OnOAuthAccessTokenListener;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.LoaderManager;
@@ -36,7 +37,6 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,7 +89,8 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
         return args;
     }
 
-    @Override
+    @SuppressLint("SetJavaScriptEnabled")
+	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         if (container == null) { return null; }
