@@ -164,7 +164,7 @@ public class RepositorySessionImpl extends RepositorySession
         create();
     }
 
-    private void create()
+    protected void create()
     {
         passThruAuthenticator = cmisSession.getBinding().getAuthenticationProvider();
         authenticator = ((PassthruAuthenticationProviderImpl) passThruAuthenticator)
