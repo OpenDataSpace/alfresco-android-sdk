@@ -429,6 +429,7 @@ public class NetworkHttpInvoker implements HttpInvoker
             if (writer != null)
             {
                 // conn.setChunkedStreamingMode((64 * 1024) - 1);
+                conn.setChunkedStreamingMode(0);
                 OutputStream connOut = null;
                 connOut = conn.getOutputStream();
                 OutputStream out = new BufferedOutputStream(connOut, BUFFER_SIZE);
