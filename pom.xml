@@ -48,12 +48,6 @@
 		<module>alfresco-mobile-android-client-api</module>
 		<module>alfresco-mobile-android-async</module>
 		<module>alfresco-mobile-android-ui-library</module>
-
-		<!-- Samples / Extension -->
-		<module>samples</module>
-
-		<!-- Tests -->
-		<module>tests</module>
 	</modules>
 
 	<distributionManagement>
