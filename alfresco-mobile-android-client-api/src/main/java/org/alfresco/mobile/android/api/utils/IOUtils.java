@@ -6,7 +6,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ * 
  *  http://www.apache.org/licenses/LICENSE-2.0
  * 
  *  Unless required by applicable law or agreed to in writing, software
@@ -47,12 +47,13 @@ public final class IOUtils
     static class MonitoredBufferedInputStream extends BufferedInputStream
     {
         ContentFile contentFile = null;
+        int block = 0;
 
         public MonitoredBufferedInputStream(InputStream in)
         {
             super(in);
         }
-        
+
         /**
          * Set the ContentFile object associated with this operation
          * 
@@ -86,9 +87,11 @@ public final class IOUtils
         @Override
         public int read(byte[] b) throws IOException
         {
+            ++block;
             int nBytes = super.read(b);
+            --block;
 
-            if (contentFile != null)
+            if (contentFile != null && block == 0)
             {
                 contentFile.fileReadCallback(nBytes);
             }
@@ -103,9 +106,11 @@ public final class IOUtils
         @Override
         public synchronized int read(byte[] b, int off, int len) throws IOException
         {
+            ++block;
             int nBytes = super.read(b, off, len);
+            --block;
 
-            if (contentFile != null)
+            if (contentFile != null && block == 0)
             {
                 contentFile.fileReadCallback(nBytes);
             }
