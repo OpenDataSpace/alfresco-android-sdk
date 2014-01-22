@@ -6,7 +6,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ * 
  *  http://www.apache.org/licenses/LICENSE-2.0
  * 
  *  Unless required by applicable law or agreed to in writing, software
@@ -54,7 +54,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 public abstract class CreateDocumentDialogFragment extends BaseFragment implements
-        LoaderCallbacks<LoaderResult<Document>>
+LoaderCallbacks<LoaderResult<Document>>
 {
     public static final String TAG = "CreateContentDialogFragment";
 
@@ -106,10 +106,10 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment implemen
 
         View v = inflater.inflate(R.layout.sdk_create_content_props, container, false);
         final EditText tv = (EditText) v.findViewById(R.id.content_name);
-        final EditText desc = (EditText) v.findViewById(R.id.content_description);
+        //final EditText desc = (EditText) v.findViewById(R.id.content_description);
         TextView tsize = (TextView) v.findViewById(R.id.content_size);
 
-        editTags = (EditText) v.findViewById(R.id.content_tags);
+        //editTags = (EditText) v.findViewById(R.id.content_tags);
 
         Button button = (Button) v.findViewById(R.id.cancel);
         button.setOnClickListener(new OnClickListener()
@@ -127,10 +127,12 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment implemen
             {
                 Bundle b = new Bundle();
                 b.putString(ARGUMENT_CONTENT_NAME, tv.getText().toString());
+                /*
                 if (desc.getText() != null && desc.getText().length() > 0)
                 {
                     b.putString(ARGUMENT_CONTENT_DESCRIPTION, desc.getText().toString());
                 }
+                 */
                 onValidateTags();
                 if (selectedTags != null && !selectedTags.isEmpty())
                 {
@@ -238,6 +240,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment implemen
 
     public void onValidateTags()
     {
+        /*
         String s = editTags.getText().toString();
         String[] listValues = s.split(",");
         for (int i = 0; i < listValues.length; i++)
@@ -247,6 +250,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment implemen
                 selectedTags.add(new TagImpl(listValues[i].trim()));
             }
         }
+         */
     }
 
     public void setOnCreateListener(OnNodeCreateListener onCreateListener)

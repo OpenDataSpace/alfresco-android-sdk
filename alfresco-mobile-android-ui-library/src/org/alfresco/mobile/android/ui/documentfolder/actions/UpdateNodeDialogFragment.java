@@ -6,7 +6,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ * 
  *  http://www.apache.org/licenses/LICENSE-2.0
  * 
  *  Unless required by applicable law or agreed to in writing, software
@@ -95,11 +95,11 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
 
         View v = inflater.inflate(R.layout.sdk_create_content_props, container, false);
         final EditText tv = (EditText) v.findViewById(R.id.content_name);
-        final EditText desc = (EditText) v.findViewById(R.id.content_description);
+        //final EditText desc = (EditText) v.findViewById(R.id.content_description);
         TextView tsize = (TextView) v.findViewById(R.id.content_size);
 
-        v.findViewById(R.id.tags_line).setVisibility(View.GONE);
-        desc.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        //v.findViewById(R.id.tags_line).setVisibility(View.GONE);
+        //desc.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
         Button button = (Button) v.findViewById(R.id.cancel);
         button.setOnClickListener(new OnClickListener()
@@ -116,10 +116,10 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
         {
             public void onClick(View v)
             {
-                updateNode(tv, desc, bcreate);
+                updateNode(tv, null, bcreate);
             }
         });
-
+        /*
         desc.setOnEditorActionListener(new OnEditorActionListener()
         {
             @Override
@@ -134,7 +134,7 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
                 return handled;
             }
         });
-
+         */
         if (node != null)
         {
             tv.setText(node.getName());
@@ -143,14 +143,14 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
                 tsize.setText(Formatter.formatFileSize(getActivity(), ((Document) node).getContentStreamLength()));
                 tsize.setVisibility(View.VISIBLE);
             }
-
+            /*
             if (RepositoryVersionHelper.isAlfrescoProduct(alfSession)
                     && node.getProperty(ContentModel.PROP_DESCRIPTION) != null
                     && node.getProperty(ContentModel.PROP_DESCRIPTION).getValue() != null)
             {
                 desc.setText(node.getProperty(ContentModel.PROP_DESCRIPTION).getValue().toString());
             }
-
+             */
             bcreate.setEnabled(true);
 
         }
@@ -166,7 +166,7 @@ public abstract class UpdateNodeDialogFragment extends BaseFragment
     {
         Map<String, Serializable> props = new HashMap<String, Serializable>(2);
         props.put(ContentModel.PROP_NAME, tv.getText().toString());
-        if (desc.getText() != null && desc.getText().length() > 0)
+        if (desc != null && desc.getText() != null && desc.getText().length() > 0)
         {
             props.put(ContentModel.PROP_DESCRIPTION, desc.getText().toString());
         }
