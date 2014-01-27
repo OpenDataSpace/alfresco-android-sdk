@@ -211,13 +211,6 @@
 						<outputEncoding>UTF-8</outputEncoding>
 					</configuration>
 				</plugin>
-				<plugin>
-					<artifactId>versions-maven-plugin</artifactId>
-					<version>2.1</version>
-					<configuration>
-						<excludeProperties>alfresco.opencmis.version</excludeProperties>
-					</configuration>
-				</plugin>
 			</plugins>
 		</pluginManagement>
 
@@ -320,6 +313,14 @@
 						<version>1.4</version>
 					</dependency>
 				</dependencies>
+			</plugin>
+
+			<plugin>
+				<artifactId>versions-maven-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<excludeProperties>alfresco.opencmis.version</excludeProperties>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
