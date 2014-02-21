@@ -6,7 +6,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ * 
  *  http://www.apache.org/licenses/LICENSE-2.0
  * 
  *  Unless required by applicable law or agreed to in writing, software
@@ -26,10 +26,10 @@ import java.security.NoSuchAlgorithmException;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
+import org.opendataspace.android.ui.logging.OdsLog;
 
 import android.content.Context;
 import android.os.Environment;
-import android.util.Log;
 
 public class StorageManager
 {
@@ -104,7 +104,7 @@ public class StorageManager
         }
         catch (NoSuchAlgorithmException e)
         {
-            Log.e(TAG, Log.getStackTraceString(e));
+            OdsLog.ex(TAG, e);
         }
         return "";
     }
@@ -134,8 +134,8 @@ public class StorageManager
             folder = createFolder(
                     folder,
                     context.getResources()
-                            .getText(
-                                    context.getPackageManager().getPackageInfo(context.getPackageName(), 0).applicationInfo.labelRes)
+                    .getText(
+                            context.getPackageManager().getPackageInfo(context.getPackageName(), 0).applicationInfo.labelRes)
                             .toString());
             folder = createFolder(folder, getDownloadAccountFolder(urlValue, username));
         }
@@ -179,7 +179,7 @@ public class StorageManager
         }
         catch (MalformedURLException e)
         {
-            Log.e(TAG, Log.getStackTraceString(e));
+            OdsLog.ex(TAG, e);
         }
         return name + "-" + username;
     }

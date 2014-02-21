@@ -6,7 +6,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ * 
  *  http://www.apache.org/licenses/LICENSE-2.0
  * 
  *  Unless required by applicable law or agreed to in writing, software
@@ -29,6 +29,7 @@ import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListen
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
+import org.opendataspace.android.ui.logging.OdsLog;
 
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.DialogInterface;
@@ -36,7 +37,6 @@ import android.content.Loader;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -152,7 +152,7 @@ public abstract class CreateFolderDialogFragment extends BaseFragment implements
         if (results.hasException())
         {
             MessengerManager.showLongToast(getActivity(), results.getException().getMessage());
-            Log.e(TAG, Log.getStackTraceString(results.getException()));
+            OdsLog.ex(TAG, results.getException());
         }
 
         if (onCreateListener != null)

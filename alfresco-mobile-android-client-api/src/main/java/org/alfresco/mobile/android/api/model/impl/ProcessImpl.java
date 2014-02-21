@@ -24,8 +24,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
-
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.constants.PublicAPIConstant;
 import org.alfresco.mobile.android.api.constants.WorkflowModel;
@@ -34,7 +32,6 @@ import org.alfresco.mobile.android.api.model.Process;
 import org.alfresco.mobile.android.api.model.Property;
 import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
-import org.apache.chemistry.opencmis.commons.impl.json.JSONArray;
 
 /**
  * @since 1.3

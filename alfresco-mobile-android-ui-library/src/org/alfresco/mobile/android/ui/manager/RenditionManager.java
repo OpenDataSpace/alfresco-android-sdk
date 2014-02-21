@@ -6,7 +6,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ * 
  *  http://www.apache.org/licenses/LICENSE-2.0
  * 
  *  Unless required by applicable law or agreed to in writing, software
@@ -36,6 +36,7 @@ import org.alfresco.mobile.android.ui.utils.thirdparty.DiskLruCache;
 import org.alfresco.mobile.android.ui.utils.thirdparty.DiskLruCache.Editor;
 import org.alfresco.mobile.android.ui.utils.thirdparty.DiskLruCache.Snapshot;
 import org.alfresco.mobile.android.ui.utils.thirdparty.LruCache;
+import org.opendataspace.android.ui.logging.OdsLog;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -47,7 +48,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.widget.ImageView;
 
@@ -95,25 +95,25 @@ public class RenditionManager
         final int cacheSize = 1024 * 1024 * memClass / 10;
 
         mMemoryCache = new LruCache<String, Bitmap>(cacheSize)
-        {
+                {
             @Override
             protected int sizeOf(String key, Bitmap bitmap)
             {
                 return bitmap.getRowBytes() * bitmap.getHeight();
             }
-        };
+                };
 
-        try
-        {
-            File cacheDir = StorageManager.getCacheDir(context, DISK_CACHE_SUBDIR);
-            mDiskCache = DiskLruCache.open(cacheDir, 1, 1, DISK_CACHE_SIZE);
-            mDiskCache.delete();
-            mDiskCache = DiskLruCache.open(cacheDir, 1, 1, DISK_CACHE_SIZE);
-        }
-        catch (IOException e)
-        {
-            //Log.d(TAG, e.getMessage());
-        }
+                try
+                {
+                    File cacheDir = StorageManager.getCacheDir(context, DISK_CACHE_SUBDIR);
+                    mDiskCache = DiskLruCache.open(cacheDir, 1, 1, DISK_CACHE_SIZE);
+                    mDiskCache.delete();
+                    mDiskCache = DiskLruCache.open(cacheDir, 1, 1, DISK_CACHE_SIZE);
+                }
+                catch (IOException e)
+                {
+                    //Log.d(TAG, e.getMessage());
+                }
     }
 
     public void addBitmapToMemoryCache(String key, Bitmap bitmap)
@@ -144,7 +144,7 @@ public class RenditionManager
         }
         catch (Exception e)
         {
-            Log.w(TAG, Log.getStackTraceString(e));
+            OdsLog.exw(TAG, e);
         }
     }
 
@@ -183,7 +183,7 @@ public class RenditionManager
         }
         catch (IOException e)
         {
-            Log.w(TAG, Log.getStackTraceString(e));
+            OdsLog.exw(TAG, e);
         }
         return null;
     }
@@ -291,7 +291,7 @@ public class RenditionManager
         }
         catch (Exception e)
         {
-            Log.w(TAG, Log.getStackTraceString(e));
+            OdsLog.exw(TAG, e);
         }
         finally
         {
@@ -332,7 +332,7 @@ public class RenditionManager
         }
         catch (Exception e)
         {
-            Log.w(TAG, Log.getStackTraceString(e));
+            OdsLog.exw(TAG, e);
         }
         finally
         {
@@ -357,7 +357,7 @@ public class RenditionManager
         }
         catch (Exception e)
         {
-            Log.w(TAG, Log.getStackTraceString(e));
+            OdsLog.exw(TAG, e);
         }
         finally
         {

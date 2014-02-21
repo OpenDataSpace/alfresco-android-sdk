@@ -6,7 +6,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ * 
  *  http://www.apache.org/licenses/LICENSE-2.0
  * 
  *  Unless required by applicable law or agreed to in writing, software
@@ -23,11 +23,11 @@ import java.util.List;
 
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.opendataspace.android.ui.logging.OdsLog;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -139,7 +139,7 @@ public abstract class BaseListAdapter<T, VH> extends ArrayAdapter<T>
         }
         catch (Exception e)
         {
-            Log.e(TAG, Log.getStackTraceString(e));
+            OdsLog.ex(TAG, e);
         }
         return s;
     }
@@ -163,18 +163,18 @@ public abstract class BaseListAdapter<T, VH> extends ArrayAdapter<T>
     {
         switch (dateFormatType)
         {
-            case DISPLAY_DATE_RELATIVE:
-                return Formatter.formatToRelativeDate(getContext(), date);
-            case DISPLAY_DATE_NONE:
-                return "";
-            case DISPLAY_DATE_DATE:
-                return DateFormat.getLongDateFormat(c).format(date);
-            case DISPLAY_DATE_DATETIME:
-                return date.toLocaleString();
-            case DISPLAY_DATE_TIME:
-                return DateFormat.getTimeFormat(c).format(date);
-            default:
-                break;
+        case DISPLAY_DATE_RELATIVE:
+            return Formatter.formatToRelativeDate(getContext(), date);
+        case DISPLAY_DATE_NONE:
+            return "";
+        case DISPLAY_DATE_DATE:
+            return DateFormat.getLongDateFormat(c).format(date);
+        case DISPLAY_DATE_DATETIME:
+            return date.toLocaleString();
+        case DISPLAY_DATE_TIME:
+            return DateFormat.getTimeFormat(c).format(date);
+        default:
+            break;
         }
         return "";
     }

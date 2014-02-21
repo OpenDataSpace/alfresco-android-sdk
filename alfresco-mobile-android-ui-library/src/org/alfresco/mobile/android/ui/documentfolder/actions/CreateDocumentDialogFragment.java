@@ -30,20 +30,19 @@ import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Tag;
-import org.alfresco.mobile.android.api.model.impl.TagImpl;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListener;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
+import org.opendataspace.android.ui.logging.OdsLog;
 
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -214,7 +213,7 @@ LoaderCallbacks<LoaderResult<Document>>
         if (results.hasException())
         {
             MessengerManager.showLongToast(getActivity(), results.getException().getMessage());
-            Log.e(TAG, Log.getStackTraceString(results.getException()));
+            OdsLog.ex(TAG, results.getException());
         }
 
         if (onCreateListener != null)
