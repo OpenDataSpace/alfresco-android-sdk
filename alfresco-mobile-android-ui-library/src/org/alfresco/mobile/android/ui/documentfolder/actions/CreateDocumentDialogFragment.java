@@ -67,7 +67,7 @@ LoaderCallbacks<LoaderResult<Document>>
 
     public static final String ARGUMENT_CONTENT_TAGS = "contentTags";
 
-    private EditText editTags;
+    // private EditText editTags;
 
     private List<Tag> selectedTags = new ArrayList<Tag>();
 

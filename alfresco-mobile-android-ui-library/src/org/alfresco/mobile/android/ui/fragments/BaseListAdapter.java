@@ -159,6 +159,7 @@ public abstract class BaseListAdapter<T, VH> extends ArrayAdapter<T>
         }
     }
 
+    @SuppressWarnings("deprecation")
     public String formatDate(Context c, Date date)
     {
         switch (dateFormatType)

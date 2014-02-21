@@ -6,7 +6,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ * 
  *  http://www.apache.org/licenses/LICENSE-2.0
  * 
  *  Unless required by applicable law or agreed to in writing, software
@@ -33,13 +33,13 @@ public final class OAuth2DataImpl implements OAuthData
 
     private static final String PARAM_ACCESS_TOKEN = "access_token";
 
-    private static final String PARAM_TOKEN_TYPE = "token_type";
+    //private static final String PARAM_TOKEN_TYPE = "token_type";
 
-    private static final String PARAM_EXPIRES_IN = "expires_in";
+    //private static final String PARAM_EXPIRES_IN = "expires_in";
 
     private static final String PARAM_REFRESH_TOKEN = "refresh_token";
 
-    private static final String PARAM_SCOPE = "scope";
+    //private static final String PARAM_SCOPE = "scope";
 
     private final String apiKey;
 
@@ -47,13 +47,13 @@ public final class OAuth2DataImpl implements OAuthData
 
     private String accessToken;
 
-    private String tokenType;
+    //private String tokenType;
 
-    private String expiresIn;
+    //private String expiresIn;
 
     private String refreshToken;
 
-    private String scope;
+    //private String scope;
 
     public OAuth2DataImpl(String apikey, String apiSecret)
     {
@@ -72,10 +72,10 @@ public final class OAuth2DataImpl implements OAuthData
     public void parseTokenResponse(Map<String, Object> json)
     {
         accessToken = JSONConverter.getString(json, PARAM_ACCESS_TOKEN);
-        tokenType = JSONConverter.getString(json, PARAM_TOKEN_TYPE);
-        expiresIn = JSONConverter.getString(json, PARAM_EXPIRES_IN);
+        //tokenType = JSONConverter.getString(json, PARAM_TOKEN_TYPE);
+        //expiresIn = JSONConverter.getString(json, PARAM_EXPIRES_IN);
         refreshToken = JSONConverter.getString(json, PARAM_REFRESH_TOKEN);
-        scope = JSONConverter.getString(json, PARAM_SCOPE);
+        //scope = JSONConverter.getString(json, PARAM_SCOPE);
     }
 
     /** {@inheritDoc} */
