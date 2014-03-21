@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import org.alfresco.cmis.client.AlfrescoDocument;
-import org.alfresco.cmis.client.TransientAlfrescoDocument;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
@@ -43,7 +42,6 @@ import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.enums.UnfileObject;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
-import org.apache.chemistry.opencmis.client.api.TransientDocument;
 
 import android.test.AndroidTestCase;
 
@@ -265,69 +263,6 @@ public class AlfrescoExtensionTest extends AndroidTestCase
 
         // delete
         alfDoc.delete(true);
-    }
-
-    public void testTransientDocument()
-    {
-
-        session = getSession();
-
-        // messenger.addTitle("testTransientDocument()");
-        String descriptionValue1 = "Beschreibung";
-        String descriptionValue2 = "My Description";
-        String authorValue = "Mr JUnit Test";
-
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put(PropertyIds.NAME, "test1");
-        properties.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document,P:cm:titled,P:app:inlineeditable");
-        properties.put("cm:description", descriptionValue1);
-        properties.put("app:editInline", true);
-
-        Document doc = session.getRootFolder().createDocument(properties, null, null);
-
-        // get transient document
-        TransientDocument tDoc = doc.getTransientDocument();
-
-        Property<String> descriptionProperty = tDoc.getProperty("cm:description");
-        assertNotNull(descriptionProperty);
-        assertEquals(descriptionValue1, descriptionProperty.getFirstValue());
-
-        TransientAlfrescoDocument taDoc = (TransientAlfrescoDocument) tDoc;
-        taDoc.addAspect("P:cm:author");
-
-        tDoc.setPropertyValue("cm:description", descriptionValue2);
-        tDoc.setPropertyValue("app:editInline", false);
-        tDoc.setPropertyValue("cm:author", authorValue);
-
-        // save and reload
-        ObjectId id = tDoc.save();
-        Document doc2 = (Document) session.getObject(id);
-        doc2.refresh();
-        TransientDocument tDoc2 = doc2.getTransientDocument();
-
-        descriptionProperty = tDoc2.getProperty("cm:description");
-        assertNotNull(descriptionProperty);
-        assertEquals(descriptionValue2, descriptionProperty.getFirstValue());
-
-        Property<String> authorProperty = tDoc2.getProperty("cm:author");
-        assertNotNull(authorProperty);
-        assertEquals(authorValue, authorProperty.getFirstValue());
-
-        TransientAlfrescoDocument taDoc2 = (TransientAlfrescoDocument) tDoc2;
-
-        assertTrue(taDoc2.hasAspect("P:cm:titled"));
-        taDoc2.removeAspect("P:cm:titled");
-        assertFalse(taDoc2.hasAspect("P:cm:titled"));
-
-        // save and reload
-        taDoc2.save();
-        Document doc3 = (Document) session.getObject(id);
-        doc3.refresh();
-
-        assertNull(doc3.getProperty("cm:description"));
-
-        // delete
-        doc2.delete(true);
     }
 
     public void testEXIFAspect()
