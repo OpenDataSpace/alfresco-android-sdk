@@ -6,7 +6,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *  
  *  http://www.apache.org/licenses/LICENSE-2.0
  * 
  *  Unless required by applicable law or agreed to in writing, software
@@ -51,7 +51,7 @@ public class CloudSiteServiceImpl extends PublicAPISiteServiceImpl
     // Save State - serialization / deserialization
     // ////////////////////////////////////////////////////
     public static final Parcelable.Creator<CloudSiteServiceImpl> CREATOR = new Parcelable.Creator<CloudSiteServiceImpl>()
-            {
+    {
         public CloudSiteServiceImpl createFromParcel(Parcel in)
         {
             return new CloudSiteServiceImpl(in);
@@ -61,10 +61,10 @@ public class CloudSiteServiceImpl extends PublicAPISiteServiceImpl
         {
             return new CloudSiteServiceImpl[size];
         }
-            };
+    };
 
-            public CloudSiteServiceImpl(Parcel o)
-            {
-                super((AlfrescoSession) o.readParcelable(CloudSessionImpl.class.getClassLoader()));
-            }
+    public CloudSiteServiceImpl(Parcel o)
+    {
+        super((AlfrescoSession) o.readParcelable(CloudSessionImpl.class.getClassLoader()));
+    }
 }

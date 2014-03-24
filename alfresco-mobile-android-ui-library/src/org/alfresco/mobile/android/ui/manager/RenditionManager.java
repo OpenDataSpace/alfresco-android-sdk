@@ -6,7 +6,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *  
  *  http://www.apache.org/licenses/LICENSE-2.0
  * 
  *  Unless required by applicable law or agreed to in writing, software
@@ -95,25 +95,25 @@ public class RenditionManager
         final int cacheSize = 1024 * 1024 * memClass / 10;
 
         mMemoryCache = new LruCache<String, Bitmap>(cacheSize)
-                {
+        {
             @Override
             protected int sizeOf(String key, Bitmap bitmap)
             {
                 return bitmap.getRowBytes() * bitmap.getHeight();
             }
-                };
+        };
 
-                try
-                {
-                    File cacheDir = StorageManager.getCacheDir(context, DISK_CACHE_SUBDIR);
-                    mDiskCache = DiskLruCache.open(cacheDir, 1, 1, DISK_CACHE_SIZE);
-                    mDiskCache.delete();
-                    mDiskCache = DiskLruCache.open(cacheDir, 1, 1, DISK_CACHE_SIZE);
-                }
-                catch (IOException e)
-                {
-                    //Log.d(TAG, e.getMessage());
-                }
+        try
+        {
+            File cacheDir = StorageManager.getCacheDir(context, DISK_CACHE_SUBDIR);
+            mDiskCache = DiskLruCache.open(cacheDir, 1, 1, DISK_CACHE_SIZE);
+            mDiskCache.delete();
+            mDiskCache = DiskLruCache.open(cacheDir, 1, 1, DISK_CACHE_SIZE);
+        }
+        catch (IOException e)
+        {
+            //Log.d(TAG, e.getMessage());
+        }
     }
 
     public void addBitmapToMemoryCache(String key, Bitmap bitmap)
