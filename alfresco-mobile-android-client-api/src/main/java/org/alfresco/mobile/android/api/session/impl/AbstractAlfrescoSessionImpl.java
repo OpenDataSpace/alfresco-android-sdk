@@ -6,7 +6,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ * 
  *  http://www.apache.org/licenses/LICENSE-2.0
  * 
  *  Unless required by applicable law or agreed to in writing, software
@@ -289,18 +289,18 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
 
         switch (type)
         {
-            case BINDING_TYPE_CMIS:
-                createCmisSettings();
-                break;
-            case BINDING_TYPE_ALFRESCO_CMIS:
-                createAlfrescoCmisSettings();
-                break;
-            case BINDING_TYPE_ALFRESCO_CLOUD:
-                createCloudCmisSettings();
-                break;
-            default:
-                createAlfrescoCmisSettings();
-                break;
+        case BINDING_TYPE_CMIS:
+            createCmisSettings();
+            break;
+        case BINDING_TYPE_ALFRESCO_CMIS:
+            createAlfrescoCmisSettings();
+            break;
+        case BINDING_TYPE_ALFRESCO_CLOUD:
+            createCloudCmisSettings();
+            break;
+        default:
+            createAlfrescoCmisSettings();
+            break;
         }
 
         lc = createListingContext();
@@ -312,7 +312,7 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
         sessionParameters.put(SessionParameter.USER, userIdentifier);
         sessionParameters.put(SessionParameter.PASSWORD, password);
         sessionParameters.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
-        
+
         // connection settings
         addParameterIfExist(BINDING_URL, SessionParameter.ATOMPUB_URL);
         addParameterIfExist(BASE_URL, BASE_URL);
@@ -411,6 +411,7 @@ public abstract class AbstractAlfrescoSessionImpl implements AlfrescoSession, Pa
         return lc;
     }
 
+    @SuppressWarnings("deprecation")
     protected Session createSession(SessionFactory sessionFactory, AuthenticationProvider authenticator,
             Map<String, String> param)
     {

@@ -6,7 +6,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ * 
  *  http://www.apache.org/licenses/LICENSE-2.0
  * 
  *  Unless required by applicable law or agreed to in writing, software
@@ -54,7 +54,6 @@ import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.api.ObjectFactory;
-import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.client.api.OperationContext;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.bindings.spi.atompub.AbstractAtomPubService;
@@ -441,7 +440,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             if (!(n instanceof Folder)) { throw new AlfrescoServiceException(
                     ErrorCodeRegistry.DOCFOLDER_WRONG_NODE_TYPE, Messagesl18n.getString("DocumentFolderService.19")
-                            + newId + " : " + n.getType() + " " + n.getName()); }
+                    + newId + " : " + n.getType() + " " + n.getName()); }
             return (Folder) n;
         }
         catch (Exception e)
@@ -533,7 +532,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             if (!(n instanceof Document)) { throw new AlfrescoServiceException(
                     ErrorCodeRegistry.DOCFOLDER_WRONG_NODE_TYPE, Messagesl18n.getString("DocumentFolderService.20")
-                            + newId); }
+                    + newId); }
             return (Document) n;
         }
         catch (Exception e)
@@ -754,7 +753,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             //Retrieve Cmis Object to retrieve second type
             //TODO !
-            
+
             // it's time to update
             objectService.updateProperties(session.getRepositoryInfo().getIdentifier(), objectIdHolder,
                     changeTokenHolder, objectFactory.convertProperties(tmpProperties,
@@ -1191,7 +1190,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
         // AUTHOR
         ALFRESCO_ASPECTS.put(ContentModel.PROP_AUTHOR, CMISPREFIX_ASPECTS + ContentModel.ASPECT_AUTHOR);
-        
+
         // RESTRICTABLE
         for (String prop : ContentModel.ASPECT_RESTRICTABLE_PROPS)
         {
@@ -1215,7 +1214,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
         return tmpName;
     }
-    
+
     @Override
     public Node refreshNode(Node node)
     {

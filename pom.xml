@@ -314,6 +314,19 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>versions-maven-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<properties>
+						<property>
+							<name>android.maven.plugin.version</name>
+							<version>[${android.maven.plugin.version},3.8.0]</version>
+						</property>
+					</properties>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -328,6 +341,11 @@
 			<id>artifacts.alfresco.com</id>
 			<name>Alfresco Maven Repository</name>
 			<url>https://artifacts.alfresco.com/nexus/content/repositories/releases</url>
+		</repository>
+		<repository>
+			<id>central</id>
+			<name>libs-release</name>
+			<url>https://artifactory.dataspace.cc/artifactory/libs-release</url>
 		</repository>
 	</repositories>
 
@@ -436,6 +454,16 @@
 
 		</plugins>
 	</reporting>
+	
+	<profiles>
+		<profile>
+			<id>android-local</id>
+			<properties>
+				<android.maven.plugin.version>3.8.0</android.maven.plugin.version>
+				<chemistry.opencmis.version>0.10.0.82</chemistry.opencmis.version>
+			</properties>
+		</profile>
+	</profiles>
 
 	<dependencyManagement>
 		<dependencies>
