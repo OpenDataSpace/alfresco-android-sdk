@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.test.opencmis.extension.alfresco;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -49,8 +50,9 @@ public class AlfrescoExtensionTest extends AndroidTestCase
 {
 
     public static final String ALFRESCO_CMIS_BASE_URL = "http://cmis.alfresco.com";
+
     public static final String ALFRESCO_CMIS_ATOMPUB_URL = "http://cmis.alfresco.com/cmisatom";
-    
+
     private Session session;
 
     private Folder rootFolder;
@@ -113,8 +115,7 @@ public class AlfrescoExtensionTest extends AndroidTestCase
             {
                 try
                 {
-                   ((org.apache.chemistry.opencmis.client.api.Folder) o).deleteTree(true,
-                            UnfileObject.DELETE, false);
+                    ((org.apache.chemistry.opencmis.client.api.Folder) o).deleteTree(true, UnfileObject.DELETE, false);
                     s.removeObjectFromCache(o.getId());
                 }
                 catch (Exception e)
@@ -252,7 +253,7 @@ public class AlfrescoExtensionTest extends AndroidTestCase
         alfDoc.addAspect("P:cm:titled", aspectProperties);
 
         alfDoc.refresh();
-        
+
         assertTrue(alfDoc.hasAspect("P:cm:titled"));
         assertEquals(descriptionValue1, (String) alfDoc.getPropertyValue("cm:description"));
 
@@ -272,7 +273,7 @@ public class AlfrescoExtensionTest extends AndroidTestCase
 
         // messenger.addTitle("testEXIFAspect()");
         Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put(PropertyIds.NAME, "exif.test");
+        properties.put(PropertyIds.NAME, "exif" + new Date().getTime() + ".test");
         properties.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
 
         AlfrescoDocument doc = (AlfrescoDocument) session.getRootFolder().createDocument(properties, null, null);

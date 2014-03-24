@@ -236,7 +236,16 @@ public class DocumentTest extends AlfrescoSDKTestCase
 
         currentNodeVersion = docUpdated;
 
-        docUpdated = docfolderservice.updateContent(currentNodeVersion, createContentFile("This is a long text"));
+        try
+        {
+            docUpdated = docfolderservice.updateContent(currentNodeVersion, createContentFile("This is a long text"));
+        }
+        catch (Exception e)
+        {
+            wait(5000);
+            docUpdated = docfolderservice.updateContent(currentNodeVersion, createContentFile("This is a long text"));
+        }
+
         docUpdated = (Document) docfolderservice.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(doc
                 .getIdentifier()));
 
@@ -332,16 +341,23 @@ public class DocumentTest extends AlfrescoSDKTestCase
         Assert.assertTrue(compareDate(new Date(), doc.getCreatedAt().getTime()));
         Assert.assertEquals(alfsession.getPersonIdentifier(), doc.getModifiedBy());
         Assert.assertTrue(compareDate(new Date(), doc.getModifiedAt().getTime()));
-        Assert.assertEquals(doc.getCreatedAt(), doc.getModifiedAt());
+        Assert.assertTrue(compareDate(doc.getCreatedAt().getTime(), doc.getModifiedAt().getTime()));
         Assert.assertNotNull(doc.getProperties());
         Assert.assertTrue(doc.getProperties().size() > 9);
         Assert.assertTrue(doc.isDocument());
         Assert.assertFalse(doc.isFolder());
         // Empty content
-        Assert.assertEquals(0, doc.getContentStreamLength());
-        // Text plain in case of Alfresco 3.4
-        Assert.assertTrue((doc.getContentStreamMimeType().isEmpty())
-                || (doc.getContentStreamMimeType().equals("text/plain")));
+        if (hasPublicAPI())
+        {
+            Assert.assertEquals(-1, doc.getContentStreamLength());
+        }
+        else
+        {
+            Assert.assertEquals(0, doc.getContentStreamLength());
+            // Text plain in case of Alfresco 3.4
+            Assert.assertTrue((doc.getContentStreamMimeType().isEmpty())
+                    || (doc.getContentStreamMimeType().equals("text/plain")));
+        }
 
         // ContentStream
         stream = docfolderservice.getContentStream(doc);
@@ -396,7 +412,14 @@ public class DocumentTest extends AlfrescoSDKTestCase
         Assert.assertEquals(0, f.length());
 
         doc = docfolderservice.createDocument(folder, SAMPLE_DOC_NAME + ".txt", null, new ContentFileImpl(f));
-        Assert.assertEquals(0, doc.getContentStreamLength());
+        if (hasPublicAPI())
+        {
+            Assert.assertEquals(-1, doc.getContentStreamLength());
+        }
+        else
+        {
+            Assert.assertEquals(0, doc.getContentStreamLength());
+        }
 
         // 33F14
         gc = new GregorianCalendar();

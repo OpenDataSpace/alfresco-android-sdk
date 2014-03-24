@@ -26,6 +26,8 @@ import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.os.Bundle;
@@ -280,6 +282,7 @@ public abstract class BaseListFragment extends BaseFragment
             if (adapter.getCount() == 0)
             {
                 lv.setEmptyView(ev);
+                lv.setContentDescription(getString(emptyListMessageId));
             }
             else
             {
@@ -426,6 +429,7 @@ public abstract class BaseListFragment extends BaseFragment
                 {
                     lv.setAdapter(null);
                 }
+                lv.setContentDescription(getString(emptyListMessageId));
                 //Log.d("BaseListFragment", "ITEMS : Empty !");
             }
             else

@@ -211,7 +211,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
             if (assignees != null && !assignees.isEmpty())
             {
                 if (assignees.size() == 1 && WorkflowModel.FAMILY_PROCESS_ADHOC.contains(processDefinition.getKey())
-                        || WorkflowModel.FAMILY_REVIEW.contains(processDefinition.getKey()))
+                        || WorkflowModel.FAMILY_PROCESS_REVIEW.contains(processDefinition.getKey()))
                 {
                     jo.put(OnPremiseConstant.ASSOC_BPM_ASSIGNEE_ADDED_VALUE, getPersonGUID(assignees.get(0)));
                 }
@@ -1052,6 +1052,13 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
     // ////////////////////////////////////////////////////////////////
     // DIAGRAM
     // ////////////////////////////////////////////////////////////////
+    @Override
+    public UrlBuilder getProcessDiagramUrl(String processId)
+    {
+        String url = OnPremiseUrlRegistry.getWorkflowDiagram(session, processId);
+        return new UrlBuilder(url);
+    }
+    
     /** {@inheritDoc} */
     public ContentStream getProcessDiagram(Process process)
     {

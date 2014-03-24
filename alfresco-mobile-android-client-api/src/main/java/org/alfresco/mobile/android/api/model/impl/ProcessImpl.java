@@ -6,7 +6,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *  
  *  http://www.apache.org/licenses/LICENSE-2.0
  * 
  *  Unless required by applicable law or agreed to in writing, software
@@ -24,6 +24,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.constants.PublicAPIConstant;
@@ -33,6 +34,7 @@ import org.alfresco.mobile.android.api.model.Process;
 import org.alfresco.mobile.android.api.model.Property;
 import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
+import org.apache.chemistry.opencmis.commons.impl.json.JSONArray;
 
 /**
  * @since 1.3
@@ -209,9 +211,8 @@ public class ProcessImpl implements Process
 
         if (json.containsKey(PublicAPIConstant.PROCESSVARIABLES_VALUE))
         {
-            @SuppressWarnings("unchecked")
             ArrayList<Map<String, Object>> jo = (ArrayList<Map<String, Object>>) json
-            .get(PublicAPIConstant.PROCESSVARIABLES_VALUE);
+                    .get(PublicAPIConstant.PROCESSVARIABLES_VALUE);
 
             for (Map<String, Object> item : jo)
             {
