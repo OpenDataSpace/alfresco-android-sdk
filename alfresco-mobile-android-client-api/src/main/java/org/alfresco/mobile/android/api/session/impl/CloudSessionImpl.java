@@ -6,7 +6,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ * 
  *  http://www.apache.org/licenses/LICENSE-2.0
  * 
  *  Unless required by applicable law or agreed to in writing, software
@@ -124,6 +124,7 @@ public class CloudSessionImpl extends CloudSession
     }
 
     /** Start the authentication proces. */
+    @SuppressWarnings("deprecation")
     private void authenticate(AuthenticationProvider authProvider)
     {
         try
@@ -175,7 +176,7 @@ public class CloudSessionImpl extends CloudSession
                     currentNetwork = cloudNetwork;
                 }
             }
-            
+
             if (currentNetwork == null){
                 throw new AlfrescoSessionException(
                         ErrorCodeRegistry.SESSION_NO_NETWORK_FOUND, Messagesl18n.getString("SESSION_NO_NETWORK_FOUND"));
@@ -335,7 +336,7 @@ public class CloudSessionImpl extends CloudSession
     }
 
     public static final Parcelable.Creator<CloudSessionImpl> CREATOR = new Parcelable.Creator<CloudSessionImpl>()
-    {
+            {
         public CloudSessionImpl createFromParcel(Parcel in)
         {
             return new CloudSessionImpl(in);
@@ -345,35 +346,35 @@ public class CloudSessionImpl extends CloudSession
         {
             return new CloudSessionImpl[size];
         }
-    };
+            };
 
-    @Override
-    public void writeToParcel(Parcel dest, int arg1)
-    {
-        dest.writeString(baseUrl);
-        dest.writeString(userIdentifier);
-        dest.writeString(password);
-        dest.writeSerializable(currentNetwork);
-        dest.writeParcelable(rootNode, PARCELABLE_WRITE_RETURN_VALUE);
-        dest.writeSerializable(repositoryInfo);
-        dest.writeSerializable(cmisSession);
-        Bundle b = new Bundle();
-        b.putSerializable("userParameters", (Serializable) userParameters);
-        dest.writeBundle(b);
-    }
+            @Override
+            public void writeToParcel(Parcel dest, int arg1)
+            {
+                dest.writeString(baseUrl);
+                dest.writeString(userIdentifier);
+                dest.writeString(password);
+                dest.writeSerializable(currentNetwork);
+                dest.writeParcelable(rootNode, PARCELABLE_WRITE_RETURN_VALUE);
+                dest.writeSerializable(repositoryInfo);
+                dest.writeSerializable(cmisSession);
+                Bundle b = new Bundle();
+                b.putSerializable("userParameters", (Serializable) userParameters);
+                dest.writeBundle(b);
+            }
 
-    @SuppressWarnings("unchecked")
-    public CloudSessionImpl(Parcel o)
-    {
-        this.baseUrl = o.readString();
-        this.userIdentifier = o.readString();
-        this.password = o.readString();
-        this.currentNetwork = (CloudNetwork) o.readSerializable();
-        this.rootNode = o.readParcelable(FolderImpl.class.getClassLoader());
-        this.repositoryInfo = (RepositoryInfo) o.readSerializable();
-        this.cmisSession = (Session) o.readSerializable();
-        Bundle b = o.readBundle();
-        this.userParameters = (Map<String, Serializable>) b.getSerializable("userParameters");
-        create();
-    }
+            @SuppressWarnings("unchecked")
+            public CloudSessionImpl(Parcel o)
+            {
+                this.baseUrl = o.readString();
+                this.userIdentifier = o.readString();
+                this.password = o.readString();
+                this.currentNetwork = (CloudNetwork) o.readSerializable();
+                this.rootNode = o.readParcelable(FolderImpl.class.getClassLoader());
+                this.repositoryInfo = (RepositoryInfo) o.readSerializable();
+                this.cmisSession = (Session) o.readSerializable();
+                Bundle b = o.readBundle();
+                this.userParameters = (Map<String, Serializable>) b.getSerializable("userParameters");
+                create();
+            }
 }

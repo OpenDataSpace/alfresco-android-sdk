@@ -36,7 +36,6 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

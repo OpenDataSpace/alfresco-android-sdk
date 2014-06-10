@@ -53,8 +53,6 @@ import org.apache.http.protocol.HTTP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import android.util.Log;
-
 public class NetworkHttpInvoker implements HttpInvoker
 {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultHttpInvoker.class);

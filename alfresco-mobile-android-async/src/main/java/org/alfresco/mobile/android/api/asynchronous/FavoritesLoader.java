@@ -6,7 +6,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ * 
  *  http://www.apache.org/licenses/LICENSE-2.0
  * 
  *  Unless required by applicable law or agreed to in writing, software
@@ -27,6 +27,7 @@ import android.content.Context;
  * 
  * @author Jean Marie Pascal
  */
+@SuppressWarnings("rawtypes")
 public class FavoritesLoader extends AbstractPagingLoader<LoaderResult<PagingResult>>
 {
 
@@ -48,7 +49,6 @@ public class FavoritesLoader extends AbstractPagingLoader<LoaderResult<PagingRes
         this.mode = mode;
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
     public LoaderResult<PagingResult> loadInBackground()
     {
@@ -59,21 +59,21 @@ public class FavoritesLoader extends AbstractPagingLoader<LoaderResult<PagingRes
         {
             switch (mode)
             {
-                case MODE_DOCUMENTS:
-                    pagingResult = session.getServiceRegistry().getDocumentFolderService()
-                            .getFavoriteDocuments(listingContext);
-                    break;
-                case MODE_FOLDERS:
-                    pagingResult = session.getServiceRegistry().getDocumentFolderService()
-                            .getFavoriteFolders(listingContext);
-                    break;
-                case MODE_BOTH:
-                    pagingResult = session.getServiceRegistry().getDocumentFolderService()
-                            .getFavoriteNodes(listingContext);
-                    break;
+            case MODE_DOCUMENTS:
+                pagingResult = session.getServiceRegistry().getDocumentFolderService()
+                .getFavoriteDocuments(listingContext);
+                break;
+            case MODE_FOLDERS:
+                pagingResult = session.getServiceRegistry().getDocumentFolderService()
+                .getFavoriteFolders(listingContext);
+                break;
+            case MODE_BOTH:
+                pagingResult = session.getServiceRegistry().getDocumentFolderService()
+                .getFavoriteNodes(listingContext);
+                break;
 
-                default:
-                    break;
+            default:
+                break;
             }
 
         }
