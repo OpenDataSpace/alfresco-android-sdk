@@ -72,6 +72,22 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
     }
 
     @Override
+    public UrlBuilder getRenditionUrl(String identifier, String type)
+    {
+        try
+        {
+            UrlBuilder url = new UrlBuilder(OnPremiseUrlRegistry.getThumbnailsUrl(session, identifier, type));
+            url.addParameter("format", "json");
+            return url;
+        }
+        catch (Exception e)
+        {
+            convertException(e);
+        }
+        return null;
+    }
+
+    @Override
     /** {@inheritDoc} */
     public ContentStream getRenditionStream(String identifier, String type)
     {

@@ -36,6 +36,8 @@ import org.apache.chemistry.opencmis.client.bindings.spi.AbstractAuthenticationP
 import org.apache.chemistry.opencmis.client.bindings.spi.BindingSession;
 import org.w3c.dom.Element;
 
+import android.util.Log;
+
 /**
  * Abstract base class for all AuthenticationProvider.
  * 

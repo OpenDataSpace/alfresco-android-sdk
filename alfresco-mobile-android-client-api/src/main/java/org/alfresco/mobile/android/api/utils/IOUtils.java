@@ -40,13 +40,13 @@ public final class IOUtils
 
     /*
      * Monitored input stream for progress feedback on a ContentFile object.
-     * 
-     *  @author Luke Jagger
+     * @author Luke Jagger
      */
 
     static class MonitoredBufferedInputStream extends BufferedInputStream
     {
         ContentFile contentFile = null;
+
         int block = 0;
 
         public MonitoredBufferedInputStream(InputStream in)
@@ -67,7 +67,6 @@ public final class IOUtils
 
         /**
          * Overriden InputStream file read.
-         * 
          */
         @Override
         public synchronized int read() throws IOException
@@ -82,7 +81,6 @@ public final class IOUtils
 
         /**
          * Overriden InputStream file read.
-         * 
          */
         @Override
         public int read(byte[] b) throws IOException
@@ -101,7 +99,6 @@ public final class IOUtils
 
         /**
          * Overriden InputStream file read.
-         * 
          */
         @Override
         public synchronized int read(byte[] b, int off, int len) throws IOException
