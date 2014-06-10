@@ -12,7 +12,7 @@
 	<parent>
 		<groupId>org.alfresco.mobile.android.sdk.tests</groupId>
 		<artifactId>alfresco-mobile-android-sdk-tests</artifactId>
-		<version>1.3.0</version>
+		<version>1.3.1</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -85,16 +85,16 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.google.android</groupId>
+			<groupId>android</groupId>
 			<artifactId>android</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.google.android</groupId>
+			<groupId>com.google.android.annotations</groupId>
 			<artifactId>annotations</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.google.android</groupId>
-			<artifactId>android-test</artifactId>
+			<groupId>android.test.uiautomator</groupId>
+			<artifactId>uiautomator</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.alfresco.mobile.android.sdk.samples</groupId>
