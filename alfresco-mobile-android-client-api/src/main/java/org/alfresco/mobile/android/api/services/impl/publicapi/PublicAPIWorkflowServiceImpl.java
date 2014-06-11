@@ -129,7 +129,21 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             convertException(e);
         }
 
-        return new PagingResultImpl<ProcessDefinition>(definitions, response.getHasMoreItems(), response.getSize());
+        final boolean hasMoreItems;
+        final int totalItems;
+
+        if (response == null)
+        {
+            hasMoreItems = false;
+            totalItems = 0;
+        }
+        else
+        {
+            hasMoreItems = response.getHasMoreItems().booleanValue();
+            totalItems = response.getSize();
+        }
+
+        return new PagingResultImpl<ProcessDefinition>(definitions, hasMoreItems, totalItems);
     }
 
     @SuppressWarnings("unchecked")
@@ -295,7 +309,21 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             convertException(e);
         }
 
-        return new PagingResultImpl<Process>(processes, response.getHasMoreItems(), response.getSize());
+        final boolean hasMoreItems;
+        final int totalItems;
+
+        if (response == null)
+        {
+            hasMoreItems = false;
+            totalItems = 0;
+        }
+        else
+        {
+            hasMoreItems = response.getHasMoreItems().booleanValue();
+            totalItems = response.getSize();
+        }
+
+        return new PagingResultImpl<Process>(processes, hasMoreItems, totalItems);
     }
 
     /** {@inheritDoc} */
@@ -371,7 +399,21 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             convertException(e);
         }
 
-        return new PagingResultImpl<Task>(tasks, response.getHasMoreItems(), response.getSize());
+        final boolean hasMoreItems;
+        final int totalItems;
+
+        if (response == null)
+        {
+            hasMoreItems = false;
+            totalItems = 0;
+        }
+        else
+        {
+            hasMoreItems = response.getHasMoreItems().booleanValue();
+            totalItems = response.getSize();
+        }
+
+        return new PagingResultImpl<Task>(tasks, hasMoreItems, totalItems);
     }
 
     @Override
@@ -455,7 +497,21 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             convertException(e);
         }
 
-        return new PagingResultImpl<Document>(tasks, response.getHasMoreItems(), response.getSize());
+        final boolean hasMoreItems;
+        final int totalItems;
+
+        if (response == null)
+        {
+            hasMoreItems = false;
+            totalItems = 0;
+        }
+        else
+        {
+            hasMoreItems = response.getHasMoreItems().booleanValue();
+            totalItems = response.getSize();
+        }
+
+        return new PagingResultImpl<Document>(tasks, hasMoreItems, totalItems);
     }
 
     /** {@inheritDoc} */
@@ -558,7 +614,21 @@ public class PublicAPIWorkflowServiceImpl extends AbstractWorkflowService
             convertException(e);
         }
 
-        return new PagingResultImpl<Task>(tasks, response.getHasMoreItems(), response.getSize());
+        final boolean hasMoreItems;
+        final int totalItems;
+
+        if (response == null)
+        {
+            hasMoreItems = false;
+            totalItems = 0;
+        }
+        else
+        {
+            hasMoreItems = response.getHasMoreItems().booleanValue();
+            totalItems = response.getSize();
+        }
+
+        return new PagingResultImpl<Task>(tasks, hasMoreItems, totalItems);
     }
 
     /** {@inheritDoc} */

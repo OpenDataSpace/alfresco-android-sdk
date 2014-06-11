@@ -220,7 +220,11 @@ public class PublicAPIDocumentFolderServiceImpl extends AbstractDocumentFolderSe
                 jp.put(filter[i], jt);
                 jp = jt;
             }
-            jt.put(PublicAPIConstant.GUID_VALUE, NodeRefUtils.getCleanIdentifier(node.getIdentifier()));
+
+            if (jt != null)
+            {
+                jt.put(PublicAPIConstant.GUID_VALUE, NodeRefUtils.getCleanIdentifier(node.getIdentifier()));
+            }
 
             final JsonDataWriter formDataM = new JsonDataWriter(jroot);
 

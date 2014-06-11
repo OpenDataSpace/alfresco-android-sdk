@@ -237,7 +237,11 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
                 jp.put(sitePrefence[i], jt);
                 jp = jt;
             }
-            jt.put(site.getIdentifier(), addSite);
+
+            if (jt != null)
+            {
+                jt.put(site.getIdentifier(), addSite);
+            }
 
             final JsonDataWriter formDataM = new JsonDataWriter(jroot);
 

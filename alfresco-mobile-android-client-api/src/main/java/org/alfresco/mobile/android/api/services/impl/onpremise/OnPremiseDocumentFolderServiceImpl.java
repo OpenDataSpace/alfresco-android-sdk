@@ -319,7 +319,10 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
                 jp = jt;
             }
 
-            jt.put(OnPremiseUrlRegistry.FAVOURITES, joined);
+            if (jt != null)
+            {
+                jt.put(OnPremiseUrlRegistry.FAVOURITES, joined);
+            }
 
             final JsonDataWriter formDataM = new JsonDataWriter(jroot);
 

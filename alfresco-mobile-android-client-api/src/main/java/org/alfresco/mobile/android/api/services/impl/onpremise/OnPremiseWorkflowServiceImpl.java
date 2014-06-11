@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -413,6 +414,10 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                     processes.add(ProcessImpl.parseJson((Map<String, Object>) obj));
                 }
             }
+            else
+            {
+                json = Collections.EMPTY_MAP;
+            }
         }
         catch (Exception e)
         {
@@ -765,6 +770,10 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                 {
                     Map<String, Object> jso = (Map<String, Object>) json.get(OnPremiseConstant.DATA_VALUE);
                     jo = (List<Object>) jso.get(OnPremiseConstant.TASKS_VALUE);
+                }
+                else
+                {
+                    jo = Collections.EMPTY_LIST;
                 }
                 
                 size = jo.size();

@@ -178,7 +178,11 @@ public class PublicAPISiteServiceImpl extends AbstractSiteServiceImpl
                 jp.put(sitePrefence[i], jt);
                 jp = jt;
             }
-            jt.put(PublicAPIConstant.GUID_VALUE, site.getGUID());
+
+            if (jt != null)
+            {
+                jt.put(PublicAPIConstant.GUID_VALUE, site.getGUID());
+            }
 
             final JsonDataWriter formDataM = new JsonDataWriter(jroot);
 
