@@ -345,8 +345,8 @@
 		</repository>
 		<repository>
 			<id>central</id>
-			<name>libs-release</name>
-			<url>https://artifactory.dataspace.cc/artifactory/libs-release</url>
+			<name>central</name>
+			<url>https://artifactory.dataspace.cc/artifactory/repo</url>
 		</repository>
 	</repositories>
 
@@ -461,7 +461,8 @@
 			<id>android-local</id>
 			<properties>
 				<android.maven.plugin.version>3.8.0</android.maven.plugin.version>
-				<chemistry.opencmis.version>1.0.0</chemistry.opencmis.version>
+				<android.annotation.version>LATEST</android.annotation.version>
+				<chemistry.opencmis.version>LATEST</chemistry.opencmis.version>
 			</properties>
 		</profile>
 	</profiles>

@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 
 public class OdsLog
 {
@@ -23,43 +22,36 @@ public class OdsLog
     public static void e(String tag, String msg)
     {
         lg.log(Level.SEVERE, "[" + tag + "] " + msg);
-        Log.e(tag, msg);
     }
 
     public static void w(String tag, String msg)
     {
         lg.log(Level.WARNING, "[" + tag + "] " + msg);
-        Log.w(tag, msg);
     }
 
     public static void i(String tag, String msg)
     {
         lg.log(Level.INFO, "[" + tag + "] " + msg);
-        Log.i(tag, msg);
     }
 
     public static void v(String tag, String msg)
     {
         lg.log(Level.FINE, "[" + tag + "] " + msg);
-        Log.v(tag, msg);
     }
 
     public static void d(String tag, String msg)
     {
         lg.log(Level.FINER, "[" + tag + "] " + msg);
-        Log.d(tag, msg);
     }
 
     public static void ex(String tag, Throwable e)
     {
         lg.log(Level.SEVERE, "[" + tag + "]", e);
-        Log.e(tag, Log.getStackTraceString(e));
     }
 
     public static void exw(String tag, Throwable e)
     {
         lg.log(Level.WARNING, "[" + tag + "]", e);
-        Log.w(tag, Log.getStackTraceString(e));
     }
 
     public static void init(String dir, boolean enabled) {
