@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.ui.manager;
 import java.io.File;
 
 import org.alfresco.mobile.android.ui.R;
+import org.opendataspace.android.ui.logging.OdsLog;
 
 import android.app.Fragment;
 import android.content.ActivityNotFoundException;
@@ -35,7 +36,7 @@ public class ActionManager
     /**
      * Allow to open a file with an associated application installed in the
      * device.
-     * 
+     *
      * @param context
      * @param myFile
      * @param mimeType
@@ -80,7 +81,7 @@ public class ActionManager
     /**
      * Allow to open a file with an associated application installed in the
      * device and saved it backed via a requestcode...
-     * 
+     *
      * @param context
      * @param myFile
      * @param mimeType
@@ -119,7 +120,7 @@ public class ActionManager
 
     /**
      * Allow to send a link to other application installed in the device.
-     * 
+     *
      * @param fr
      * @param url
      */
@@ -141,7 +142,7 @@ public class ActionManager
 
     /**
      * Allow user to share a file with other applications.
-     * 
+     *
      * @param fr
      * @param contentFile
      */
@@ -172,7 +173,7 @@ public class ActionManager
 
     /**
      * Allow to pick file with other apps.
-     * 
+     *
      * @return Activity for Result.
      */
     public static void actionPickFile(Fragment f, int requestCode)
@@ -185,7 +186,7 @@ public class ActionManager
 
     /**
      * Utils to get File path
-     * 
+     *
      * @param activity
      * @param uri
      * @return
@@ -196,11 +197,17 @@ public class ActionManager
         String s = null;
         if (scheme.equals("content"))
         {
-            String[] projection = { MediaStore.Files.FileColumns.DATA };
-            Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
-            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA);
-            cursor.moveToFirst();
-            s = cursor.getString(columnIndex);
+            try
+            {
+                String[] projection = { MediaStore.Files.FileColumns.DATA };
+                Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
+                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA);
+                cursor.moveToFirst();
+                s = cursor.getString(columnIndex);
+            } catch (Exception ex)
+            {
+                OdsLog.ex("ActionManager", ex);
+            }
         }
         else if (scheme.equals("file"))
         {
