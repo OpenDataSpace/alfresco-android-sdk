@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,7 +42,7 @@ import android.os.Parcelable;
 
 /**
  * Base Implementation of Alfresco Node object.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class NodeImpl implements Node
@@ -62,7 +62,7 @@ public class NodeImpl implements Node
     private List<String> allowableActions;
 
     /** CMIS Object associated to a Node. */
-    private transient CmisObject object;
+    protected transient CmisObject object;
 
     /** Indicates whether the node has all it’s metadata populated. */
     private boolean hasAllProperties = true;
@@ -76,7 +76,7 @@ public class NodeImpl implements Node
 
     /**
      * Default constructor of a Node based on CMIS service and object.
-     * 
+     *
      * @param o
      */
     public NodeImpl(CmisObject o)
@@ -220,7 +220,7 @@ public class NodeImpl implements Node
      * "Parcel object" into generic object.<br>
      * After configuration change, node is restore with simple data object like
      * a list of properties<br>
-     * 
+     *
      * @return Property object.
      */
     private Property getProp(String name)
@@ -281,7 +281,7 @@ public class NodeImpl implements Node
     @Override
     public boolean hasAllProperties()
     {
-         return hasAllProperties; 
+         return hasAllProperties;
     }
 
     // ////////////////////////////////////////////////////
@@ -454,7 +454,7 @@ public class NodeImpl implements Node
     /**
      * Constructor of a Node object depending of a Parcel object previously
      * created by writeToParcel method.
-     * 
+     *
      * @param o the Parcel object
      */
     public NodeImpl(Parcel o)
