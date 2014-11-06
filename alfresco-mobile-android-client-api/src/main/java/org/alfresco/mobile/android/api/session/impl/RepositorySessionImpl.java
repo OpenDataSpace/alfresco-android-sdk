@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,14 +21,15 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.model.RepositoryInfo;
 import org.alfresco.mobile.android.api.model.impl.FolderImpl;
-import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
 import org.alfresco.mobile.android.api.model.impl.onpremise.OnPremiseRepositoryInfoImpl;
 import org.alfresco.mobile.android.api.network.NetworkHttpInvoker;
 import org.alfresco.mobile.android.api.services.impl.onpremise.OnPremiseServiceRegistry;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.session.authentication.impl.PassthruAuthenticationProviderImpl;
+import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.alfresco.mobile.android.api.utils.PublicAPIUrlRegistry;
 import org.apache.chemistry.opencmis.client.api.Session;
@@ -36,9 +37,8 @@ import org.apache.chemistry.opencmis.client.api.SessionFactory;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
+import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
-import org.apache.http.HttpStatus;
-
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -46,7 +46,7 @@ import android.os.Parcelable;
 /**
  * RepositorySession represents a connection to an on-premise repository as a
  * specific user.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class RepositorySessionImpl extends RepositorySession
@@ -64,7 +64,7 @@ public class RepositorySessionImpl extends RepositorySession
      * use automatically default session configuration
      * {@link org.alfresco.mobile.android.api.session.SessionSettings
      * SessionSettings}.
-     * 
+     *
      * @param url : Base URL associated to the repository. For example :
      *            <i>http://hostname:port/alfresco</i>
      * @return a RepositorySession object that is not bind with the repository.
@@ -90,81 +90,92 @@ public class RepositorySessionImpl extends RepositorySession
         SessionFactory sessionFactory = SessionFactoryImpl.newInstance();
         Map<String, String> param = retrieveSessionParameters();
 
-        cmisSession = createSession(sessionFactory, param);
+        // List of endpoint
+        String[] bindingUrls = { baseUrl.concat(PublicAPIUrlRegistry.BINDING_NETWORK_CMISATOM),
+                baseUrl.concat(OnPremiseUrlRegistry.BINDING_CMISATOM),
+                baseUrl.concat(OnPremiseUrlRegistry.BINDING_CMIS) };
 
-        // Check RepositoryInfo for Alfresco Version
-        // If Alfresco is not a V4, bind with CMIS webscript implementation
-        boolean isAlfresco = cmisSession.getRepositoryInfo().getProductName()
-                .startsWith(OnPremiseConstant.ALFRESCO_VENDOR);
-        String version = RepositoryVersionHelper.getVersionString(cmisSession.getRepositoryInfo().getProductVersion(),
-                0);
-
-        RepositoryInfo tmpRepositoryInfo = new OnPremiseRepositoryInfoImpl(cmisSession.getRepositoryInfo());
-
-        if (isAlfresco && !hasForceBinding() && version != null
-                && Integer.parseInt(version) >= OnPremiseConstant.ALFRESCO_VERSION_4)
+        Exception creationException = null;
+        hasPublicAPI = true;
+        for (String bindingUrl : bindingUrls)
         {
-            String version2 = RepositoryVersionHelper.getVersionString(cmisSession.getRepositoryInfo()
-                    .getProductVersion(), 1);
-
-            Session cmisSession2 = null;
-
-            if (Integer.parseInt(version2) >= OnPremiseConstant.ALFRESCO_VERSION_4_2)
+            if (!hasForceBinding())
             {
-                // Test presence of public api
-                UrlBuilder builder = new UrlBuilder(PublicAPIUrlRegistry.getPublicAPIUrl(baseUrl));
-                Response resp = NetworkHttpInvoker.invokeGET(builder, cmisSession.getBinding()
-                        .getAuthenticationProvider().getHTTPHeaders(baseUrl));
-                if (resp.getResponseCode() == HttpStatus.SC_OK)
-                {
-                    param.put(SessionParameter.ATOMPUB_URL, PublicAPIUrlRegistry.getPublicAPIUrl(baseUrl));
-                    hasPublicAPI = true;
-                    try
-                    {
-                        cmisSession2 = createSession(sessionFactory, param);
-                    }
-                    catch (Exception e)
-                    {
-                        cmisSession2 = null;
-                        hasPublicAPI = false;
-                    }
-                }
+                param.put(SessionParameter.ATOMPUB_URL, bindingUrl);
             }
 
-            if (!hasPublicAPI || cmisSession2 == null)
+            // Create the session with parameters
+            try
             {
-                param.put(SessionParameter.ATOMPUB_URL, baseUrl.concat(OnPremiseUrlRegistry.BINDING_CMISATOM));
-                try
-                {
-                    cmisSession2 = createSession(sessionFactory, param);
-                }
-                catch (Exception e)
-                {
-                    cmisSession2 = null;
-                }
+                cmisSession = createSession(sessionFactory, param);
             }
-            cmisSession = (cmisSession2 != null) ? cmisSession2 : cmisSession;
+            catch (Exception err)
+            {
+                creationException = err;
+                hasPublicAPI = false;
+            }
+
+            // Exit condition
+            if (cmisSession != null)
+            {
+                creationException = null;
+                break;
+            }
+            else if (hasForceBinding())
+            {
+                break;
+            }
         }
 
-        // Init Services + Object
-        rootNode = new FolderImpl(cmisSession.getRootFolder());
+        // No session object which means something bad happened.
+        if (cmisSession == null) { throw new AlfrescoSessionException(AlfrescoSessionException.SESSION_GENERIC,
+                creationException); }
 
+        // Check if it's an Alfresco server
+        /*
+        boolean isAlfresco = cmisSession.getRepositoryInfo().getProductName()
+                .startsWith(OnPremiseConstant.ALFRESCO_VENDOR);
+        if (!isAlfresco) { throw new AlfrescoSessionException(AlfrescoSessionException.SESSION_NO_REPOSITORY,
+                creationException); }
+         */
+
+        // If Session Object available we populate other info & capabilities
         repositoryInfo = new OnPremiseRepositoryInfoImpl(cmisSession.getRepositoryInfo());
 
         // On cmisatom binding sometimes the edition is not well formated. In
         // this case we use service/cmis binding. MOBSDK-508
-        if (repositoryInfo.getEdition() == OnPremiseConstant.ALFRESCO_EDITION_UNKNOWN
-                && tmpRepositoryInfo.getEdition() != OnPremiseConstant.ALFRESCO_EDITION_UNKNOWN)
+        if (repositoryInfo.getEdition() == OnPremiseConstant.ALFRESCO_EDITION_UNKNOWN)
         {
-            repositoryInfo = new OnPremiseRepositoryInfoImpl(cmisSession.getRepositoryInfo(),
-                    tmpRepositoryInfo.getEdition());
+            try
+            {
+                UrlBuilder builder = new UrlBuilder(OnPremiseUrlRegistry.getServerInfo(baseUrl));
+                Response resp = NetworkHttpInvoker.invokeGET(builder, cmisSession.getBinding()
+                        .getAuthenticationProvider().getHTTPHeaders(baseUrl));
+                Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
+                if (json.containsKey(OnPremiseConstant.DATA_VALUE))
+                {
+                    String editionValue = JSONConverter.getString(
+                            JSONConverter.getMap(json.get(OnPremiseConstant.DATA_VALUE)),
+                            OnPremiseConstant.EDITION_VALUE);
+                    repositoryInfo = new OnPremiseRepositoryInfoImpl(cmisSession.getRepositoryInfo(), editionValue);
+                }
+            }
+            catch (Exception e)
+            {
+                // Nothing major...
+            }
         }
 
-        // Extension Point to implement and manage services
-        create();
+        // Retrieve Root Node
+        rootNode = new FolderImpl(cmisSession.getRootFolder());
+
+        //TODO Other capabilities
+
+        // Retrieve Service Registry & Services
+        initServices();
     }
 
-    protected void create()
+    protected void initServices()
     {
         passThruAuthenticator = cmisSession.getBinding().getAuthenticationProvider();
         authenticator = ((PassthruAuthenticationProviderImpl) passThruAuthenticator)
@@ -233,6 +244,6 @@ public class RepositorySessionImpl extends RepositorySession
         this.cmisSession = (Session) o.readSerializable();
         Bundle b = o.readBundle();
         this.userParameters = (Map<String, Serializable>) b.getSerializable("userParameters");
-        create();
+        initServices();
     }
 }
