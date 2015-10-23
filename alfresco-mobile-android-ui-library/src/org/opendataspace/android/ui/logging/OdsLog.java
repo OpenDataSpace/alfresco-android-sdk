@@ -1,5 +1,12 @@
 package org.opendataspace.android.ui.logging;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
+
+import org.alfresco.mobile.android.ui.BuildConfig;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
@@ -8,10 +15,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.regex.Pattern;
-
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 
 public class OdsLog
 {
@@ -47,23 +50,36 @@ public class OdsLog
     public static void ex(String tag, Throwable e)
     {
         lg.log(Level.SEVERE, "[" + tag + "]", e);
+
+        if (BuildConfig.DEBUG)
+        {
+            Log.w(tag, e);
+        }
     }
 
     public static void exw(String tag, Throwable e)
     {
         lg.log(Level.WARNING, "[" + tag + "]", e);
+
+        if (BuildConfig.DEBUG)
+        {
+            Log.w(tag, e);
+        }
     }
 
-    public static void init(String dir, boolean enabled) {
-        try {
-            FileHandler fh =new FileHandler(dir + "/trace-%u%g.log", 50000, 2, true);
+    public static void init(String dir, boolean enabled)
+    {
+        try
+        {
+            FileHandler fh = new FileHandler(dir + "/trace-%u%g.log", 50000, 2, true);
             fh.setLevel(Level.WARNING);
             fh.setFormatter(new SimpleFormatter());
             enable(enabled);
             lg.addHandler(fh);
             path = dir;
 
-            if (handler == null) {
+            if (handler == null)
+            {
                 handler = Thread.getDefaultUncaughtExceptionHandler();
 
                 Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler()
@@ -81,18 +97,23 @@ public class OdsLog
                     }
                 });
             }
-        } catch (Exception ex) {
+        }
+        catch (Exception ex)
+        {
             OdsLog.ex("LOGGER", ex);
         }
     }
 
-    public static void enable(boolean val) {
+    public static void enable(boolean val)
+    {
         lg.setLevel(val ? Level.WARNING : Level.OFF);
     }
 
-    public static void send(Context context, String header) {
+    public static void send(Context context, String header)
+    {
         final Pattern p = Pattern.compile("trace-.*\\.log");
-        final File[] flist = new File(path).listFiles(new FileFilter() {
+        final File[] flist = new File(path).listFiles(new FileFilter()
+        {
             @Override
             public boolean accept(File file)
             {
@@ -108,13 +129,13 @@ public class OdsLog
         final ArrayList<Uri> uris = new ArrayList<Uri>();
         final Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
 
-        for(File f : flist)
+        for (File f : flist)
         {
             uris.add(Uri.fromFile(f));
         }
 
         emailIntent.setType("plain/text");
-        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[] { "info@opendataspace.org" });
+        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[] {"info@opendataspace.org"});
         emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Logs");
         emailIntent.putParcelableArrayListExtra(android.content.Intent.EXTRA_STREAM, uris);
         context.startActivity(Intent.createChooser(emailIntent, header));

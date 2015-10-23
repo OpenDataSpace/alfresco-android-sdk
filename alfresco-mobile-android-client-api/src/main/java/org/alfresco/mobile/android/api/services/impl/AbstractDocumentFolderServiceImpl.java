@@ -96,7 +96,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      */
     private static final String TAG = "DocumentFolderService";
 
-    private static final long CHUNK_SIZE = 4 * 1024;
+    private static final long CHUNK_SIZE = 4 * 1024 * 1024;
 
     protected Session cmisSession;
 
