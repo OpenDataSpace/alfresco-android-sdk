@@ -1,33 +1,23 @@
 /*******************************************************************************
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import android.util.Log;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
@@ -50,6 +40,7 @@ import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
+import org.alfresco.mobile.android.api.utils.LimitInputStream;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
@@ -59,7 +50,6 @@ import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.bindings.spi.atompub.AbstractAtomPubService;
 import org.apache.chemistry.opencmis.client.bindings.spi.atompub.AtomPubParser;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.Output;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.client.runtime.OperationContextImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
@@ -78,26 +68,40 @@ import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
 import org.apache.chemistry.opencmis.commons.spi.Holder;
 import org.apache.chemistry.opencmis.commons.spi.NavigationService;
 import org.apache.chemistry.opencmis.commons.spi.ObjectService;
-import org.apache.http.HttpStatus;
 
-import android.util.Log;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Abstract class implementation of DocumentFolderService. Responsible of
  * sharing common methods between child class (OnPremise and Cloud)
- * 
+ *
  * @author Jean Marie Pascal
  */
 public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService implements DocumentFolderService
 {
-    /** Internal Tag for Logger. */
+    /**
+     * Internal Tag for Logger.
+     */
     private static final String TAG = "DocumentFolderService";
+
+    private static final long CHUNK_SIZE = 4 * 1024 * 1024;
 
     protected Session cmisSession;
 
     /**
      * Default Constructor. Only used inside ServiceRegistry.
-     * 
+     *
      * @param repositorySession : Repository Session.
      */
     public AbstractDocumentFolderServiceImpl(AlfrescoSession repositorySession)
@@ -109,18 +113,27 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     // ////////////////////////////////////////////////////
     // NAVIGATION
     // ////////////////////////////////////////////////////
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     public List<Node> getChildren(Folder parentFolder)
     {
         return getChildren(parentFolder, null).getList();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public PagingResult<Node> getChildren(Folder parentFolder, ListingContext lcontext)
     {
 
-        if (isObjectNull(parentFolder)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "parentFolder")); }
+        if (isObjectNull(parentFolder))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"),
+                            "parentFolder"));
+        }
 
         try
         {
@@ -140,10 +153,11 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                 skipCount = BigInteger.valueOf(lcontext.getSkipCount());
             }
             // get the children
-            ObjectInFolderList children = navigationService.getChildren(session.getRepositoryInfo().getIdentifier(),
-                    parentFolder.getIdentifier(), ctxt.getFilterString(), orderBy, ctxt.isIncludeAllowableActions(),
-                    ctxt.getIncludeRelationships(), ctxt.getRenditionFilterString(), ctxt.isIncludePathSegments(),
-                    maxItems, skipCount, null);
+            ObjectInFolderList children = navigationService
+                    .getChildren(session.getRepositoryInfo().getIdentifier(), parentFolder.getIdentifier(),
+                            ctxt.getFilterString(), orderBy, ctxt.isIncludeAllowableActions(),
+                            ctxt.getIncludeRelationships(), ctxt.getRenditionFilterString(),
+                            ctxt.isIncludePathSegments(), maxItems, skipCount, null);
 
             // convert objects
             List<Node> page = new ArrayList<Node>();
@@ -162,7 +176,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                 }
             }
 
-            Boolean hasMoreItem = false;
+            Boolean hasMoreItem;
             if (maxItems != null)
             {
                 hasMoreItem = children.hasMoreItems() && page.size() == maxItems.intValue();
@@ -181,20 +195,32 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         return null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Node getChildByPath(String path)
     {
         return getChildByPath(getRootFolder(), path);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Node getChildByPath(Folder folder, String relativePathFromFolder)
     {
-        if (isObjectNull(folder)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "parentFolder")); }
+        if (isObjectNull(folder))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"),
+                            "parentFolder"));
+        }
 
-        if (isStringNull(relativePathFromFolder)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "relativePathFromFolder")); }
+        if (isStringNull(relativePathFromFolder))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"),
+                            "relativePathFromFolder"));
+        }
 
         try
         {
@@ -217,16 +243,18 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             path = path.concat(tmpPath);
 
-            Node result = null;
+            Node result;
 
             OperationContext context = cmisSession.getDefaultContext();
             ObjectService objectService = cmisSession.getBinding().getObjectService();
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
 
             // get the object
-            ObjectData objectData = objectService.getObjectByPath(session.getRepositoryInfo().getIdentifier(), path,
-                    context.getFilterString(), context.isIncludeAllowableActions(), context.getIncludeRelationships(),
-                    context.getRenditionFilterString(), context.isIncludePolicies(), context.isIncludeAcls(), null);
+            ObjectData objectData = objectService
+                    .getObjectByPath(session.getRepositoryInfo().getIdentifier(), path, context.getFilterString(),
+                            context.isIncludeAllowableActions(), context.getIncludeRelationships(),
+                            context.getRenditionFilterString(), context.isIncludePolicies(), context.isIncludeAcls(),
+                            null);
 
             result = convertNode(objectFactory.convertObject(objectData, context));
 
@@ -243,11 +271,17 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         return null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Node getNodeByIdentifier(String identifier)
     {
-        if (isStringNull(identifier)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "nodeIdentifier")); }
+        if (isStringNull(identifier))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"),
+                            "nodeIdentifier"));
+        }
 
         try
         {
@@ -265,23 +299,33 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         return null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Folder getRootFolder()
     {
         return session.getRootFolder();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public List<Folder> getFolders(Folder parentFolder)
     {
         return getFolders(parentFolder, null).getList();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public PagingResult<Folder> getFolders(Folder folder, ListingContext listingContext)
     {
-        if (isObjectNull(folder)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "parentFolder")); }
+        if (isObjectNull(folder))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"),
+                            "parentFolder"));
+        }
 
         try
         {
@@ -307,17 +351,25 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         return null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public List<Document> getDocuments(Folder folder)
     {
         return getDocuments(folder, null).getList();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public PagingResult<Document> getDocuments(Folder folder, ListingContext listingContext)
     {
-        if (isObjectNull(folder)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "parentFolder")); }
+        if (isObjectNull(folder))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"),
+                            "parentFolder"));
+        }
         try
         {
 
@@ -343,14 +395,22 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         return null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Folder getParentFolder(Node node)
     {
-        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+        if (isObjectNull(node))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node"));
+        }
         try
         {
-            if (getRootFolder().equals(node)) { return null; }
+            if (getRootFolder().equals(node))
+            {
+                return null;
+            }
 
             String objectId = node.getIdentifier();
 
@@ -359,9 +419,8 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             ObjectData bindingParent = cmisSession.getBinding().getNavigationService()
                     .getFolderParent(session.getRepositoryInfo().getIdentifier(), objectId, null, null);
-            Folder result = (Folder) convertNode(objectFactory.convertObject(bindingParent, context));
 
-            return result;
+            return (Folder) convertNode(objectFactory.convertObject(bindingParent, context));
         }
         catch (Exception e)
         {
@@ -373,40 +432,56 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     // ////////////////////////////////////////////////////
     // CREATION
     // ////////////////////////////////////////////////////
-    /** Internal map for OpenCMIS. */
+    /**
+     * Internal map for OpenCMIS.
+     */
     private static final Set<Updatability> CREATE_UPDATABILITY = new HashSet<Updatability>();
+
     static
     {
         CREATE_UPDATABILITY.add(Updatability.ONCREATE);
         CREATE_UPDATABILITY.add(Updatability.READWRITE);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Folder createFolder(Folder parentFolder, String folderName, Map<String, Serializable> properties)
     {
         return createFolder(parentFolder, folderName, properties, null, null);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Folder createFolder(Folder parentFolder, String folderName, Map<String, Serializable> properties,
-            List<String> aspects)
+                               List<String> aspects)
     {
         return createFolder(parentFolder, folderName, properties, aspects, null);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Folder createFolder(Folder parentFolder, String folderName, Map<String, Serializable> properties,
-            List<String> aspects, String type)
+                               List<String> aspects, String type)
     {
-        if (isObjectNull(parentFolder)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "parentFolder")); }
+        if (isObjectNull(parentFolder))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"),
+                            "parentFolder"));
+        }
 
-        if (isStringNull(folderName)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "folderName")); }
+        if (isStringNull(folderName))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "folderName"));
+        }
 
         try
         {
-            Node n = null;
+            Node n;
             Map<String, Serializable> tmpProperties = new HashMap<String, Serializable>();
             if (properties != null)
             {
@@ -431,16 +506,22 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
 
             String newId = objectService.createFolder(session.getRepositoryInfo().getIdentifier(),
-                    objectFactory.convertProperties(tmpProperties, null,  null, CREATE_UPDATABILITY),
+                    objectFactory.convertProperties(tmpProperties, null, null, CREATE_UPDATABILITY),
                     parentFolder.getIdentifier(), null, null, null, null);
 
-            if (newId == null) { return null; }
+            if (newId == null)
+            {
+                return null;
+            }
 
             n = getChildById(newId);
 
-            if (!(n instanceof Folder)) { throw new AlfrescoServiceException(
-                    ErrorCodeRegistry.DOCFOLDER_WRONG_NODE_TYPE, Messagesl18n.getString("DocumentFolderService.19")
-                    + newId + " : " + n.getType() + " " + n.getName()); }
+            if (!(n instanceof Folder))
+            {
+                throw new AlfrescoServiceException(ErrorCodeRegistry.DOCFOLDER_WRONG_NODE_TYPE,
+                        Messagesl18n.getString("DocumentFolderService.19") + newId + " : " + n.getType() + " " +
+                                n.getName());
+            }
             return (Folder) n;
         }
         catch (Exception e)
@@ -450,29 +531,43 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         return null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Document createDocument(Folder parentFolder, String documentName, Map<String, Serializable> properties,
-            ContentFile contentFile)
+                                   ContentFile contentFile)
     {
         return createDocument(parentFolder, documentName, properties, contentFile, null, null);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Document createDocument(Folder parentFolder, String documentName, Map<String, Serializable> properties,
-            ContentFile contentFile, List<String> aspects)
+                                   ContentFile contentFile, List<String> aspects)
     {
         return createDocument(parentFolder, documentName, properties, contentFile, aspects, null);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Document createDocument(Folder parentFolder, String documentName, Map<String, Serializable> properties,
-            ContentFile contentFile, List<String> aspects, String type)
+                                   ContentFile contentFile, List<String> aspects, String type)
     {
-        if (isObjectNull(parentFolder)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "parentFolder")); }
+        if (isObjectNull(parentFolder))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"),
+                            "parentFolder"));
+        }
 
-        if (isStringNull(documentName)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "documentName")); }
+        if (isStringNull(documentName))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"),
+                            "documentName"));
+        }
 
         try
         {
@@ -499,40 +594,89 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             ObjectService objectService = cmisSession.getBinding().getObjectService();
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
+            org.apache.chemistry.opencmis.client.api.Document doc = null;
+            InputStream is;
 
-            ContentStream c = null;
-            if (contentFile != null)
+            if (contentFile != null && (is = IOUtils.getContentFileInputStream(contentFile)) != null)
             {
-                c = objectFactory.createContentStream(documentName, contentFile.getLength(), contentFile.getMimeType(),
-                        IOUtils.getContentFileInputStream(contentFile));
+                long pos = 0, total = contentFile.getLength();
+
+                try
+                {
+                    while (pos < total)
+                    {
+                        LimitInputStream lis = new LimitInputStream(is, CHUNK_SIZE);
+                        long sz = Math.min(CHUNK_SIZE, total - pos);
+                        pos += sz;
+                        ContentStream c =
+                                objectFactory.createContentStream(documentName, sz, contentFile.getMimeType(), lis);
+
+                        if (doc == null)
+                        {
+                            String newId = objectService.createDocument(session.getRepositoryInfo().getIdentifier(),
+                                    objectFactory.convertProperties(tmpProperties, null, null, CREATE_UPDATABILITY),
+                                    parentFolder.getIdentifier(), c, VersioningState.MAJOR, null, null, null, null);
+
+                            if (newId != null)
+                            {
+                                doc = (org.apache.chemistry.opencmis.client.api.Document) cmisSession.getObject(newId);
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            doc.appendContentStream(c, pos < total, true);
+                        }
+                    }
+                }
+                finally
+                {
+                    IOUtils.closeStream(is);
+                }
+            }
+            else
+            {
+                String newId = objectService.createDocument(session.getRepositoryInfo().getIdentifier(),
+                        objectFactory.convertProperties(tmpProperties, null, null, CREATE_UPDATABILITY),
+                        parentFolder.getIdentifier(), null, VersioningState.MAJOR, null, null, null, null);
+
+                if (newId != null)
+                {
+                    doc = (org.apache.chemistry.opencmis.client.api.Document) cmisSession.getObject(newId);
+                }
             }
 
-            String newId = objectService.createDocument(session.getRepositoryInfo().getIdentifier(),
-                    objectFactory.convertProperties(tmpProperties, null,  null, CREATE_UPDATABILITY),
-                    parentFolder.getIdentifier(), c, VersioningState.MAJOR, null, null, null, null);
+            if (doc == null)
+            {
+                return null;
+            }
 
             // EXTRACT METADATA + Generate Thumbnails
             if (session instanceof RepositorySession && RepositoryVersionHelper.isAlfrescoProduct(session))
             {
-                if (session.getParameter(AlfrescoSession.EXTRACT_METADATA) != null
-                        && (Boolean) session.getParameter(AlfrescoSession.EXTRACT_METADATA))
+                if (session.getParameter(AlfrescoSession.EXTRACT_METADATA) != null &&
+                        (Boolean) session.getParameter(AlfrescoSession.EXTRACT_METADATA))
                 {
-                    extractMetadata(newId);
+                    extractMetadata(doc.getId());
                 }
-                if (session.getParameter(AlfrescoSession.CREATE_THUMBNAIL) != null
-                        && (Boolean) session.getParameter(AlfrescoSession.CREATE_THUMBNAIL))
+                if (session.getParameter(AlfrescoSession.CREATE_THUMBNAIL) != null &&
+                        (Boolean) session.getParameter(AlfrescoSession.CREATE_THUMBNAIL))
                 {
-                    generateThumbnail(newId);
+                    generateThumbnail(doc.getId());
                 }
             }
 
-            if (newId == null) { return null; }
+            Node n = convertNode(doc);
 
-            Node n = getChildById(newId);
+            if (!(n instanceof Document))
+            {
+                throw new AlfrescoServiceException(ErrorCodeRegistry.DOCFOLDER_WRONG_NODE_TYPE,
+                        Messagesl18n.getString("DocumentFolderService.20") + doc.getId());
+            }
 
-            if (!(n instanceof Document)) { throw new AlfrescoServiceException(
-                    ErrorCodeRegistry.DOCFOLDER_WRONG_NODE_TYPE, Messagesl18n.getString("DocumentFolderService.20")
-                    + newId); }
             return (Document) n;
         }
         catch (Exception e)
@@ -545,15 +689,19 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
     /**
      * Force metadata extraction for a specific node identifier.
-     * 
+     *
      * @param identifier : unique identifier of a node (Document) @ : if network
-     *            or internal problems occur during the process.
+     *                   or internal problems occur during the process.
      */
     private void extractMetadata(String identifier)
     {
 
-        if (isStringNull(identifier)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "Nodeidentifier")); }
+        if (isStringNull(identifier))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"),
+                            "Nodeidentifier"));
+        }
 
         try
         {
@@ -569,18 +717,13 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             final JsonDataWriter formData = new JsonDataWriter(jo);
 
             // send and parse
-            Response response = post(url, formData.getContentType(), new Output()
+            post(url, formData.getContentType(), new Output()
             {
                 public void write(OutputStream out) throws IOException
                 {
                     formData.write(out);
                 }
             }, ErrorCodeRegistry.DOCFOLDER_GENERIC);
-
-            if (response.getResponseCode() == HttpStatus.SC_OK)
-            {
-                //Log.d(TAG, "Metadata extraction : ok");
-            }
         }
         catch (Exception e)
         {
@@ -590,14 +733,18 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
     /**
      * Force creation of the doclib thumbnail.
-     * 
+     *
      * @param identifier : unique identifier of a node (Document) @ : if network
-     *            or internal problems occur during the process.
+     *                   or internal problems occur during the process.
      */
     private void generateThumbnail(String identifier)
     {
-        if (isStringNull(identifier)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "Nodeidentifier")); }
+        if (isStringNull(identifier))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"),
+                            "Nodeidentifier"));
+        }
 
         try
         {
@@ -629,11 +776,17 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     // ////////////////////////////////////////////////////
     // DELETE
     // ////////////////////////////////////////////////////
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     public void deleteNode(Node node)
     {
-        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+        if (isObjectNull(node))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node"));
+        }
 
         try
         {
@@ -652,18 +805,23 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     private void delete(Document document)
     {
         Permissions perm = getPermissions(document);
-        if (!perm.canDelete()) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_ACCESS_DENIED,
-                Messagesl18n.getString("ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION")); }
+        if (!perm.canDelete())
+        {
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_ACCESS_DENIED,
+                    Messagesl18n.getString("ErrorCodeRegistry.DOCFOLDER_NO_PERMISSION"));
+        }
 
         try
         {
             ObjectService objectService = cmisSession.getBinding().getObjectService();
-            objectService.deleteObject(session.getRepositoryInfo().getIdentifier(), document.getIdentifier(), true,
-                    null);
+            objectService
+                    .deleteObject(session.getRepositoryInfo().getIdentifier(), document.getIdentifier(), true, null);
             cmisSession.removeObjectFromCache(document.getIdentifier());
         }
         catch (CmisConstraintException e)
@@ -672,17 +830,23 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     private void delete(Folder folder)
     {
         Permissions perm = getPermissions(folder);
-        if (!perm.canDelete()) { throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_ACCESS_DENIED,
-                Messagesl18n.getString("DocumentFolderService.24")); }
+        if (!perm.canDelete())
+        {
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_ACCESS_DENIED,
+                    Messagesl18n.getString("DocumentFolderService.24"));
+        }
         try
         {
             ObjectService objectService = cmisSession.getBinding().getObjectService();
-            objectService.deleteTree(session.getRepositoryInfo().getIdentifier(), folder.getIdentifier(), true, null,
-                    false, null);
+            objectService
+                    .deleteTree(session.getRepositoryInfo().getIdentifier(), folder.getIdentifier(), true, null, false,
+                            null);
         }
         catch (CmisConstraintException e)
         {
@@ -694,14 +858,22 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     // UPDATE
     // ////////////////////////////////////////////////////
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Node updateProperties(Node node, Map<String, Serializable> properties)
     {
-        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+        if (isObjectNull(node))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node"));
+        }
 
-        if (isMapNull(properties)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "properties")); }
+        if (isMapNull(properties))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "properties"));
+        }
 
         try
         {
@@ -732,18 +904,19 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             Holder<String> objectIdHolder = new Holder<String>(objectId);
 
             Holder<String> changeTokenHolder = null;
-            if (node.getProperty(PropertyIds.CHANGE_TOKEN) != null
-                    && node.getProperty(PropertyIds.CHANGE_TOKEN).getValue() != null)
+            if (node.getProperty(PropertyIds.CHANGE_TOKEN) != null &&
+                    node.getProperty(PropertyIds.CHANGE_TOKEN).getValue() != null)
             {
-                changeTokenHolder = new Holder<String>(node.getProperty(PropertyIds.CHANGE_TOKEN).getValue().toString());
+                changeTokenHolder =
+                        new Holder<String>(node.getProperty(PropertyIds.CHANGE_TOKEN).getValue().toString());
             }
 
             Set<Updatability> updatebility = new HashSet<Updatability>();
             updatebility.add(Updatability.READWRITE);
 
             // check if checked out
-            Boolean isCheckedOut = (Boolean) node.getProperty(PropertyIds.IS_VERSION_SERIES_CHECKED_OUT).getValue();
-            if ((isCheckedOut != null) && isCheckedOut.booleanValue())
+            Boolean isCheckedOut = node.getProperty(PropertyIds.IS_VERSION_SERIES_CHECKED_OUT).getValue();
+            if ((isCheckedOut != null) && isCheckedOut)
             {
                 updatebility.add(Updatability.WHENCHECKEDOUT);
             }
@@ -755,9 +928,11 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             //TODO !
 
             // it's time to update
-            objectService.updateProperties(session.getRepositoryInfo().getIdentifier(), objectIdHolder,
-                    changeTokenHolder, objectFactory.convertProperties(tmpProperties,
-                            cmisSession.getTypeDefinition(nodeType), null, updatebility), null);
+            objectService
+                    .updateProperties(session.getRepositoryInfo().getIdentifier(), objectIdHolder, changeTokenHolder,
+                            objectFactory
+                                    .convertProperties(tmpProperties, cmisSession.getTypeDefinition(nodeType), null,
+                                            updatebility), null);
 
             return getChildById(objectId);
         }
@@ -795,11 +970,17 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     // ////////////////////////////////////////////////////
     // CONTENT
     // ////////////////////////////////////////////////////
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     public Document updateContent(Document content, ContentFile contentFile)
     {
-        if (isObjectNull(content)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+        if (isObjectNull(content))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node"));
+        }
 
         Document newContent = null;
         try
@@ -808,18 +989,51 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
 
             Holder<String> objectIdHolder = new Holder<String>(content.getIdentifier());
-            Holder<String> changeTokenHolder = new Holder<String>((String) content
-                    .getProperty(PropertyIds.CHANGE_TOKEN).getValue());
+            Holder<String> changeTokenHolder =
+                    new Holder<String>((String) content.getProperty(PropertyIds.CHANGE_TOKEN).getValue());
+            InputStream is;
 
-            ContentStream c = null;
-            if (contentFile != null)
+            if (contentFile != null && (is = IOUtils.getContentFileInputStream(contentFile)) != null)
             {
-                c = objectFactory.createContentStream(contentFile.getFileName(), contentFile.getLength(),
-                        content.getContentStreamMimeType(), IOUtils.getContentFileInputStream(contentFile));
-            }
+                long pos = 0, total = contentFile.getLength();
+                boolean first = true;
 
-            objectService.setContentStream(session.getRepositoryInfo().getIdentifier(), objectIdHolder, true,
-                    changeTokenHolder, c, null);
+                try
+                {
+                    while (pos < total)
+                    {
+                        LimitInputStream lis = new LimitInputStream(is, CHUNK_SIZE);
+                        long sz = Math.min(CHUNK_SIZE, total - pos);
+                        pos += sz;
+                        ContentStream c = objectFactory
+                                .createContentStream(contentFile.getFileName(), sz, contentFile.getMimeType(), lis);
+
+                        if (first)
+                        {
+                            objectService
+                                    .setContentStream(session.getRepositoryInfo().getIdentifier(), objectIdHolder, true,
+                                            changeTokenHolder, c, null);
+
+                            first = false;
+                        }
+                        else
+                        {
+                            objectService
+                                    .appendContentStream(session.getRepositoryInfo().getIdentifier(), objectIdHolder,
+                                            changeTokenHolder, c, pos < total, null);
+                        }
+                    }
+                }
+                finally
+                {
+                    IOUtils.closeStream(is);
+                }
+            }
+            else
+            {
+                objectService.setContentStream(session.getRepositoryInfo().getIdentifier(), objectIdHolder, true,
+                        changeTokenHolder, null, null);
+            }
 
             newContent = (Document) getNodeByIdentifier(content.getIdentifier());
 
@@ -832,12 +1046,17 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         return newContent;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ContentFile getContent(Document document)
     {
-        if (isObjectNull(document)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "document")); }
+        if (isObjectNull(document))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "document"));
+        }
 
         try
         {
@@ -851,23 +1070,35 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         return null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public org.alfresco.mobile.android.api.model.ContentStream getContentStream(Document document)
     {
-        if (isObjectNull(document)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "document")); }
+        if (isObjectNull(document))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "document"));
+        }
 
         try
         {
-            if (document.getContentStreamLength() <= 0) { return null; }
+            if (document.getContentStreamLength() <= 0)
+            {
+                return null;
+            }
 
             ObjectService objectService = cmisSession.getBinding().getObjectService();
             org.alfresco.mobile.android.api.model.ContentStream cf = new ContentStreamImpl(document.getName(),
-                    objectService.getContentStream(session.getRepositoryInfo().getIdentifier(),
-                            document.getIdentifier(), null, null, null, null));
-            if (cf.getLength() == -1) { return new ContentStreamImpl(document.getName(), cf.getInputStream(),
-                    cf.getMimeType(), document.getContentStreamLength()); }
+                    objectService
+                            .getContentStream(session.getRepositoryInfo().getIdentifier(), document.getIdentifier(),
+                                    null, null, null, null));
+            if (cf.getLength() == -1)
+            {
+                return new ContentStreamImpl(document.getName(), cf.getInputStream(), cf.getMimeType(),
+                        document.getContentStreamLength());
+            }
             return cf;
         }
         catch (Exception e)
@@ -878,7 +1109,9 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         return null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public org.alfresco.mobile.android.api.model.ContentStream downloadContentStream(String identifier)
     {
         try
@@ -895,14 +1128,17 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
     /**
      * Internal : Retrieves the downloading url for the given document.
-     * 
+     *
      * @param document
      * @return @ : if network or internal problems occur during the process.
      */
     public String getDownloadUrl(Document document)
     {
-        if (isObjectNull(document)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "document")); }
+        if (isObjectNull(document))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "document"));
+        }
 
         try
         {
@@ -920,27 +1156,40 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     // //////////////////////////////////////////////////////////////////////////////
     // RENDITION
     // ///////////////////////////////////////////////////////////////////////////////
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
 
     public abstract org.alfresco.mobile.android.api.model.ContentStream getRenditionStream(String identifier,
-            String type);
+                                                                                           String type);
 
     public abstract UrlBuilder getRenditionUrl(String identifier, String type);
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public org.alfresco.mobile.android.api.model.ContentStream getRenditionStream(Node node, String type)
     {
-        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+        if (isObjectNull(node))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node"));
+        }
 
         return getRenditionStream(node.getIdentifier(), type);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public ContentFile getRendition(Node node, String type)
     {
-        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+        if (isObjectNull(node))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node"));
+        }
 
         return saveContentStream(getRenditionStream(node.getIdentifier(), type),
                 NodeRefUtils.getNodeIdentifier(node.getIdentifier()), RENDITION_CACHE);
@@ -949,11 +1198,17 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     // ////////////////////////////////////////////////////
     // PERMISSIONS
     // ////////////////////////////////////////////////////
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     public Permissions getPermissions(Node node)
     {
-        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+        if (isObjectNull(node))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node"));
+        }
 
         return new PermissionsImpl(node);
     }
@@ -961,22 +1216,25 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     // //////////////////////////////////////////////////////////////////////////////
     // INTERNAL UTILS
     // ///////////////////////////////////////////////////////////////////////////////
+
     /**
      * Internal method to refresh a Node.
-     * 
+     *
      * @param identifier : Unique identifier to a node object.
      * @return the refresh version of a node object.
      */
     private Node getChildById(String identifier)
     {
-        Node result = null;
+        Node result;
 
         result = convertNode(cmisSession.getObject(identifier));
 
         return result;
     }
 
-    /** Static Map of all sorting possibility for DocumentFolderService. */
+    /**
+     * Static Map of all sorting possibility for DocumentFolderService.
+     */
     @SuppressWarnings("serial")
     private static Map<String, String> sortingMap = new HashMap<String, String>()
     {
@@ -991,7 +1249,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
     /**
      * Utility method to create the sorting open cmis extension.
-     * 
+     *
      * @param sortingKey
      * @param modifier
      * @return
@@ -1023,10 +1281,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     /**
      * Utility method to convert Alfresco Content Model Properties ID into CMIS
      * properties ID.
-     * 
+     *
      * @param properties : A possible mix of cmis and content model properties
-     *            id.
-     * @param typeId : Type Id of the node.
+     *                   id.
+     * @param typeId     : Type Id of the node.
      */
     private static Map<String, Serializable> convertProps(Map<String, Serializable> properties, String typeId)
     {
@@ -1049,7 +1307,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
         // Take ObjectId provided in map or the default one provided by the
         // method
-        String objectId = null;
+        String objectId;
         if (tmpProperties.containsKey(PropertyIds.OBJECT_TYPE_ID))
         {
             objectId = (String) tmpProperties.get(PropertyIds.OBJECT_TYPE_ID);
@@ -1104,15 +1362,20 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     // Manage mapping between Alfresco ContentModel and CMIS Property
     // ///////////////////////////////////////////////////////////////
 
-    /** Alfresco OpenCMIS extension prefix for all aspects. */
+    /**
+     * Alfresco OpenCMIS extension prefix for all aspects.
+     */
     public static final String CMISPREFIX_ASPECTS = "P:";
 
     public static final String CMISPREFIX_DOCUMENT = "D:";
 
     public static final String CMISPREFIX_FOLDER = "F:";
 
-    /** All CMIS properties identifier in one list. */
+    /**
+     * All CMIS properties identifier in one list.
+     */
     private static final Set<String> CMISMODEL_KEYS = new HashSet<String>();
+
     static
     {
         CMISMODEL_KEYS.add(PropertyIds.NAME);
@@ -1149,6 +1412,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * List of Properties Mapping CMIS to Alfresco
      */
     private static final Map<String, String> ALFRESCO_TO_CMIS = new HashMap<String, String>();
+
     static
     {
         ALFRESCO_TO_CMIS.put(ContentModel.PROP_NAME, PropertyIds.NAME);
@@ -1163,6 +1427,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * List of all aspect that are currently supported by SDK services.
      */
     private static final Map<String, String> ALFRESCO_ASPECTS = new HashMap<String, String>();
+
     static
     {
 
@@ -1204,7 +1469,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     /**
      * Return the equivalent CMIS property name for a specific alfresco property
      * name.
-     * 
+     *
      * @param name name of the property.
      * @return the same if equivalent doesnt exist.
      */
