@@ -19,6 +19,7 @@ package org.alfresco.mobile.android.api.services.impl;
 
 import android.util.Log;
 
+import org.alfresco.cmis.client.AlfrescoDocument;
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
@@ -95,7 +96,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      */
     private static final String TAG = "DocumentFolderService";
 
-    private static final long CHUNK_SIZE = 4 * 1024 * 1024;
+    private static final long CHUNK_SIZE = 4 * 1024;
 
     protected Session cmisSession;
 
@@ -615,7 +616,8 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                         {
                             String newId = objectService.createDocument(session.getRepositoryInfo().getIdentifier(),
                                     objectFactory.convertProperties(tmpProperties, null, null, CREATE_UPDATABILITY),
-                                    parentFolder.getIdentifier(), c, VersioningState.MAJOR, null, null, null, null);
+                                    parentFolder.getIdentifier(), null, VersioningState.CHECKEDOUT, null, null, null,
+                                    null);
 
                             if (newId != null)
                             {
@@ -626,26 +628,27 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                                 break;
                             }
                         }
-                        else
-                        {
-                            doc.appendContentStream(c, pos < total, true);
-                        }
+
+                        doc.appendContentStream(c, pos < total, true);
                     }
+                }
+                catch (Exception ex)
+                {
+                    if (doc != null)
+                    {
+                        doc.cancelCheckOut();
+                    }
+
+                    throw ex;
                 }
                 finally
                 {
                     IOUtils.closeStream(is);
                 }
-            }
-            else
-            {
-                String newId = objectService.createDocument(session.getRepositoryInfo().getIdentifier(),
-                        objectFactory.convertProperties(tmpProperties, null, null, CREATE_UPDATABILITY),
-                        parentFolder.getIdentifier(), null, VersioningState.MAJOR, null, null, null, null);
 
-                if (newId != null)
+                if (doc != null)
                 {
-                    doc = (org.apache.chemistry.opencmis.client.api.Document) cmisSession.getObject(newId);
+                    doc.checkIn(true, null, null, null);
                 }
             }
 
@@ -985,21 +988,19 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
         Document newContent = null;
         try
         {
-            ObjectService objectService = cmisSession.getBinding().getObjectService();
+            AlfrescoDocument doc = (AlfrescoDocument) cmisSession.getObject(content.getIdentifier());
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
-
-            Holder<String> objectIdHolder = new Holder<String>(content.getIdentifier());
-            Holder<String> changeTokenHolder =
-                    new Holder<String>((String) content.getProperty(PropertyIds.CHANGE_TOKEN).getValue());
             InputStream is;
 
             if (contentFile != null && (is = IOUtils.getContentFileInputStream(contentFile)) != null)
             {
                 long pos = 0, total = contentFile.getLength();
-                boolean first = true;
 
                 try
                 {
+                    doc.checkOut();
+                    doc.deleteContentStream();
+
                     while (pos < total)
                     {
                         LimitInputStream lis = new LimitInputStream(is, CHUNK_SIZE);
@@ -1008,35 +1009,27 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                         ContentStream c = objectFactory
                                 .createContentStream(contentFile.getFileName(), sz, contentFile.getMimeType(), lis);
 
-                        if (first)
-                        {
-                            objectService
-                                    .setContentStream(session.getRepositoryInfo().getIdentifier(), objectIdHolder, true,
-                                            changeTokenHolder, c, null);
-
-                            first = false;
-                        }
-                        else
-                        {
-                            objectService
-                                    .appendContentStream(session.getRepositoryInfo().getIdentifier(), objectIdHolder,
-                                            changeTokenHolder, c, pos < total, null);
-                        }
+                        doc.appendContentStream(c, pos < total, true);
                     }
+                }
+                catch (Exception ex)
+                {
+                    doc.cancelCheckOut();
+                    throw ex;
                 }
                 finally
                 {
                     IOUtils.closeStream(is);
                 }
+
+                doc.checkIn(false, null, null, null);
             }
             else
             {
-                objectService.setContentStream(session.getRepositoryInfo().getIdentifier(), objectIdHolder, true,
-                        changeTokenHolder, null, null);
+                return null;
             }
 
-            newContent = (Document) getNodeByIdentifier(content.getIdentifier());
-
+            newContent = (Document) getNodeByIdentifier(doc.getId());
         }
         catch (Exception e)
         {
