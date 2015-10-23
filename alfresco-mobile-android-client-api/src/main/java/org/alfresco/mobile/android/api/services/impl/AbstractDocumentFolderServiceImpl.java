@@ -46,6 +46,7 @@ import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.client.api.ObjectFactory;
+import org.apache.chemistry.opencmis.client.api.ObjectId;
 import org.apache.chemistry.opencmis.client.api.OperationContext;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.client.bindings.spi.atompub.AbstractAtomPubService;
@@ -595,7 +596,18 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
             ObjectService objectService = cmisSession.getBinding().getObjectService();
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
-            org.apache.chemistry.opencmis.client.api.Document doc = null;
+
+            String newId = objectService.createDocument(session.getRepositoryInfo().getIdentifier(),
+                    objectFactory.convertProperties(tmpProperties, null, null, CREATE_UPDATABILITY),
+                    parentFolder.getIdentifier(), null, VersioningState.CHECKEDOUT, null, null, null, null);
+
+            if (newId == null)
+            {
+                return null;
+            }
+
+            org.apache.chemistry.opencmis.client.api.Document doc =
+                    (org.apache.chemistry.opencmis.client.api.Document) cmisSession.getObject(newId);
             InputStream is;
 
             if (contentFile != null && (is = IOUtils.getContentFileInputStream(contentFile)) != null)
@@ -612,24 +624,12 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                         ContentStream c =
                                 objectFactory.createContentStream(documentName, sz, contentFile.getMimeType(), lis);
 
-                        if (doc == null)
+                        ObjectId id = doc.appendContentStream(c, pos < total, true);
+
+                        if (id != null && !id.equals(doc))
                         {
-                            String newId = objectService.createDocument(session.getRepositoryInfo().getIdentifier(),
-                                    objectFactory.convertProperties(tmpProperties, null, null, CREATE_UPDATABILITY),
-                                    parentFolder.getIdentifier(), null, VersioningState.CHECKEDOUT, null, null, null,
-                                    null);
-
-                            if (newId != null)
-                            {
-                                doc = (org.apache.chemistry.opencmis.client.api.Document) cmisSession.getObject(newId);
-                            }
-                            else
-                            {
-                                break;
-                            }
+                            doc = (org.apache.chemistry.opencmis.client.api.Document) cmisSession.getObject(id);
                         }
-
-                        doc.appendContentStream(c, pos < total, true);
                     }
                 }
                 catch (Exception ex)
@@ -648,7 +648,12 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
                 if (doc != null)
                 {
-                    doc.checkIn(true, null, null, null);
+                    ObjectId id = doc.checkIn(true, null, null, null);
+
+                    if (id != null && !id.equals(doc))
+                    {
+                        doc = (org.apache.chemistry.opencmis.client.api.Document) cmisSession.getObject(id);
+                    }
                 }
             }
 
@@ -995,11 +1000,18 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             if (contentFile != null && (is = IOUtils.getContentFileInputStream(contentFile)) != null)
             {
                 long pos = 0, total = contentFile.getLength();
+                ObjectId id;
 
                 try
                 {
-                    doc.checkOut();
-                    doc.deleteContentStream();
+                    id = doc.checkOut();
+
+                    if (id != null && !id.equals(doc))
+                    {
+                        doc = (AlfrescoDocument) cmisSession.getObject(id);
+                    }
+
+                    doc = (AlfrescoDocument) doc.deleteContentStream();
 
                     while (pos < total)
                     {
@@ -1009,7 +1021,12 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                         ContentStream c = objectFactory
                                 .createContentStream(contentFile.getFileName(), sz, contentFile.getMimeType(), lis);
 
-                        doc.appendContentStream(c, pos < total, true);
+                        id = doc.appendContentStream(c, pos < total, true);
+
+                        if (id != null && !id.equals(doc))
+                        {
+                            doc = (AlfrescoDocument) cmisSession.getObject(id);
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -1022,14 +1039,19 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                     IOUtils.closeStream(is);
                 }
 
-                doc.checkIn(false, null, null, null);
+                id = doc.checkIn(false, null, null, null);
+
+                if (id != null && !id.equals(doc))
+                {
+                    doc = (AlfrescoDocument) cmisSession.getObject(id);
+                }
             }
             else
             {
                 return null;
             }
 
-            newContent = (Document) getNodeByIdentifier(doc.getId());
+            newContent = (Document) convertNode(doc);
         }
         catch (Exception e)
         {
