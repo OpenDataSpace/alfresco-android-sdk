@@ -557,6 +557,12 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     public Document createDocument(Folder parentFolder, String documentName, Map<String, Serializable> properties,
                                    ContentFile contentFile, List<String> aspects, String type)
     {
+        return createDocument(parentFolder, documentName, properties, contentFile, aspects, type, CHUNK_SIZE);
+    }
+
+    public Document createDocument(Folder parentFolder, String documentName, Map<String, Serializable> properties,
+                                   ContentFile contentFile, List<String> aspects, String type, long chunkSize)
+    {
         if (isObjectNull(parentFolder))
         {
             throw new IllegalArgumentException(
@@ -618,8 +624,8 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                 {
                     while (pos < total)
                     {
-                        LimitInputStream lis = new LimitInputStream(is, CHUNK_SIZE);
-                        long sz = Math.min(CHUNK_SIZE, total - pos);
+                        LimitInputStream lis = new LimitInputStream(is, chunkSize);
+                        long sz = Math.min(chunkSize, total - pos);
                         pos += sz;
                         ContentStream c =
                                 objectFactory.createContentStream(documentName, sz, contentFile.getMimeType(), lis);
@@ -979,10 +985,15 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     // CONTENT
     // ////////////////////////////////////////////////////
 
+    public Document updateContent(Document content, ContentFile contentFile)
+    {
+        return updateContent(content, contentFile, CHUNK_SIZE);
+    }
+
     /**
      * {@inheritDoc}
      */
-    public Document updateContent(Document content, ContentFile contentFile)
+    public Document updateContent(Document content, ContentFile contentFile, long chunkSize)
     {
         if (isObjectNull(content))
         {
@@ -1015,8 +1026,8 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
                     while (pos < total)
                     {
-                        LimitInputStream lis = new LimitInputStream(is, CHUNK_SIZE);
-                        long sz = Math.min(CHUNK_SIZE, total - pos);
+                        LimitInputStream lis = new LimitInputStream(is, chunkSize);
+                        long sz = Math.min(chunkSize, total - pos);
                         pos += sz;
                         ContentStream c = objectFactory
                                 .createContentStream(contentFile.getFileName(), sz, contentFile.getMimeType(), lis);
