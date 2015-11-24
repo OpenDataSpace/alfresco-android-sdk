@@ -603,44 +603,51 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             ObjectService objectService = cmisSession.getBinding().getObjectService();
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
 
-            String newId = objectService.createDocument(session.getRepositoryInfo().getIdentifier(),
-                    objectFactory.convertProperties(tmpProperties, null, null, CREATE_UPDATABILITY),
-                    parentFolder.getIdentifier(), null, VersioningState.CHECKEDOUT, null, null, null, null);
-
-            if (newId == null)
-            {
-                return null;
-            }
-
-            org.apache.chemistry.opencmis.client.api.Document doc =
-                    (org.apache.chemistry.opencmis.client.api.Document) cmisSession.getObject(newId);
+            org.apache.chemistry.opencmis.client.api.Document doc = null;
             InputStream is;
 
             if (contentFile != null && (is = IOUtils.getContentFileInputStream(contentFile)) != null)
             {
                 long pos = 0, total = contentFile.getLength();
+                boolean hasPwc = cmisSession.getRepositoryInfo().getCapabilities().isPwcUpdatableSupported();
 
                 try
                 {
-                    while (pos < total)
+                    String newId = objectService.createDocument(session.getRepositoryInfo().getIdentifier(),
+                            objectFactory.convertProperties(tmpProperties, null, null, CREATE_UPDATABILITY),
+                            parentFolder.getIdentifier(), hasPwc ? null : objectFactory
+                                    .createContentStream(documentName, total, contentFile.getMimeType(), is),
+                            hasPwc ? VersioningState.CHECKEDOUT : VersioningState.MAJOR, null, null, null, null);
+
+                    if (newId == null)
                     {
-                        LimitInputStream lis = new LimitInputStream(is, chunkSize);
-                        long sz = Math.min(chunkSize, total - pos);
-                        pos += sz;
-                        ContentStream c =
-                                objectFactory.createContentStream(documentName, sz, contentFile.getMimeType(), lis);
+                        return null;
+                    }
 
-                        ObjectId id = doc.appendContentStream(c, pos < total, true);
+                    doc = (org.apache.chemistry.opencmis.client.api.Document) cmisSession.getObject(newId);
 
-                        if (id != null && !id.equals(doc))
+                    if (hasPwc)
+                    {
+                        while (pos < total)
                         {
-                            doc = (org.apache.chemistry.opencmis.client.api.Document) cmisSession.getObject(id);
+                            LimitInputStream lis = new LimitInputStream(is, chunkSize);
+                            long sz = Math.min(chunkSize, total - pos);
+                            pos += sz;
+                            ContentStream c =
+                                    objectFactory.createContentStream(documentName, sz, contentFile.getMimeType(), lis);
+
+                            ObjectId id = doc.appendContentStream(c, pos < total, true);
+
+                            if (id != null && !id.equals(doc))
+                            {
+                                doc = (org.apache.chemistry.opencmis.client.api.Document) cmisSession.getObject(id);
+                            }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    if (doc != null)
+                    if (hasPwc && doc != null)
                     {
                         doc.cancelCheckOut();
                     }
@@ -652,7 +659,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                     IOUtils.closeStream(is);
                 }
 
-                if (doc != null)
+                if (hasPwc && doc != null)
                 {
                     ObjectId id = doc.checkIn(true, null, null, null);
 
@@ -1011,38 +1018,61 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
             if (contentFile != null && (is = IOUtils.getContentFileInputStream(contentFile)) != null)
             {
                 long pos = 0, total = contentFile.getLength();
-                ObjectId id;
+                ObjectId id = null;
+                boolean hasPwc = cmisSession.getRepositoryInfo().getCapabilities().isPwcUpdatableSupported();
 
                 try
                 {
-                    id = doc.checkOut();
-
-                    if (id != null && !id.equals(doc))
+                    if (hasPwc)
                     {
-                        doc = (AlfrescoDocument) cmisSession.getObject(id);
-                    }
-
-                    doc = (AlfrescoDocument) doc.deleteContentStream();
-
-                    while (pos < total)
-                    {
-                        LimitInputStream lis = new LimitInputStream(is, chunkSize);
-                        long sz = Math.min(chunkSize, total - pos);
-                        pos += sz;
-                        ContentStream c = objectFactory
-                                .createContentStream(contentFile.getFileName(), sz, contentFile.getMimeType(), lis);
-
-                        id = doc.appendContentStream(c, pos < total, true);
+                        id = doc.checkOut();
 
                         if (id != null && !id.equals(doc))
                         {
                             doc = (AlfrescoDocument) cmisSession.getObject(id);
                         }
+
+                        doc = (AlfrescoDocument) doc.deleteContentStream();
+
+                        while (pos < total)
+                        {
+                            LimitInputStream lis = new LimitInputStream(is, chunkSize);
+                            long sz = Math.min(chunkSize, total - pos);
+                            pos += sz;
+                            ContentStream c = objectFactory
+                                    .createContentStream(contentFile.getFileName(), sz, contentFile.getMimeType(), lis);
+
+                            id = doc.appendContentStream(c, pos < total, true);
+
+                            if (id != null && !id.equals(doc))
+                            {
+                                doc = (AlfrescoDocument) cmisSession.getObject(id);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Holder<String> objectIdHolder = new Holder<String>(content.getIdentifier());
+                        Holder<String> changeTokenHolder =
+                                new Holder<String>((String) content.getProperty(PropertyIds.CHANGE_TOKEN).getValue());
+
+                        ContentStream c = objectFactory
+                                .createContentStream(contentFile.getFileName(), contentFile.getLength(),
+                                        content.getContentStreamMimeType(),
+                                        IOUtils.getContentFileInputStream(contentFile));
+
+                        cmisSession.getBinding().getObjectService()
+                                .setContentStream(session.getRepositoryInfo().getIdentifier(), objectIdHolder, true,
+                                        changeTokenHolder, c, null);
                     }
                 }
                 catch (Exception ex)
                 {
-                    doc.cancelCheckOut();
+                    if (hasPwc)
+                    {
+                        doc.cancelCheckOut();
+                    }
+
                     throw ex;
                 }
                 finally
@@ -1050,7 +1080,10 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
                     IOUtils.closeStream(is);
                 }
 
-                id = doc.checkIn(false, null, null, null);
+                if (hasPwc)
+                {
+                    id = doc.checkIn(false, null, null, null);
+                }
 
                 if (id != null && !id.equals(doc))
                 {
