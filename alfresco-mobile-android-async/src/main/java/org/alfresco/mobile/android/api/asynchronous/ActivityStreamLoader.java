@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,7 +25,7 @@ import android.content.Context;
 
 /**
  * Provides an asynchronous loader to retrieve an Activty Stream.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class ActivityStreamLoader extends AbstractPagingLoader<LoaderResult<PagingResult<ActivityEntry>>>
@@ -39,9 +39,9 @@ public class ActivityStreamLoader extends AbstractPagingLoader<LoaderResult<Pagi
 
     /**
      * Allow currently logged in user to get their activity stream. </br> Use
-     * {@link #setListingContext(ListingContext)} to define characteristics of
+     *  to define characteristics of
      * the PagingResult.
-     * 
+     *
      * @param session : Repository Session
      * @param context : Android Context
      */
@@ -53,9 +53,9 @@ public class ActivityStreamLoader extends AbstractPagingLoader<LoaderResult<Pagi
 
     /**
      * Allow to retrieve activities feed for a specific user.</br> Use
-     * {@link #setListingContext(ListingContext)} to define characteristics of
+     *  to define characteristics of
      * the PagingResult.
-     * 
+     *
      * @param session : Repository Session
      * @param context : Android Context
      * @param username : A specific user
@@ -70,9 +70,9 @@ public class ActivityStreamLoader extends AbstractPagingLoader<LoaderResult<Pagi
     /**
      * Allow currently logged in user to get feed for a specified site (if
      * private site then user must be a member or an admin user).</br> Use
-     * {@link #setListingContext(ListingContext)} to define characteristics of
+     *  to define characteristics of
      * the PagingResult.
-     * 
+     *
      * @param session : Repository Session
      * @param context : Android Context
      * @param siteName : Share site short name

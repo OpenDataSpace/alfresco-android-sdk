@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,7 @@ import android.content.Context;
 
 /**
  * Provides an asynchronous loader to create a RepositorySession object.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class SessionLoader extends AbstractBaseLoader<LoaderResult<AlfrescoSession>>
@@ -36,19 +36,19 @@ public class SessionLoader extends AbstractBaseLoader<LoaderResult<AlfrescoSessi
     public static final int ID = SessionLoader.class.hashCode();
 
     /** base URL associated to the repository. */
-    private String url;
+    private final String url;
 
     /** the username with which we want to create a session. */
-    private String username;
+    private final String username;
 
     /** the password with which we want to create a session. */
-    private String password;
+    private final String password;
 
     /**
      * List of settings settings to apply to modify the behaviours of the
      * session.
      */
-    private Map<String, Serializable> settings;
+    private final Map<String, Serializable> settings;
 
     /**
      * @param context : Android Context

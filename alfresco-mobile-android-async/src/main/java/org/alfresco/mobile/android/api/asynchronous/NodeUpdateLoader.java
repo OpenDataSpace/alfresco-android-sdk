@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,7 +32,7 @@ import android.content.Context;
 /**
  * Provides an asynchronous loader to update a Node object. Could be an update
  * of content document or an update of properties
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class NodeUpdateLoader extends AbstractBaseLoader<LoaderResult<Node>>
@@ -45,18 +45,18 @@ public class NodeUpdateLoader extends AbstractBaseLoader<LoaderResult<Node>>
     private Document document;
 
     /** list of property values that must be applied. */
-    private Map<String, Serializable> properties;
+    private final Map<String, Serializable> properties;
 
     /** Binary Content of the future document. */
     private ContentFile contentFile;
 
     /** Node object to update. */
-    private Node node;
+    private final Node node;
 
     /**
      * Update an existing document with current parameters (Content and/or
      * properties)
-     * 
+     *
      * @param context : Android Context
      * @param session : Repository Session
      * @param document : Document object to update
@@ -78,7 +78,7 @@ public class NodeUpdateLoader extends AbstractBaseLoader<LoaderResult<Node>>
 
     /**
      * Update an existing node (Document or Folder) with new properties.
-     * 
+     *
      * @param context : Android Context
      * @param session : Repository Session
      * @param node : Document or Folder

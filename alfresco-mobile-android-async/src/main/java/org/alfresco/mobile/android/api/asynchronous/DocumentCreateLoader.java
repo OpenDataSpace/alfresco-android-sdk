@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,7 +32,7 @@ import android.content.Context;
 
 /**
  * Provides an asynchronous Loader to create a Document object.</br>
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class DocumentCreateLoader extends AbstractBaseLoader<LoaderResult<Document>>
@@ -44,17 +44,17 @@ public class DocumentCreateLoader extends AbstractBaseLoader<LoaderResult<Docume
     private Folder parentFolder;
 
     /** Name of the future document. */
-    private String documentName;
+    private final String documentName;
 
     /** list of properties. */
-    private Map<String, Serializable> properties;
+    private final Map<String, Serializable> properties;
 
     /** Binary Content of the future document. */
-    private ContentFile contentFile;
-    
+    private final ContentFile contentFile;
+
     /**
      * Create an empty (with no content) document object.
-     * 
+     *
      * @param context : Android Context
      * @param session : Repository Session
      * @param parentFolder : Future parent folder of a new document
@@ -67,7 +67,7 @@ public class DocumentCreateLoader extends AbstractBaseLoader<LoaderResult<Docume
 
     /**
      * Create an empty (with no content) document object.
-     * 
+     *
      * @param context : Android Context
      * @param session : Repository Session
      * @param parentFolder : Future parent folder of a new document
@@ -83,7 +83,7 @@ public class DocumentCreateLoader extends AbstractBaseLoader<LoaderResult<Docume
 
     /**
      * Create a document object.
-     * 
+     *
      * @param context : Android Context
      * @param session : Repository Session
      * @param parentFolder : Future parent folder of a new document
@@ -136,12 +136,12 @@ public class DocumentCreateLoader extends AbstractBaseLoader<LoaderResult<Docume
         {
             result.setException(e);
         }
-        
+
         result.setData(doc);
 
         return result;
     }
-    
+
     public Folder getParentFolder()
     {
         return parentFolder;

@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,7 @@ import android.content.Context;
 
 /**
  * Provides an asynchronous Loader to create a Folder object.</br>
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class FolderCreateLoader extends AbstractBaseLoader<LoaderResult<Folder>>
@@ -36,21 +36,20 @@ public class FolderCreateLoader extends AbstractBaseLoader<LoaderResult<Folder>>
     public static final int ID = FolderCreateLoader.class.hashCode();
 
     /** Parent Folder object of the new folder. */
-    private Folder parentFolder;
+    private final Folder parentFolder;
 
     /** list of properties. */
-    private Map<String, Serializable> properties;
+    private final Map<String, Serializable> properties;
 
     /** Name of the future folder. */
-    private String folderName;
+    private final String folderName;
 
     /**
      * Create a folder object.
-     * 
+     *
      * @param context : Android Context
      * @param session : Repository Session
      * @param parentFolder : Future parent folder of a new folder
-     * @param documentName : Name of the future folder
      * @param properties : (Optional) list of property values that must be
      *            applied
      */
@@ -87,7 +86,7 @@ public class FolderCreateLoader extends AbstractBaseLoader<LoaderResult<Folder>>
 
         return result;
     }
-    
+
     public Folder getParentFolder()
     {
         return parentFolder;
