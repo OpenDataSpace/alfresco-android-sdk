@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,7 +43,7 @@ import android.os.Parcelable;
 
 /**
  * Specific implementation of CommentService for Public Cloud API.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class PublicAPICommentServiceImpl extends AbstractCommentService
@@ -51,7 +51,7 @@ public class PublicAPICommentServiceImpl extends AbstractCommentService
 
     /**
      * Default Constructor. Only used inside ServiceRegistry.
-     * 
+     *
      * @param repositorySession : Repository Session.
      */
     public PublicAPICommentServiceImpl(AlfrescoSession repositorySession)
@@ -100,7 +100,7 @@ public class PublicAPICommentServiceImpl extends AbstractCommentService
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
         List<Comment> result = new ArrayList<Comment>();
-        Map<String, Object> data = null;
+        Map<String, Object> data;
         for (Object entry : response.getEntries())
         {
             data = (Map<String, Object>) ((Map<String, Object>) entry).get(PublicAPIConstant.ENTRY_VALUE);
@@ -109,7 +109,7 @@ public class PublicAPICommentServiceImpl extends AbstractCommentService
 
         return new PagingResultImpl<Comment>(result, response.getHasMoreItems(), response.getSize());
     }
-    
+
     // ////////////////////////////////////////////////////
     // Save State - serialization / deserialization
     // ////////////////////////////////////////////////////

@@ -1,33 +1,26 @@
 /*******************************************************************************
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl.onpremise;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.text.TextUtils;
+import android.util.Log;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.constants.WorkflowModel;
@@ -64,16 +57,23 @@ import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
 import org.json.JSONArray;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.text.TextUtils;
-import android.util.Log;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Specific implementation of WorkflowService for OnPremise API.
- * 
- * @since 1.3
+ *
  * @author Jean Marie Pascal
+ * @since 1.3
  */
 public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
 {
@@ -88,11 +88,10 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
     // PROCESS DEFINITIONS
     // ////////////////////////////////////////////////////////////////
     @SuppressWarnings("unchecked")
-    /** {@inheritDoc} */
-    public PagingResult<ProcessDefinition> getProcessDefinitions(ListingContext listingContext)
+    /** {@inheritDoc} */ public PagingResult<ProcessDefinition> getProcessDefinitions(ListingContext listingContext)
     {
         List<ProcessDefinition> definitions = new ArrayList<ProcessDefinition>();
-        Map<String, Object> json = new HashMap<String, Object>(0);
+        Map<String, Object> json;
         boolean hasMoreItems = false;
         int size = 0;
         try
@@ -145,11 +144,14 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
     }
 
     @SuppressWarnings("unchecked")
-    /** {@inheritDoc} */
-    public ProcessDefinition getProcessDefinition(String processDefinitionIdentifier)
+    /** {@inheritDoc} */ public ProcessDefinition getProcessDefinition(String processDefinitionIdentifier)
     {
-        if (isStringNull(processDefinitionIdentifier)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "processDefinitionIdentifier")); }
+        if (isStringNull(processDefinitionIdentifier))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"),
+                            "processDefinitionIdentifier"));
+        }
 
         ProcessDefinition definition = null;
         try
@@ -191,12 +193,19 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
     // ////////////////////////////////////////////////////////////////
     // PROCESS
     // ////////////////////////////////////////////////////////////////
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     public Process startProcess(ProcessDefinition processDefinition, List<Person> assignees,
-            Map<String, Serializable> variables, List<Document> items)
+                                Map<String, Serializable> variables, List<Document> items)
     {
-        if (isObjectNull(processDefinition)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "processDefinition")); }
+        if (isObjectNull(processDefinition))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"),
+                            "processDefinition"));
+        }
 
         Process process = null;
         try
@@ -211,8 +220,8 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
             // We need to retrieve the noderef associated to the person
             if (assignees != null && !assignees.isEmpty())
             {
-                if (assignees.size() == 1 && WorkflowModel.FAMILY_PROCESS_ADHOC.contains(processDefinition.getKey())
-                        || WorkflowModel.FAMILY_PROCESS_REVIEW.contains(processDefinition.getKey()))
+                if (assignees.size() == 1 && WorkflowModel.FAMILY_PROCESS_ADHOC.contains(processDefinition.getKey()) ||
+                        WorkflowModel.FAMILY_PROCESS_REVIEW.contains(processDefinition.getKey()))
                 {
                     jo.put(OnPremiseConstant.ASSOC_BPM_ASSIGNEE_ADDED_VALUE, getPersonGUID(assignees.get(0)));
                 }
@@ -252,7 +261,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                     variablesItems.add(NodeRefUtils.getCleanIdentifier(node.getIdentifier()));
                 }
                 jo.put(OnPremiseConstant.ASSOC_PACKAGEITEMS_ADDED_VALUE,
-                        TextUtils.join(",", variablesItems.toArray(new String[0])));
+                        TextUtils.join(",", variablesItems.toArray(new String[variablesItems.size()])));
             }
             final JsonDataWriter dataWriter = new JsonDataWriter(jo);
 
@@ -282,13 +291,17 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
         return process;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     protected UrlBuilder getProcessUrl(Process process)
     {
         return new UrlBuilder(OnPremiseUrlRegistry.getProcessUrl(session, process.getIdentifier()));
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     public PagingResult<Process> getProcesses(ListingContext listingContext)
     {
@@ -310,19 +323,20 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                     {
                         if (lf.getFilterValue(FILTER_KEY_INITIATOR) instanceof String)
                         {
-                            url.addParameter(OnPremiseConstant.INITIATOR_VALUE, lf.getFilterValue(FILTER_KEY_INITIATOR));
+                            url.addParameter(OnPremiseConstant.INITIATOR_VALUE,
+                                    lf.getFilterValue(FILTER_KEY_INITIATOR));
                         }
                         else if (lf.getFilterValue(FILTER_KEY_ASSIGNEE) instanceof Integer)
                         {
                             switch ((Integer) lf.getFilterValue(FILTER_KEY_INITIATOR))
                             {
-                                case FILTER_ASSIGNEE_ME:
-                                    url.addParameter(OnPremiseConstant.INITIATOR_VALUE, session.getPersonIdentifier());
-                                    break;
-                                case FILTER_ASSIGNEE_ALL:
-                                    break;
-                                default:
-                                    break;
+                            case FILTER_ASSIGNEE_ME:
+                                url.addParameter(OnPremiseConstant.INITIATOR_VALUE, session.getPersonIdentifier());
+                                break;
+                            case FILTER_ASSIGNEE_ALL:
+                                break;
+                            default:
+                                break;
                             }
                         }
                     }
@@ -340,16 +354,15 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                     {
                         switch ((Integer) lf.getFilterValue(FILTER_KEY_STATUS))
                         {
-                            case FILTER_STATUS_COMPLETE:
-                                url.addParameter(OnPremiseConstant.STATE_VALUE,
-                                        OnPremiseConstant.COMPLETED_UPPERCASE_VALUE);
-                                break;
-                            case FILTER_STATUS_ACTIVE:
-                                url.addParameter(OnPremiseConstant.STATE_VALUE,
-                                        OnPremiseConstant.ACTIVE_UPPERCASE_VALUE);
-                                break;
-                            default:
-                                break;
+                        case FILTER_STATUS_COMPLETE:
+                            url.addParameter(OnPremiseConstant.STATE_VALUE,
+                                    OnPremiseConstant.COMPLETED_UPPERCASE_VALUE);
+                            break;
+                        case FILTER_STATUS_ACTIVE:
+                            url.addParameter(OnPremiseConstant.STATE_VALUE, OnPremiseConstant.ACTIVE_UPPERCASE_VALUE);
+                            break;
+                        default:
+                            break;
                         }
                     }
 
@@ -363,33 +376,33 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
 
                         switch ((Integer) lf.getFilterValue(FILTER_KEY_DUE))
                         {
-                            case FILTER_DUE_TODAY:
-                                url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, DateUtils.format(calendar));
+                        case FILTER_DUE_TODAY:
+                            url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, DateUtils.format(calendar));
 
-                                calendar.add(Calendar.DAY_OF_MONTH, -1);
-                                url.addParameter(OnPremiseConstant.DUEAFTER_VALUE, DateUtils.format(calendar));
-                                break;
-                            case FILTER_DUE_TOMORROW:
-                                url.addParameter(OnPremiseConstant.DUEAFTER_VALUE, DateUtils.format(calendar));
+                            calendar.add(Calendar.DAY_OF_MONTH, -1);
+                            url.addParameter(OnPremiseConstant.DUEAFTER_VALUE, DateUtils.format(calendar));
+                            break;
+                        case FILTER_DUE_TOMORROW:
+                            url.addParameter(OnPremiseConstant.DUEAFTER_VALUE, DateUtils.format(calendar));
 
-                                calendar.add(Calendar.DAY_OF_MONTH, 1);
-                                url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, DateUtils.format(calendar));
-                                break;
-                            case FILTER_DUE_7DAYS:
-                                url.addParameter(OnPremiseConstant.DUEAFTER_VALUE, DateUtils.format(calendar));
+                            calendar.add(Calendar.DAY_OF_MONTH, 1);
+                            url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, DateUtils.format(calendar));
+                            break;
+                        case FILTER_DUE_7DAYS:
+                            url.addParameter(OnPremiseConstant.DUEAFTER_VALUE, DateUtils.format(calendar));
 
-                                calendar.add(Calendar.DAY_OF_MONTH, 7);
-                                url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, DateUtils.format(calendar));
-                                break;
-                            case FILTER_DUE_OVERDUE:
-                                calendar.add(Calendar.DAY_OF_MONTH, -1);
-                                url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, DateUtils.format(calendar));
-                                break;
-                            case FILTER_DUE_NODATE:
-                                url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, "");
-                                break;
-                            default:
-                                break;
+                            calendar.add(Calendar.DAY_OF_MONTH, 7);
+                            url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, DateUtils.format(calendar));
+                            break;
+                        case FILTER_DUE_OVERDUE:
+                            calendar.add(Calendar.DAY_OF_MONTH, -1);
+                            url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, DateUtils.format(calendar));
+                            break;
+                        case FILTER_DUE_NODATE:
+                            url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, "");
+                            break;
+                        default:
+                            break;
                         }
                     }
                 }
@@ -427,12 +440,17 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
         return new PagingResultImpl<Process>(processes, maxItems == -1, json.size());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     public Process getProcess(String processId)
     {
-        if (isStringNull(processId)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "processId")); }
+        if (isStringNull(processId))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "processId"));
+        }
 
         Process process = null;
         try
@@ -456,18 +474,23 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
         return process;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public PagingResult<Task> getTasks(Process process, ListingContext listingContext)
     {
-        if (isObjectNull(process)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "process")); }
+        if (isObjectNull(process))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "process"));
+        }
 
         String link = OnPremiseUrlRegistry.getTasksForProcessIdUrl(session, process.getIdentifier());
         if (listingContext != null && listingContext.getFilter() != null)
         {
             ListingFilter lf = listingContext.getFilter();
-            if (lf.hasFilterValue(FILTER_KEY_STATUS)
-                    && (Integer) lf.getFilterValue(FILTER_KEY_STATUS) == FILTER_STATUS_ANY)
+            if (lf.hasFilterValue(FILTER_KEY_STATUS) &&
+                    (Integer) lf.getFilterValue(FILTER_KEY_STATUS) == FILTER_STATUS_ANY)
             {
                 link = OnPremiseUrlRegistry.getAllTasksForProcessIdUrl(session, process.getIdentifier());
             }
@@ -475,11 +498,16 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
         return getTasks(link, listingContext);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Process refresh(Process process)
     {
-        if (isObjectNull(process)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "process")); }
+        if (isObjectNull(process))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "process"));
+        }
 
         return getProcess(process.getIdentifier());
     }
@@ -487,33 +515,53 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
     // ////////////////////////////////////////////////////////////////
     // ITEMS
     // ////////////////////////////////////////////////////////////////
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     public PagingResult<Document> getDocuments(Task task, ListingContext listingContext)
     {
-        if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
+        if (isObjectNull(task))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task"));
+        }
 
-        if (isStringNull(task.getIdentifier())) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "taskId")); }
+        if (isStringNull(task.getIdentifier()))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "taskId"));
+        }
 
         return getItems(task.getIdentifier(), listingContext);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public PagingResult<Document> getDocuments(Process process, ListingContext listingContext)
     {
-        if (isObjectNull(process)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "process")); }
+        if (isObjectNull(process))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "process"));
+        }
 
-        if (isStringNull(process.getIdentifier())) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "processId")); }
+        if (isStringNull(process.getIdentifier()))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "processId"));
+        }
 
         try
         {
             ListingContext lc = new ListingContext();
             lc.setMaxItems(1);
             PagingResult<Task> tasks = getTasks(process, lc);
-            if (tasks.getTotalItems() > 0) { return getItems(tasks.getList().get(0).getIdentifier(), listingContext); }
+            if (tasks.getTotalItems() > 0)
+            {
+                return getItems(tasks.getList().get(0).getIdentifier(), listingContext);
+            }
         }
         catch (Exception e)
         {
@@ -523,7 +571,9 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
         return getItems(process.getIdentifier(), listingContext);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     protected PagingResult<Document> getItems(String id, ListingContext listingContext)
     {
@@ -559,16 +609,16 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                 Map<String, Object> data = (Map<String, Object>) json.get(OnPremiseConstant.DATA_VALUE);
                 formData = (Map<String, Object>) data.get(OnPremiseConstant.FORMDATA_VALUE);
             }
-            if (formData != null && formData.containsKey(OnPremiseConstant.ASSOC_PACKAGEITEMS_VALUE)
-                    && !((String) formData.get(OnPremiseConstant.ASSOC_PACKAGEITEMS_VALUE)).isEmpty())
+            if (formData != null && formData.containsKey(OnPremiseConstant.ASSOC_PACKAGEITEMS_VALUE) &&
+                    !(TextUtils.isEmpty((String) formData.get(OnPremiseConstant.ASSOC_PACKAGEITEMS_VALUE))))
             {
                 // Retrieve node object based on nodeId
                 String[] values = ((String) formData.get(OnPremiseConstant.ASSOC_PACKAGEITEMS_VALUE)).split(",");
                 StringBuilder builder = new StringBuilder("SELECT * FROM cmis:document WHERE cmis:objectId=");
                 JsonUtils.join(builder, " OR cmis:objectId=", values);
 
-                List<Node> nodesN = session.getServiceRegistry().getSearchService()
-                        .search(builder.toString(), SearchLanguage.CMIS);
+                List<Node> nodesN =
+                        session.getServiceRegistry().getSearchService().search(builder.toString(), SearchLanguage.CMIS);
 
                 for (Node node : nodesN)
                 {
@@ -584,23 +634,22 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
         return new PagingResultImpl<Document>(nodes, false, nodes.size());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public void addDocuments(Task task, List<Document> items)
     {
         updateDocuments(task, items, true);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public void removeDocuments(Task task, List<Document> items)
     {
         updateDocuments(task, items, false);
     }
 
-    /**
-     * @param task
-     * @param items
-     * @param isAddition
-     */
     private void updateDocuments(Task task, List<Document> items, boolean isAddition)
     {
         try
@@ -616,7 +665,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                 variablesItems.add(NodeRefUtils.getCleanIdentifier(node.getIdentifier()));
             }
             Map<String, Serializable> variables = new HashMap<String, Serializable>();
-            variables.put(variableKey, TextUtils.join(",", variablesItems.toArray(new String[0])));
+            variables.put(variableKey, TextUtils.join(",", variablesItems.toArray(new String[variablesItems.size()])));
             updateVariables(task, variables);
         }
         catch (Exception e)
@@ -628,12 +677,15 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
     // ////////////////////////////////////////////////////////////////
     // TASKS
     // ////////////////////////////////////////////////////////////////
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     private PagingResult<Task> getTasks(String link, ListingContext listingContext)
     {
         List<Task> tasks = new ArrayList<Task>();
-        Map<String, Object> json = new HashMap<String, Object>(0);
+        Map<String, Object> json;
         int maxItems = -1;
         int size = 0;
         try
@@ -656,21 +708,21 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                         {
                             switch ((Integer) lf.getFilterValue(FILTER_KEY_ASSIGNEE))
                             {
-                                case FILTER_ASSIGNEE_UNASSIGNED:
-                                    url.addParameter(OnPremiseConstant.AUTHORITY_VALUE, session.getPersonIdentifier());
-                                    url.addParameter(OnPremiseConstant.POOLEDTASKS_VALUE, true);
-                                    break;
-                                case FILTER_ASSIGNEE_ME:
-                                    url.addParameter(OnPremiseConstant.AUTHORITY_VALUE, session.getPersonIdentifier());
-                                    url.addParameter(OnPremiseConstant.POOLEDTASKS_VALUE, false);
-                                    break;
-                                case FILTER_ASSIGNEE_ALL:
-                                    url.addParameter(OnPremiseConstant.AUTHORITY_VALUE, session.getPersonIdentifier());
-                                    break;
-                                case FILTER_NO_ASSIGNEE:
-                                    break;
-                                default:
-                                    break;
+                            case FILTER_ASSIGNEE_UNASSIGNED:
+                                url.addParameter(OnPremiseConstant.AUTHORITY_VALUE, session.getPersonIdentifier());
+                                url.addParameter(OnPremiseConstant.POOLEDTASKS_VALUE, true);
+                                break;
+                            case FILTER_ASSIGNEE_ME:
+                                url.addParameter(OnPremiseConstant.AUTHORITY_VALUE, session.getPersonIdentifier());
+                                url.addParameter(OnPremiseConstant.POOLEDTASKS_VALUE, false);
+                                break;
+                            case FILTER_ASSIGNEE_ALL:
+                                url.addParameter(OnPremiseConstant.AUTHORITY_VALUE, session.getPersonIdentifier());
+                                break;
+                            case FILTER_NO_ASSIGNEE:
+                                break;
+                            default:
+                                break;
                             }
                         }
                     }
@@ -688,19 +740,19 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                     {
                         switch ((Integer) lf.getFilterValue(FILTER_KEY_STATUS))
                         {
-                            case FILTER_STATUS_COMPLETE:
-                                url.addParameter(OnPremiseConstant.STATE_VALUE,
-                                        OnPremiseConstant.COMPLETED_UPPERCASE_VALUE);
-                                break;
-                            case FILTER_STATUS_ACTIVE:
-                                url.addParameter(OnPremiseConstant.STATE_VALUE,
-                                        OnPremiseConstant.IN_PROGRESS_UPPERCASE_VALUE);
-                                break;
-                            case FILTER_STATUS_ANY:
-                                url.addParameter(OnPremiseConstant.INCLUDETASKS_VALUE, "true");
-                                break;
-                            default:
-                                break;
+                        case FILTER_STATUS_COMPLETE:
+                            url.addParameter(OnPremiseConstant.STATE_VALUE,
+                                    OnPremiseConstant.COMPLETED_UPPERCASE_VALUE);
+                            break;
+                        case FILTER_STATUS_ACTIVE:
+                            url.addParameter(OnPremiseConstant.STATE_VALUE,
+                                    OnPremiseConstant.IN_PROGRESS_UPPERCASE_VALUE);
+                            break;
+                        case FILTER_STATUS_ANY:
+                            url.addParameter(OnPremiseConstant.INCLUDETASKS_VALUE, "true");
+                            break;
+                        default:
+                            break;
                         }
                     }
 
@@ -714,33 +766,33 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
 
                         switch ((Integer) lf.getFilterValue(FILTER_KEY_DUE))
                         {
-                            case FILTER_DUE_TODAY:
-                                url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, DateUtils.format(calendar));
+                        case FILTER_DUE_TODAY:
+                            url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, DateUtils.format(calendar));
 
-                                calendar.add(Calendar.DAY_OF_MONTH, -1);
-                                url.addParameter(OnPremiseConstant.DUEAFTER_VALUE, DateUtils.format(calendar));
-                                break;
-                            case FILTER_DUE_TOMORROW:
-                                url.addParameter(OnPremiseConstant.DUEAFTER_VALUE, DateUtils.format(calendar));
+                            calendar.add(Calendar.DAY_OF_MONTH, -1);
+                            url.addParameter(OnPremiseConstant.DUEAFTER_VALUE, DateUtils.format(calendar));
+                            break;
+                        case FILTER_DUE_TOMORROW:
+                            url.addParameter(OnPremiseConstant.DUEAFTER_VALUE, DateUtils.format(calendar));
 
-                                calendar.add(Calendar.DAY_OF_MONTH, 1);
-                                url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, DateUtils.format(calendar));
-                                break;
-                            case FILTER_DUE_7DAYS:
-                                url.addParameter(OnPremiseConstant.DUEAFTER_VALUE, DateUtils.format(calendar));
+                            calendar.add(Calendar.DAY_OF_MONTH, 1);
+                            url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, DateUtils.format(calendar));
+                            break;
+                        case FILTER_DUE_7DAYS:
+                            url.addParameter(OnPremiseConstant.DUEAFTER_VALUE, DateUtils.format(calendar));
 
-                                calendar.add(Calendar.DAY_OF_MONTH, 7);
-                                url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, DateUtils.format(calendar));
-                                break;
-                            case FILTER_DUE_OVERDUE:
-                                calendar.add(Calendar.DAY_OF_MONTH, -1);
-                                url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, DateUtils.format(calendar));
-                                break;
-                            case FILTER_DUE_NODATE:
-                                url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, "");
-                                break;
-                            default:
-                                break;
+                            calendar.add(Calendar.DAY_OF_MONTH, 7);
+                            url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, DateUtils.format(calendar));
+                            break;
+                        case FILTER_DUE_OVERDUE:
+                            calendar.add(Calendar.DAY_OF_MONTH, -1);
+                            url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, DateUtils.format(calendar));
+                            break;
+                        case FILTER_DUE_NODATE:
+                            url.addParameter(OnPremiseConstant.DUEBEFORE_VALUE, "");
+                            break;
+                        default:
+                            break;
                         }
                     }
                 }
@@ -761,7 +813,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
             json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
             if (json != null)
             {
-                List<Object> jo = null;
+                List<Object> jo;
                 if (json.get(OnPremiseConstant.DATA_VALUE) instanceof List)
                 {
                     jo = (List<Object>) json.get(OnPremiseConstant.DATA_VALUE);
@@ -775,7 +827,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
                 {
                     jo = Collections.EMPTY_LIST;
                 }
-                
+
                 size = jo.size();
                 for (Object obj : jo)
                 {
@@ -792,12 +844,18 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
 
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     public Task getTask(String taskIdentifier)
     {
-        if (isStringNull(taskIdentifier)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "taskIdentifier")); }
+        if (isStringNull(taskIdentifier))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"),
+                            "taskIdentifier"));
+        }
 
         Task task = null;
         try
@@ -821,17 +879,24 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
         return task;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public PagingResult<Task> getTasks(ListingContext listingContext)
     {
         return getTasks(OnPremiseUrlRegistry.getTasksUrl(session), listingContext);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Task completeTask(Task task, Map<String, Serializable> variables)
     {
-        if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
+        if (isObjectNull(task))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task"));
+        }
 
         Map<String, Serializable> internalVariables = new HashMap<String, Serializable>();
         if (variables != null)
@@ -859,7 +924,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
             }
 
             // VARIABLES
-            if (internalVariables != null && !internalVariables.isEmpty())
+            if (!internalVariables.isEmpty())
             {
                 for (Entry<String, Serializable> entry : internalVariables.entrySet())
                 {
@@ -898,20 +963,30 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
         return resultTask;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Task refresh(Task task)
     {
-        if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
+        if (isObjectNull(task))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task"));
+        }
 
         return getTask(task.getIdentifier());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Task claimTask(Task task)
     {
-        if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
+        if (isObjectNull(task))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task"));
+        }
 
         try
         {
@@ -924,11 +999,16 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
         return null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Task unClaimTask(Task task)
     {
-        if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
+        if (isObjectNull(task))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task"));
+        }
         try
         {
             return changeAssignee(task.getIdentifier(), null);
@@ -941,19 +1021,29 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
         return null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Task reassignTask(Task task, Person assignee)
     {
-        if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
+        if (isObjectNull(task))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task"));
+        }
 
-        if (isObjectNull(assignee)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "assignee")); }
+        if (isObjectNull(assignee))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "assignee"));
+        }
 
         return changeAssignee(task.getIdentifier(), assignee.getIdentifier());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     private Task changeAssignee(String taskId, String assigneeId)
     {
@@ -995,11 +1085,17 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
     // ////////////////////////////////////////////////////////////////
     // VARIABLES
     // ////////////////////////////////////////////////////////////////
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     public Task updateVariables(Task task, Map<String, Serializable> variables)
     {
-        if (isObjectNull(task)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task")); }
+        if (isObjectNull(task))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "task"));
+        }
 
         Map<String, Serializable> internalVariables = new HashMap<String, Serializable>();
         if (variables != null)
@@ -1015,7 +1111,7 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
             // prepare json data
             JSONObject jo = new JSONObject();
             // VARIABLES
-            if (internalVariables != null && !internalVariables.isEmpty())
+            if (!internalVariables.isEmpty())
             {
                 for (Entry<String, Serializable> entry : internalVariables.entrySet())
                 {
@@ -1067,31 +1163,41 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
         String url = OnPremiseUrlRegistry.getWorkflowDiagram(session, processId);
         return new UrlBuilder(url);
     }
-    
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     public ContentStream getProcessDiagram(Process process)
     {
-        if (isObjectNull(process)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "process")); }
+        if (isObjectNull(process))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "process"));
+        }
 
         return getProcessDiagram(process.getIdentifier());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public ContentStream getProcessDiagram(String processId)
     {
-        if (isStringNull(processId)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "processId")); }
+        if (isStringNull(processId))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "processId"));
+        }
 
         try
         {
-            ContentStream cf = null;
+            ContentStream cf;
             String url = OnPremiseUrlRegistry.getWorkflowDiagram(session, processId);
             UrlBuilder builder = new UrlBuilder(url);
             Response resp = read(builder, ErrorCodeRegistry.WORKFLOW_GENERIC);
 
-            cf = new ContentStreamImpl(resp.getStream(), resp.getContentTypeHeader(), resp.getContentLength()
-                    .longValue());
+            cf = new ContentStreamImpl(resp.getStream(), resp.getContentTypeHeader(),
+                    resp.getContentLength().longValue());
 
             return cf;
         }
@@ -1105,15 +1211,15 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
     // ////////////////////////////////////////////////////
     // Person Utils
     // ////////////////////////////////////////////////////
-    /**
-     * @param person
-     * @return
-     */
+
     @SuppressWarnings("unchecked")
     private String getPersonGUID(Person person)
     {
-        if (isObjectNull(person)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "person")); }
+        if (isObjectNull(person))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "person"));
+        }
 
         String guid = null;
         try
@@ -1143,27 +1249,30 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
     // ////////////////////////////////////////////////////
     // Mapping between workflowModel and real implementation
     // ////////////////////////////////////////////////////
-    /** Alfresco Form extension prefix . */
+    /**
+     * Alfresco Form extension prefix .
+     */
     private static final String FORM_PREFIX = "prop_";
 
     /**
-     * 
+     *
      */
     private static final Map<String, String> ALFRESCO_TO_WORKFLOW = new HashMap<String, String>();
+
     static
     {
         ALFRESCO_TO_WORKFLOW.put(WorkflowModel.PROP_WORKFLOW_DESCRIPTION,
                 FORM_PREFIX.concat(WorkflowModel.PROP_WORKFLOW_DESCRIPTION));
-        ALFRESCO_TO_WORKFLOW.put(WorkflowModel.PROP_WORKFLOW_DUE_DATE,
-                FORM_PREFIX.concat(WorkflowModel.PROP_WORKFLOW_DUE_DATE));
-        ALFRESCO_TO_WORKFLOW.put(WorkflowModel.PROP_WORKFLOW_PRIORITY,
-                FORM_PREFIX.concat(WorkflowModel.PROP_WORKFLOW_PRIORITY));
+        ALFRESCO_TO_WORKFLOW
+                .put(WorkflowModel.PROP_WORKFLOW_DUE_DATE, FORM_PREFIX.concat(WorkflowModel.PROP_WORKFLOW_DUE_DATE));
+        ALFRESCO_TO_WORKFLOW
+                .put(WorkflowModel.PROP_WORKFLOW_PRIORITY, FORM_PREFIX.concat(WorkflowModel.PROP_WORKFLOW_PRIORITY));
         ALFRESCO_TO_WORKFLOW.put(WorkflowModel.PROP_SEND_EMAIL_NOTIFICATIONS,
                 FORM_PREFIX.concat(WorkflowModel.PROP_SEND_EMAIL_NOTIFICATIONS));
         ALFRESCO_TO_WORKFLOW.put(WorkflowModel.PROP_COMMENT, FORM_PREFIX.concat(WorkflowModel.PROP_COMMENT));
         ALFRESCO_TO_WORKFLOW.put(WorkflowModel.PROP_STATUS, FORM_PREFIX.concat(WorkflowModel.PROP_STATUS));
-        ALFRESCO_TO_WORKFLOW.put(WorkflowModel.PROP_REVIEW_OUTCOME,
-                FORM_PREFIX.concat(WorkflowModel.PROP_REVIEW_OUTCOME));
+        ALFRESCO_TO_WORKFLOW
+                .put(WorkflowModel.PROP_REVIEW_OUTCOME, FORM_PREFIX.concat(WorkflowModel.PROP_REVIEW_OUTCOME));
         ALFRESCO_TO_WORKFLOW.put(WorkflowModel.PROP_TRANSITIONS_VALUE, WorkflowModel.PROP_TRANSITIONS_VALUE);
         ALFRESCO_TO_WORKFLOW.put(WorkflowModel.PROP_REQUIRED_APPROVE_PERCENT,
                 FORM_PREFIX.concat(WorkflowModel.PROP_REQUIRED_APPROVE_PERCENT));
@@ -1172,18 +1281,19 @@ public class OnPremiseWorkflowServiceImpl extends AbstractWorkflowService
     // ////////////////////////////////////////////////////
     // Save State - serialization / deserialization
     // ////////////////////////////////////////////////////
-    public static final Parcelable.Creator<OnPremiseWorkflowServiceImpl> CREATOR = new Parcelable.Creator<OnPremiseWorkflowServiceImpl>()
-    {
-        public OnPremiseWorkflowServiceImpl createFromParcel(Parcel in)
-        {
-            return new OnPremiseWorkflowServiceImpl(in);
-        }
+    public static final Parcelable.Creator<OnPremiseWorkflowServiceImpl> CREATOR =
+            new Parcelable.Creator<OnPremiseWorkflowServiceImpl>()
+            {
+                public OnPremiseWorkflowServiceImpl createFromParcel(Parcel in)
+                {
+                    return new OnPremiseWorkflowServiceImpl(in);
+                }
 
-        public OnPremiseWorkflowServiceImpl[] newArray(int size)
-        {
-            return new OnPremiseWorkflowServiceImpl[size];
-        }
-    };
+                public OnPremiseWorkflowServiceImpl[] newArray(int size)
+                {
+                    return new OnPremiseWorkflowServiceImpl[size];
+                }
+            };
 
     public OnPremiseWorkflowServiceImpl(Parcel o)
     {

@@ -1,30 +1,23 @@
 /*******************************************************************************
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.impl;
 
-import java.io.Serializable;
-import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
+import android.text.TextUtils;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.constants.PublicAPIConstant;
@@ -36,11 +29,22 @@ import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
+import java.io.Serializable;
+import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+
 public class TaskImpl implements Task
 {
     private static final long serialVersionUID = 1L;
 
-    /** Unique identifier of the process Definition. */
+    /**
+     * Unique identifier of the process Definition.
+     */
     private String identifier;
 
     private String key;
@@ -74,14 +78,17 @@ public class TaskImpl implements Task
 
     /**
      * Parse Json Response from Alfresco REST API to create a Task Object.<br/>
-     * 
+     *
      * @param json : json response that contains data from the repository
      * @return ProcessDefinition Object
      */
     @SuppressWarnings("unchecked")
     public static Task parseJson(Map<String, Object> json)
     {
-        if (json == null) { return null; }
+        if (json == null)
+        {
+            return null;
+        }
 
         TaskImpl task = new TaskImpl();
         task.data = new HashMap<String, Serializable>();
@@ -124,7 +131,8 @@ public class TaskImpl implements Task
             task.description = task.variables.get(WorkflowModel.PROP_DESCRIPTION).getValue();
             task.priority = task.variables.get(WorkflowModel.PROP_PRIORITY).getValue();
             task.startedAt = task.variables.get(WorkflowModel.PROP_START_DATE).getValue();
-            if (task.startedAt == null){
+            if (task.startedAt == null)
+            {
                 task.startedAt = task.variables.get(WorkflowModel.PROP_CREATED).getValue();
             }
             task.dueAt = task.variables.get(WorkflowModel.PROP_DUE_DATE).getValue();
@@ -153,8 +161,14 @@ public class TaskImpl implements Task
 
     public static Task refreshTask(Task task, Map<String, Property> properties)
     {
-        if (task == null) { return null; }
-        if (properties == null) { return task; }
+        if (task == null)
+        {
+            return null;
+        }
+        if (properties == null)
+        {
+            return task;
+        }
 
         TaskImpl refreshedTask = new TaskImpl();
         refreshedTask.identifier = task.getIdentifier();
@@ -176,7 +190,10 @@ public class TaskImpl implements Task
 
     public static Task parsePublicAPIJson(Map<String, Object> json)
     {
-        if (json == null) { return null; }
+        if (json == null)
+        {
+            return null;
+        }
 
         TaskImpl task = new TaskImpl();
 
@@ -231,7 +248,7 @@ public class TaskImpl implements Task
         Map<String, Property> properties = new HashMap<String, Property>(data.size());
         VariableType variableType;
 
-        GregorianCalendar g = new GregorianCalendar();
+        GregorianCalendar g;
         SimpleDateFormat sdf = new SimpleDateFormat(DateUtils.FORMAT_3, Locale.getDefault());
 
         for (Entry<String, Object> entry : data.entrySet())
@@ -240,31 +257,32 @@ public class TaskImpl implements Task
             if (variableType != null)
             {
                 // Empty case
-                if (entry.getValue() == null
-                        || (entry.getValue() instanceof String && ((String) entry.getValue()).isEmpty()))
+                if (entry.getValue() == null ||
+                        (entry.getValue() instanceof String && TextUtils.isEmpty((String) entry.getValue())))
                 {
-                    properties.put(entry.getKey(), new PropertyImpl(null, variableType.propertyType,
-                            variableType.isMultiValued));
+                    properties.put(entry.getKey(),
+                            new PropertyImpl(null, variableType.propertyType, variableType.isMultiValued));
                     continue;
                 }
 
                 // Other case
                 switch (variableType.propertyType)
                 {
-                    case DATETIME:
-                        g = new GregorianCalendar();
-                        g.setTime(DateUtils.parseDate((String) entry.getValue(), sdf));
-                        properties.put(entry.getKey(), new PropertyImpl(g, variableType.propertyType,
-                                variableType.isMultiValued));
-                        break;
-                    case INTEGER:
-                        properties.put(entry.getKey(), new PropertyImpl(((BigInteger) entry.getValue()).intValue(),
-                                variableType.propertyType, variableType.isMultiValued));
-                        break;
-                    default:
-                        properties.put(entry.getKey(), new PropertyImpl(entry.getValue(), variableType.propertyType,
-                                variableType.isMultiValued));
-                        break;
+                case DATETIME:
+                    g = new GregorianCalendar();
+                    g.setTime(DateUtils.parseDate((String) entry.getValue(), sdf));
+                    properties.put(entry.getKey(),
+                            new PropertyImpl(g, variableType.propertyType, variableType.isMultiValued));
+                    break;
+                case INTEGER:
+                    properties.put(entry.getKey(),
+                            new PropertyImpl(((BigInteger) entry.getValue()).intValue(), variableType.propertyType,
+                                    variableType.isMultiValued));
+                    break;
+                default:
+                    properties.put(entry.getKey(),
+                            new PropertyImpl(entry.getValue(), variableType.propertyType, variableType.isMultiValued));
+                    break;
                 }
             }
         }
@@ -274,6 +292,7 @@ public class TaskImpl implements Task
     private static final Map<String, VariableType> VARIABLE_TYPE = new HashMap<String, VariableType>()
     {
         private static final long serialVersionUID = 1L;
+
         {
             // task constants
             put(WorkflowModel.PROP_TASK_ID, new VariableType(PropertyType.STRING));
@@ -321,62 +340,85 @@ public class TaskImpl implements Task
         }
     };
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public String getIdentifier()
     {
         return identifier;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public String getKey()
     {
         return key;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public GregorianCalendar getStartedAt()
     {
         return startedAt;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Map<String, Serializable> getData()
     {
         return data;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public String getProcessIdentifier()
     {
         return processIdentifier;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public String getProcessDefinitionIdentifier()
     {
         return processDefinitionIdentifier;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public String getDescription()
     {
         return description;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public int getPriority()
     {
-        if (priority == null) { return -1; }
-        return priority.intValue();
+        if (priority == null)
+        {
+            return -1;
+        }
+        return priority;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public String getAssigneeIdentifier()
     {
         return assignee;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public String getName()
     {
         return name;
@@ -415,15 +457,18 @@ public class TaskImpl implements Task
     @Override
     public <T> T getVariableValue(String name)
     {
-        if (variables.get(name) != null) { return variables.get(name).getValue(); }
+        if (variables.get(name) != null)
+        {
+            return variables.get(name).getValue();
+        }
         return null;
     }
 
     private static class VariableType
     {
-        public PropertyType propertyType;
+        public final PropertyType propertyType;
 
-        public boolean isMultiValued;
+        public final boolean isMultiValued;
 
         public VariableType(PropertyType type)
         {

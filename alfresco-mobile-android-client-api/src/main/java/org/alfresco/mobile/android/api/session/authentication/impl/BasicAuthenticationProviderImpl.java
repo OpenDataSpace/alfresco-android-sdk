@@ -1,21 +1,27 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.session.authentication.impl;
+
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.session.authentication.BasicAuthenticationProvider;
+import org.apache.chemistry.opencmis.client.bindings.spi.BindingSession;
+import org.apache.chemistry.opencmis.commons.SessionParameter;
+import org.apache.chemistry.opencmis.commons.impl.Base64;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -25,18 +31,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.api.session.authentication.BasicAuthenticationProvider;
-import org.apache.chemistry.opencmis.client.bindings.spi.BindingSession;
-import org.apache.chemistry.opencmis.commons.SessionParameter;
-import org.apache.chemistry.opencmis.commons.impl.Base64;
-
 public class BasicAuthenticationProviderImpl extends AuthenticationProviderImpl implements BasicAuthenticationProvider
 {
 
     private static final long serialVersionUID = 1L;
-
-    private boolean sendBasicAuth = true;
 
     private String user;
 
@@ -44,7 +42,7 @@ public class BasicAuthenticationProviderImpl extends AuthenticationProviderImpl 
 
     private Map<String, Serializable> parameters;
 
-    private Map<String, List<String>> fixedHeaders = new HashMap<String, List<String>>();
+    private final Map<String, List<String>> fixedHeaders = new HashMap<String, List<String>>();
 
     public BasicAuthenticationProviderImpl(Map<String, Serializable> parameters)
     {
@@ -77,36 +75,36 @@ public class BasicAuthenticationProviderImpl extends AuthenticationProviderImpl 
         {
             return (String) cmisSession.get(key);
         }
-        else if (parameters != null && parameters.containsKey(key) && parameters.get(key) instanceof String) { return (String) parameters
-                .get(key); }
+        else if (parameters != null && parameters.containsKey(key) && parameters.get(key) instanceof String)
+        {
+            return (String) parameters.get(key);
+        }
         return null;
     }
 
     private void init()
     {
         // authentication
-        if (sendBasicAuth)
+        //boolean sendBasicAuth = true;
+        // get user and password
+        String mUser = getUser();
+        String mPassword = getPassword();
+
+        // if no user is set, don't set basic auth header
+        if (mUser != null)
         {
-            // get user and password
-            String mUser = getUser();
-            String mPassword = getPassword();
+            fixedHeaders.put("Authorization", createBasicAuthHeaderValue(mUser, mPassword));
+        }
 
-            // if no user is set, don't set basic auth header
-            if (mUser != null)
-            {
-                fixedHeaders.put("Authorization", createBasicAuthHeaderValue(mUser, mPassword));
-            }
+        // get proxy user and password
 
-            // get proxy user and password
+        String proxyUser = getParameter(SessionParameter.PROXY_USER);
+        String proxyPassword = getParameter(SessionParameter.PROXY_PASSWORD);
 
-            String proxyUser = getParameter(SessionParameter.PROXY_USER);
-            String proxyPassword = getParameter(SessionParameter.PROXY_PASSWORD);
-
-            // if no proxy user is set, don't set basic auth header
-            if (proxyUser != null)
-            {
-                fixedHeaders.put("Proxy-Authorization", createBasicAuthHeaderValue(proxyUser, proxyPassword));
-            }
+        // if no proxy user is set, don't set basic auth header
+        if (proxyUser != null)
+        {
+            fixedHeaders.put("Proxy-Authorization", createBasicAuthHeaderValue(proxyUser, proxyPassword));
         }
 
         // other headers
@@ -171,8 +169,8 @@ public class BasicAuthenticationProviderImpl extends AuthenticationProviderImpl 
 
         try
         {
-            return Collections.singletonList("Basic "
-                    + Base64.encodeBytes((username + ":" + tmpPassword).getBytes("ISO-8859-1")));
+            return Collections.singletonList(
+                    "Basic " + Base64.encodeBytes((username + ":" + tmpPassword).getBytes("ISO-8859-1")));
         }
         catch (UnsupportedEncodingException e)
         {
@@ -187,10 +185,12 @@ public class BasicAuthenticationProviderImpl extends AuthenticationProviderImpl 
      */
     protected boolean isTrue(Object value)
     {
-        if (value instanceof Boolean) { return ((Boolean) value).booleanValue(); }
+        if (value instanceof Boolean)
+        {
+            return (Boolean) value;
+        }
 
-        if (value instanceof String) { return Boolean.parseBoolean((String) value); }
+        return value instanceof String && Boolean.parseBoolean((String) value);
 
-        return false;
     }
 }

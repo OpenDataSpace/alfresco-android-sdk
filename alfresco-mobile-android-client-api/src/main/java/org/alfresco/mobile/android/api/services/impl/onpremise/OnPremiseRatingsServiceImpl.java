@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,14 +40,14 @@ import android.os.Parcelable;
  * The RatingsService can be used to manage like (as ratings) on any content
  * node in the repository.<br>
  * Like can be applied or removed.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class OnPremiseRatingsServiceImpl extends AbstractRatingsService
 {
     /**
      * Default Constructor. Only used inside ServiceRegistry.
-     * 
+     *
      * @param repositorySession : Repository Session.
      */
     public OnPremiseRatingsServiceImpl(RepositorySession repositorySession)
@@ -107,18 +107,23 @@ public class OnPremiseRatingsServiceImpl extends AbstractRatingsService
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 
         Map<String, Object> j = (Map<String, Object>) json.get(OnPremiseConstant.DATA_VALUE);
-        if (j.size() == 0 && j.get(OnPremiseConstant.RATINGS_VALUE) == null) { return false; }
+        if (j.size() == 0 && j.get(OnPremiseConstant.RATINGS_VALUE) == null)
+        {
+            return false;
+        }
 
         Map<String, Object> js = (Map<String, Object>) j.get(OnPremiseConstant.RATINGS_VALUE);
-        if (js.size() == 0 && js.get(OnPremiseConstant.LIKERATINGSSCHEME_VALUE) == null) { return false; }
+        if (js.size() == 0 && js.get(OnPremiseConstant.LIKERATINGSSCHEME_VALUE) == null)
+        {
+            return false;
+        }
 
         Map<String, Object> jso = (Map<String, Object>) js.get(OnPremiseConstant.LIKERATINGSSCHEME_VALUE);
-        if (jso.size() != 0 && jso.get(OnPremiseConstant.APPLIEDBY_VALUE) != null) { return session
-                .getPersonIdentifier().equals(JSONConverter.getString(jso, OnPremiseConstant.APPLIEDBY_VALUE)); }
+        return jso.size() != 0 && jso.get(OnPremiseConstant.APPLIEDBY_VALUE) != null &&
+                session.getPersonIdentifier().equals(JSONConverter.getString(jso, OnPremiseConstant.APPLIEDBY_VALUE));
 
-        return false;
     }
-    
+
     // ////////////////////////////////////////////////////
     // Save State - serialization / deserialization
     // ////////////////////////////////////////////////////

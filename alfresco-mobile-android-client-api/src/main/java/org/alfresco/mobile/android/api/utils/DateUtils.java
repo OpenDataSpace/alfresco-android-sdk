@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.utils;
 
@@ -25,7 +25,7 @@ import java.util.Locale;
 
 /**
  * List of static methods to manage date.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public final class DateUtils
@@ -48,7 +48,7 @@ public final class DateUtils
 
     public static final String FORMAT_6 = "yyyy-MM-dd'T'hh:mm:ss.SSS";
 
-    private static final String[] DATE_FORMATS = { FORMAT_1, FORMAT_2, FORMAT_3, FORMAT_4, FORMAT_5 };
+    private static final String[] DATE_FORMATS = {FORMAT_1, FORMAT_2, FORMAT_3, FORMAT_4, FORMAT_5};
 
     public static Date parseJsonDate(String jsonDate)
     {
@@ -71,42 +71,38 @@ public final class DateUtils
 
     /**
      * @since 1.0.1
-     * @param atomPubDate
-     * @return
      */
     public static Date parseDate(String atomPubDate, Locale locale)
     {
         Date d = null;
         SimpleDateFormat sdf;
-        for (int i = 0; i < DATE_FORMATS.length; i++)
+        for (String DATE_FORMAT : DATE_FORMATS)
         {
-            sdf = new SimpleDateFormat(DATE_FORMATS[i], locale);
+            sdf = new SimpleDateFormat(DATE_FORMAT, locale);
             sdf.setLenient(true);
             try
             {
                 d = sdf.parse(atomPubDate);
                 break;
             }
-            catch (ParseException e)
+            catch (ParseException ignored)
             {
-                continue;
             }
         }
 
         if (d == null)
         {
-            for (int i = 0; i < DATE_FORMATS.length; i++)
+            for (String DATE_FORMAT : DATE_FORMATS)
             {
-                sdf = new SimpleDateFormat(DATE_FORMATS[i], Locale.ENGLISH);
+                sdf = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
                 sdf.setLenient(true);
                 try
                 {
                     d = sdf.parse(atomPubDate);
                     break;
                 }
-                catch (ParseException e)
+                catch (ParseException ignored)
                 {
-                    continue;
                 }
             }
         }
@@ -116,18 +112,19 @@ public final class DateUtils
 
     public static Date parseDate(String date, String format)
     {
-        if (date == null) { return null; }
+        if (date == null)
+        {
+            return null;
+        }
         return parseDate(date, new SimpleDateFormat(format, Locale.getDefault()));
     }
 
     /**
      * @since 1.0.1
-     * @param atomPubDate
-     * @return
      */
     public static Date parseDate(String date, SimpleDateFormat sdf)
     {
-        Date d = null;
+        Date d;
         sdf.setLenient(true);
         try
         {
@@ -142,7 +139,7 @@ public final class DateUtils
 
     public static String format(GregorianCalendar calendar)
     {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSSZ")
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSSZ", Locale.getDefault())
         {
             private static final long serialVersionUID = 1L;
 
@@ -150,13 +147,13 @@ public final class DateUtils
             {
                 StringBuffer toFix = super.format(date, toAppendTo, pos);
                 return toFix.insert(toFix.length() - 2, ':');
-            };
+            }
         };
         return dateFormat.format(calendar.getTime());
     }
 
     public static String formatISO(GregorianCalendar calendar)
     {
-        return new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ").format(calendar.getTime());
+        return new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ", Locale.getDefault()).format(calendar.getTime());
     }
 }

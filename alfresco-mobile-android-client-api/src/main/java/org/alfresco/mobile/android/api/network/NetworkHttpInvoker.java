@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -89,7 +89,7 @@ public class NetworkHttpInvoker implements HttpInvoker
     {
         return (HttpURLConnection) url.openConnection();
     }
-    
+
     protected Response invoke(UrlBuilder url, String method, String contentType, Map<String, String> headers,
             Output writer, BindingSession session, BigInteger offset, BigInteger length)
     {
@@ -239,7 +239,7 @@ public class NetworkHttpInvoker implements HttpInvoker
 
                 conn.setConnectTimeout(900000);
 
-                OutputStream connOut = null;
+                OutputStream connOut;
 
                 Object clientCompression = session.get(SessionParameter.CLIENT_COMPRESSION);
                 if ((clientCompression != null) && Boolean.parseBoolean(clientCompression.toString()))
@@ -390,13 +390,12 @@ public class NetworkHttpInvoker implements HttpInvoker
                     ostream = new DataOutputStream(os);
 
                     Set<String> parameters = params.keySet();
-                    StringBuffer buf = new StringBuffer();
+                    StringBuilder buf = new StringBuilder();
 
                     int paramCount = 0;
                     for (String it : parameters)
                     {
-                        String parameterName = it;
-                        String parameterValue = (String) params.get(parameterName);
+                        String parameterValue = params.get(it);
 
                         if (parameterValue != null)
                         {
@@ -405,7 +404,7 @@ public class NetworkHttpInvoker implements HttpInvoker
                             {
                                 buf.append("&");
                             }
-                            buf.append(parameterName);
+                            buf.append(it);
                             buf.append("=");
                             buf.append(parameterValue);
                             ++paramCount;
@@ -429,7 +428,7 @@ public class NetworkHttpInvoker implements HttpInvoker
             if (writer != null)
             {
                 // conn.setChunkedStreamingMode((64 * 1024) - 1);
-                OutputStream connOut = null;
+                OutputStream connOut;
                 connOut = conn.getOutputStream();
                 OutputStream out = new BufferedOutputStream(connOut, BUFFER_SIZE);
                 writer.write(out);

@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,7 +39,7 @@ import android.os.Parcelable;
  * The RatingsService can be used to manage like (as ratings) on any content
  * node in the repository.<br>
  * Like can be applied or removed.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class PublicAPIRatingsServiceImpl extends AbstractRatingsService
@@ -47,7 +47,7 @@ public class PublicAPIRatingsServiceImpl extends AbstractRatingsService
 
     /**
      * Default Constructor. Only used inside ServiceRegistry.
-     * 
+     *
      * @param repositorySession : Repository Session.
      */
     public PublicAPIRatingsServiceImpl(AlfrescoSession repositorySession)
@@ -87,7 +87,7 @@ public class PublicAPIRatingsServiceImpl extends AbstractRatingsService
         Response resp = read(url, ErrorCodeRegistry.RATING_GENERIC);
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
-        Map<String, Object> data = null;
+        Map<String, Object> data;
         for (Object entry : response.getEntries())
         {
             data = (Map<String, Object>) ((Map<String, Object>) entry).get(PublicAPIConstant.ENTRY_VALUE);
@@ -111,7 +111,7 @@ public class PublicAPIRatingsServiceImpl extends AbstractRatingsService
         Response resp = read(url, ErrorCodeRegistry.RATING_GENERIC);
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
-        Map<String, Object> data = null;
+        Map<String, Object> data;
         for (Object entry : response.getEntries())
         {
             data = (Map<String, Object>) ((Map<String, Object>) entry).get(PublicAPIConstant.ENTRY_VALUE);

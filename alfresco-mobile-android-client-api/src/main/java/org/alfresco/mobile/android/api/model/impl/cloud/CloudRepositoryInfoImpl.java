@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,9 +30,8 @@ public class CloudRepositoryInfoImpl extends AbstractRepositoryInfo
 
     /**
      * Constructor that wrapp RepositoryInfo CMIS object .
-     * 
+     *
      * @param repositoryInfo : cmis object.
-     * @param rootNode
      */
     public CloudRepositoryInfoImpl(org.apache.chemistry.opencmis.commons.data.RepositoryInfo repositoryInfo)
     {
@@ -49,7 +48,7 @@ public class CloudRepositoryInfoImpl extends AbstractRepositoryInfo
 
     /**
      * Pattern : major.minor.maintenance (build)
-     * 
+     *
      * @return Returns the major version of the repository
      */
     public Integer getMajorVersion()
@@ -59,7 +58,7 @@ public class CloudRepositoryInfoImpl extends AbstractRepositoryInfo
 
     /**
      * Pattern : major.minor.maintenance (build)
-     * 
+     *
      * @return Returns the minor version of the repository
      */
     public Integer getMinorVersion()
@@ -69,7 +68,7 @@ public class CloudRepositoryInfoImpl extends AbstractRepositoryInfo
 
     /**
      * Pattern : major.minor.maintenance (build)
-     * 
+     *
      * @return Returns the maintenance version of the repository
      */
     public Integer getMaintenanceVersion()
@@ -79,7 +78,7 @@ public class CloudRepositoryInfoImpl extends AbstractRepositoryInfo
 
     /**
      * Pattern : major.minor.maintenance (build)
-     * 
+     *
      * @return Returns the build number as string.
      */
     public String getBuildNumber()
@@ -90,7 +89,7 @@ public class CloudRepositoryInfoImpl extends AbstractRepositoryInfo
     /**
      * Returns Community or Enterprise if it's an alfresco Repository. Returns
      * product name if it's a CMIS server.
-     * 
+     *
      * @return null if it's not an alfresco repository.
      */
     public String getEdition()
@@ -100,7 +99,7 @@ public class CloudRepositoryInfoImpl extends AbstractRepositoryInfo
 
     /**
      * Check if the repository is an Alfresco Repository.
-     * 
+     *
      * @return true if alfresco product.
      */
     public boolean isAlfrescoProduct()

@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -50,7 +50,7 @@ import android.util.Log;
  * implemented : <a href=
  * "http://devcon.alfresco.com/sanjose/sessions/alfresco-cloud-api-part-two"
  * >Public API Presentation</a>
- * 
+ *
  * @author Jean Marie Pascal
  */
 public final class OAuthHelper implements OAuthConstant
@@ -88,7 +88,7 @@ public final class OAuthHelper implements OAuthConstant
     /**
      * Override mechanism to set another base url. <br/>
      * Used internally for test server.
-     * 
+     *
      * @param baseOAuthUrl : new base url like
      *            "https://myoauthtestserver.sample.com"
      */
@@ -106,7 +106,7 @@ public final class OAuthHelper implements OAuthConstant
      * authentication form.<br/>
      * All this information are available on <a
      * href=https://developer.alfresco.com/" >Alfresco Developer Portal</a>
-     * 
+     *
      * @param apiKey : API key associated to your application.
      * @param callback : Callback URI associated to your application.
      * @param scope : Scope associated to your application. You should always
@@ -136,7 +136,7 @@ public final class OAuthHelper implements OAuthConstant
      * Retrieve the authorization code from the url callback uri. <br/>
      * If user has access, Alfresco grant access and invoke the callback URI
      * with the authorization code.
-     * 
+     *
      * @param url : Callback uri that contains authorization code.
      * @return authorization code.
      */
@@ -150,7 +150,7 @@ public final class OAuthHelper implements OAuthConstant
      * Retrieve the access token.<br/>
      * Once the application has an authorization code, it can exchange this for
      * an access token. The access token is valid for one hour.
-     * 
+     *
      * @param apiKey : API key associated to your application.
      * @param apiSecret : API secret key associated to your application.
      * @param callback : Callback URI associated to your application.
@@ -213,7 +213,7 @@ public final class OAuthHelper implements OAuthConstant
         }
         catch (AlfrescoSessionException e)
         {
-            throw (AlfrescoSessionException) e;
+            throw e;
 
         }
         catch (Exception e)
@@ -225,7 +225,7 @@ public final class OAuthHelper implements OAuthConstant
 
     /**
      * Request a new accestoken & refreshtoken based on RefreshToken
-     * 
+     *
      * @param data
      * @return
      */
@@ -236,7 +236,7 @@ public final class OAuthHelper implements OAuthConstant
      * expires. The old access token becomes invalid when the new one is
      * granted. The new refresh token supplied in the response body can be used
      * in the same way.
-     * 
+     *
      * @param data : OAuthData object available from your cloud session object :
      *            {@link CloudSession#getOAuthData()}
      * @return OAuthData object that can be used to make authenticated calls
@@ -285,7 +285,7 @@ public final class OAuthHelper implements OAuthConstant
         }
         catch (AlfrescoSessionException e)
         {
-            throw (AlfrescoSessionException) e;
+            throw e;
 
         }
         catch (Exception e)

@@ -1,25 +1,24 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.ListingContext;
@@ -39,60 +38,69 @@ import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ObjectData;
 import org.apache.chemistry.opencmis.commons.spi.VersioningService;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Implementation of VersionService.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class VersionServiceImpl extends AlfrescoService implements VersionService
 {
     protected Session cmisSession;
-    
+
     /**
      * Default constructor for service. </br> Used by the
      * {@link ServiceRegistry}.
-     * 
-     * @param repositorySession
      */
     public VersionServiceImpl(AlfrescoSession repositorySession)
     {
         super(repositorySession);
         this.cmisSession = ((AbstractAlfrescoSessionImpl) repositorySession).getCmisSession();
     }
-    
-    public Document getLatestVersion(Document document){
-        if (isObjectNull(document)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "document")); }
-        
+
+    public Document getLatestVersion(Document document)
+    {
+        if (isObjectNull(document))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "document"));
+        }
+
         try
         {
             VersioningService versioningService = cmisSession.getBinding().getVersioningService();
             OperationContext ctxt = cmisSession.getDefaultContext();
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
- 
-            ObjectData objectData = versioningService.getObjectOfLatestVersion(session.getRepositoryInfo().getIdentifier(),
-                    document.getIdentifier(), (String) document.getProperty(PropertyIds.VERSION_SERIES_ID).getValue(), false, ctxt.getFilterString(), ctxt.isIncludeAllowableActions(),
-                    ctxt.getIncludeRelationships(), ctxt.getRenditionFilterString(), ctxt.isIncludePolicies(),
-                    ctxt.isIncludeAcls(), null);
-            
+
+            ObjectData objectData = versioningService
+                    .getObjectOfLatestVersion(session.getRepositoryInfo().getIdentifier(), document.getIdentifier(),
+                            (String) document.getProperty(PropertyIds.VERSION_SERIES_ID).getValue(), false,
+                            ctxt.getFilterString(), ctxt.isIncludeAllowableActions(), ctxt.getIncludeRelationships(),
+                            ctxt.getRenditionFilterString(), ctxt.isIncludePolicies(), ctxt.isIncludeAcls(), null);
+
             return (Document) convertNode(objectFactory.convertObject(objectData, ctxt));
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             convertException(e);
         }
         return null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public List<Document> getVersions(Document document)
     {
         return getVersions(document, null).getList();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public PagingResult<Document> getVersions(Document document, ListingContext listingContext)
     {
         return computeVersion(document, listingContext);
@@ -101,29 +109,34 @@ public class VersionServiceImpl extends AlfrescoService implements VersionServic
     // ////////////////////////////////////////////////////////////////////////////////////
     // / INTERNAL
     // ////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * Internal method to compute data from server and transform it as high
      * level object.
-     * 
-     * @param document : versionned document
+     *
+     * @param document       : versionned document
      * @param listingContext : define characteristics of the result
      * @return Paging Result of document that represent one version of a
-     *         document.
+     * document.
      */
     private PagingResult<Document> computeVersion(Document document, ListingContext listingContext)
     {
-        if (isObjectNull(document)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "document")); }
-        
+        if (isObjectNull(document))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "document"));
+        }
+
         try
         {
             VersioningService versioningService = cmisSession.getBinding().getVersioningService();
             OperationContext ctxt = cmisSession.getDefaultContext();
             ObjectFactory objectFactory = cmisSession.getObjectFactory();
 
-            List<ObjectData> versions = versioningService.getAllVersions(session.getRepositoryInfo().getIdentifier(),
-                    document.getIdentifier(), (String) document.getProperty(PropertyIds.VERSION_SERIES_ID).getValue(),
-                    ctxt.getFilterString(), ctxt.isIncludeAllowableActions(), null);
+            List<ObjectData> versions = versioningService
+                    .getAllVersions(session.getRepositoryInfo().getIdentifier(), document.getIdentifier(),
+                            (String) document.getProperty(PropertyIds.VERSION_SERIES_ID).getValue(),
+                            ctxt.getFilterString(), ctxt.isIncludeAllowableActions(), null);
 
             int size = (versions != null) ? versions.size() : 0;
 
@@ -176,7 +189,7 @@ public class VersionServiceImpl extends AlfrescoService implements VersionServic
         }
         return null;
     }
-    
+
     // ////////////////////////////////////////////////////
     // Save State - serialization / deserialization
     // ////////////////////////////////////////////////////

@@ -1,26 +1,24 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl.onpremise;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
@@ -46,8 +44,10 @@ import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Tags are keywords or terms assigned to a piece of information including
@@ -58,7 +58,7 @@ import android.os.Parcelable;
  * <li>Remove tags</li>
  * <li>list (and filter) tags</li>
  * </ul>
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class OnPremiseTaggingServiceImpl extends AlfrescoService implements TaggingService
@@ -66,21 +66,23 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
     /**
      * Default constructor for service. </br> Used by the
      * {@link ServiceRegistry}.
-     * 
-     * @param repositorySession
      */
     public OnPremiseTaggingServiceImpl(RepositorySession repositorySession)
     {
         super(repositorySession);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public List<Tag> getAllTags()
     {
         return getAllTags(null).getList();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public PagingResult<Tag> getAllTags(ListingContext listingContext)
     {
         try
@@ -96,17 +98,24 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
         return null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public List<Tag> getTags(Node node)
     {
         return getTags(node, null).getList();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public PagingResult<Tag> getTags(Node node, ListingContext listingContext)
     {
-        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+        if (isObjectNull(node))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node"));
+        }
         try
         {
             String link = OnPremiseUrlRegistry.getTagsUrl(session, node.getIdentifier());
@@ -115,8 +124,8 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
         }
         catch (AlfrescoServiceException e)
         {
-            if (e.getAlfrescoErrorContent() != null && e.getAlfrescoErrorContent().getMessage() != null
-                    && e.getAlfrescoErrorContent().getMessage().contains("Access Denied"))
+            if (e.getAlfrescoErrorContent() != null && e.getAlfrescoErrorContent().getMessage() != null &&
+                    e.getAlfrescoErrorContent().getMessage().contains("Access Denied"))
             {
                 List<Tag> result = new ArrayList<Tag>();
                 return new PagingResultImpl<Tag>(result, false, -1);
@@ -130,14 +139,22 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
         return null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public void addTags(Node node, List<String> tags)
     {
-        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+        if (isObjectNull(node))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node"));
+        }
 
-        if (isListNull(tags)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "tags")); }
+        if (isListNull(tags))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "tags"));
+        }
         try
         {
             String link = OnPremiseUrlRegistry.getTagsUrl(session, node.getIdentifier());
@@ -183,8 +200,8 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
         // Define Listing Context
         if (listingContext != null)
         {
-            fromIndex = (listingContext.getSkipCount() > results.length()) ? results.length() : listingContext
-                    .getSkipCount();
+            fromIndex = (listingContext.getSkipCount() > results.length()) ? results.length() :
+                    listingContext.getSkipCount();
 
             // Case if skipCount > result size
             if (listingContext.getMaxItems() + fromIndex >= results.length())
@@ -214,7 +231,7 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
         List<Tag> tags = new ArrayList<Tag>();
 
         String[] results;
-        String tag = null;
+        String tag;
         results = resultsString.replace("[", "").replace("]", "").replaceAll("\t", "").trim().split("\n");
 
         int fromIndex = 0, toIndex = results.length, totalItems = results.length;
@@ -223,8 +240,8 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
         // Define Listing Context
         if (listingContext != null)
         {
-            fromIndex = (listingContext.getSkipCount() > results.length) ? results.length : listingContext
-                    .getSkipCount();
+            fromIndex =
+                    (listingContext.getSkipCount() > results.length) ? results.length : listingContext.getSkipCount();
 
             // Case if skipCount > result size
             if (listingContext.getMaxItems() + fromIndex >= results.length)
@@ -263,22 +280,23 @@ public class OnPremiseTaggingServiceImpl extends AlfrescoService implements Tagg
 
         return new PagingResultImpl<Tag>(tags, hasMoreItems, totalItems);
     }
-    
+
     // ////////////////////////////////////////////////////
     // Save State - serialization / deserialization
     // ////////////////////////////////////////////////////
-    public static final Parcelable.Creator<OnPremiseTaggingServiceImpl> CREATOR = new Parcelable.Creator<OnPremiseTaggingServiceImpl>()
-    {
-        public OnPremiseTaggingServiceImpl createFromParcel(Parcel in)
-        {
-            return new OnPremiseTaggingServiceImpl(in);
-        }
+    public static final Parcelable.Creator<OnPremiseTaggingServiceImpl> CREATOR =
+            new Parcelable.Creator<OnPremiseTaggingServiceImpl>()
+            {
+                public OnPremiseTaggingServiceImpl createFromParcel(Parcel in)
+                {
+                    return new OnPremiseTaggingServiceImpl(in);
+                }
 
-        public OnPremiseTaggingServiceImpl[] newArray(int size)
-        {
-            return new OnPremiseTaggingServiceImpl[size];
-        }
-    };
+                public OnPremiseTaggingServiceImpl[] newArray(int size)
+                {
+                    return new OnPremiseTaggingServiceImpl[size];
+                }
+            };
 
     public OnPremiseTaggingServiceImpl(Parcel o)
     {

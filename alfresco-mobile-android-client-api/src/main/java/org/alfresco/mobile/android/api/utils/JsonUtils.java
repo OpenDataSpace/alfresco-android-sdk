@@ -1,21 +1,27 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.utils;
+
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
+import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
+import org.apache.chemistry.opencmis.commons.impl.json.parser.ContainerFactory;
+import org.apache.chemistry.opencmis.commons.impl.json.parser.JSONParser;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -25,15 +31,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
-import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
-import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
-import org.apache.chemistry.opencmis.commons.impl.json.parser.ContainerFactory;
-import org.apache.chemistry.opencmis.commons.impl.json.parser.JSONParser;
-
 /**
  * List of static methods to manage json object.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public final class JsonUtils
@@ -43,7 +43,7 @@ public final class JsonUtils
 
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     protected static final ContainerFactory SIMPLE_CONTAINER_FACTORY = new ContainerFactory()
     {
 
@@ -66,7 +66,10 @@ public final class JsonUtils
     {
         Object obj = parse(stream, charset, SIMPLE_CONTAINER_FACTORY);
 
-        if (obj instanceof Map) { return (Map<String, Object>) obj; }
+        if (obj instanceof Map)
+        {
+            return (Map<String, Object>) obj;
+        }
 
         throw new AlfrescoServiceException(ErrorCodeRegistry.PARSING_GENERIC, Messagesl18n.getString("JsonUtils.0"));
     }
@@ -79,7 +82,10 @@ public final class JsonUtils
     {
         Object obj = parse(stream, charset, SIMPLE_CONTAINER_FACTORY);
 
-        if (obj instanceof List) { return (List<Object>) obj; }
+        if (obj instanceof List)
+        {
+            return (List<Object>) obj;
+        }
 
         throw new AlfrescoServiceException(ErrorCodeRegistry.PARSING_GENERIC, Messagesl18n.getString("JsonUtils.0"));
     }
@@ -87,12 +93,15 @@ public final class JsonUtils
     @SuppressWarnings("unchecked")
     public static Map<String, Object> parseObject(String value)
     {
-        Object obj = null;
+        Object obj;
         try
         {
             JSONParser parser = new JSONParser();
             obj = parser.parse(value, SIMPLE_CONTAINER_FACTORY);
-            if (obj instanceof Map) { return (Map<String, Object>) obj; }
+            if (obj instanceof Map)
+            {
+                return (Map<String, Object>) obj;
+            }
         }
         catch (Exception e)
         {
@@ -131,14 +140,14 @@ public final class JsonUtils
 
     public static String convertStreamToString(InputStream is)
     {
-        String line = null;
+        String line;
         StringBuilder sb = new StringBuilder();
         try
         {
             BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
             while ((line = reader.readLine()) != null)
             {
-                sb.append(line + "\n");
+                sb.append(line).append("\n");
             }
         }
         catch (Exception e)
@@ -151,13 +160,10 @@ public final class JsonUtils
         }
         return sb.toString();
     }
-    
+
     /**
      * Utility method to help creating a default cmis query.
-     * 
-     * @param sb
-     * @param delimiter
-     * @param tokens
+     *
      */
     public static void join(StringBuilder sb, CharSequence delimiter, Object[] tokens)
     {
@@ -172,11 +178,9 @@ public final class JsonUtils
             {
                 sb.append(delimiter);
             }
-            sb.append("'" + token + "'");
+            sb.append("'").append(token).append("'");
         }
     }
-    
-    
-    
+
 
 }

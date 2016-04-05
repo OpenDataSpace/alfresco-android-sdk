@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,7 +39,7 @@ import org.apache.http.HttpStatus;
 /**
  * The Class ExceptionHelper helps to transform and wrap exceptions from
  * OpenCMIS or general exception into an {@link AlfrescoServiceException}.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public final class ExceptionHelper
@@ -54,7 +54,7 @@ public final class ExceptionHelper
 
     /**
      * Convert exception into AlfrescoServiceException.
-     * 
+     *
      * @param exception the underlying exception from OpenCMIS or generic
      *            exception.
      */
@@ -66,7 +66,7 @@ public final class ExceptionHelper
         }
         catch (AlfrescoException e)
         {
-            throw (AlfrescoException) e;
+            throw e;
         }
         catch (CmisUnauthorizedException e)
         {
@@ -127,7 +127,7 @@ public final class ExceptionHelper
     /**
      * Convert an HTTP error response (404 instead of 200 for example) into a
      * generic exception.
-     * 
+     *
      * @param session the Alfresco session associated to the exception.
      * @param resp the HTTP response from the server.
      * @param serviceErrorCode the service error code associated.

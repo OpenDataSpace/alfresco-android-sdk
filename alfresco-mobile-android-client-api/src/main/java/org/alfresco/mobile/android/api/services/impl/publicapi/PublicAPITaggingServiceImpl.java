@@ -1,27 +1,24 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl.publicapi;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import org.alfresco.mobile.android.api.constants.PublicAPIConstant;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
@@ -46,8 +43,11 @@ import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Jean Marie Pascal
@@ -58,21 +58,23 @@ public class PublicAPITaggingServiceImpl extends AlfrescoService implements Tagg
     /**
      * Default constructor for service. </br> Used by the
      * {@link ServiceRegistry}.
-     * 
-     * @param repositorySession
      */
     public PublicAPITaggingServiceImpl(AlfrescoSession repositorySession)
     {
         super(repositorySession);
     }
 
-    /** {@inheritDoc} */
-    public List<Tag> getAllTags() 
+    /**
+     * {@inheritDoc}
+     */
+    public List<Tag> getAllTags()
     {
         return getAllTags(null).getList();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public PagingResult<Tag> getAllTags(ListingContext listingContext)
     {
         try
@@ -93,17 +95,24 @@ public class PublicAPITaggingServiceImpl extends AlfrescoService implements Tagg
         return null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public List<Tag> getTags(Node node)
     {
         return getTags(node, null).getList();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public PagingResult<Tag> getTags(Node node, ListingContext listingContext)
     {
-        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+        if (isObjectNull(node))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node"));
+        }
         try
         {
             String link = PublicAPIUrlRegistry.getTagsUrl(session, node.getIdentifier());
@@ -122,14 +131,22 @@ public class PublicAPITaggingServiceImpl extends AlfrescoService implements Tagg
         return null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public void addTags(Node node, List<String> tags)
     {
-        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+        if (isObjectNull(node))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node"));
+        }
 
-        if (isListNull(tags)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "tags")); }
+        if (isListNull(tags))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "tags"));
+        }
         try
         {
             String link = PublicAPIUrlRegistry.getTagsUrl(session, node.getIdentifier());
@@ -137,7 +154,7 @@ public class PublicAPITaggingServiceImpl extends AlfrescoService implements Tagg
 
             // prepare json data
             JSONArray ja = new JSONArray();
-            JSONObject jo = null;
+            JSONObject jo;
             for (String tag : tags)
             {
                 jo = new JSONObject();
@@ -171,7 +188,7 @@ public class PublicAPITaggingServiceImpl extends AlfrescoService implements Tagg
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
         List<Tag> result = new ArrayList<Tag>();
-        Map<String, Object> data = null;
+        Map<String, Object> data;
         for (Object entry : response.getEntries())
         {
             data = (Map<String, Object>) ((Map<String, Object>) entry).get(PublicAPIConstant.ENTRY_VALUE);
@@ -180,27 +197,28 @@ public class PublicAPITaggingServiceImpl extends AlfrescoService implements Tagg
 
         return new PagingResultImpl<Tag>(result, response.getHasMoreItems(), response.getSize());
     }
-    
-    
+
+
     // ////////////////////////////////////////////////////
     // Save State - serialization / deserialization
     // ////////////////////////////////////////////////////
-    public static final Parcelable.Creator<PublicAPITaggingServiceImpl> CREATOR = new Parcelable.Creator<PublicAPITaggingServiceImpl>()
-    {
-        public PublicAPITaggingServiceImpl createFromParcel(Parcel in)
-        {
-            return new PublicAPITaggingServiceImpl(in);
-        }
+    public static final Parcelable.Creator<PublicAPITaggingServiceImpl> CREATOR =
+            new Parcelable.Creator<PublicAPITaggingServiceImpl>()
+            {
+                public PublicAPITaggingServiceImpl createFromParcel(Parcel in)
+                {
+                    return new PublicAPITaggingServiceImpl(in);
+                }
 
-        public PublicAPITaggingServiceImpl[] newArray(int size)
-        {
-            return new PublicAPITaggingServiceImpl[size];
-        }
-    };
+                public PublicAPITaggingServiceImpl[] newArray(int size)
+                {
+                    return new PublicAPITaggingServiceImpl[size];
+                }
+            };
 
     public PublicAPITaggingServiceImpl(Parcel o)
     {
         super((AlfrescoSession) o.readParcelable(RepositorySessionImpl.class.getClassLoader()));
     }
-    
+
 }

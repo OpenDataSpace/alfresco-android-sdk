@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model;
 
@@ -26,7 +26,7 @@ import java.util.Map;
  * criteria. <br/>
  * It's generally used in conjunction with
  * {@link org.alfresco.mobile.android.api.model.ListingContext ListingContext}
- * 
+ *
  * @since 1.3
  * @author Jean Marie Pascal
  */
@@ -34,11 +34,11 @@ public class ListingFilter implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
-    private Map<String, Serializable> mapValues = new HashMap<String, Serializable>();
+    private final Map<String, Serializable> mapValues = new HashMap<String, Serializable>();
 
     /**
      * Add a specific key/value filter.
-     * 
+     *
      * @param key key with which the specified value is to be associated
      * @param value value to be associated with the specified key
      */
@@ -57,9 +57,7 @@ public class ListingFilter implements Serializable
     }
 
     /**
-     * Returns the value to which the specified key is mapped, or null if this filter contains no mapping for the key. 
-     * @param key
-     * @return
+     * Returns the value to which the specified key is mapped, or null if this filter contains no mapping for the key.
      */
     public Serializable getFilterValue(String key)
     {

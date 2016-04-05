@@ -1,25 +1,21 @@
 /*******************************************************************************
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services;
-
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.ContentStream;
@@ -30,6 +26,10 @@ import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.Process;
 import org.alfresco.mobile.android.api.model.ProcessDefinition;
 import org.alfresco.mobile.android.api.model.Task;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The WorkflowService allows managing processes(workflows) and tasks inside an
@@ -42,9 +42,9 @@ import org.alfresco.mobile.android.api.model.Task;
  * <li>Assign/Reassign/Claim task</li>
  * <li>Delete process</li>
  * </ul>
- * 
- * @since 1.3.0
+ *
  * @author Jean Marie PASCAL
+ * @since 1.3.0
  */
 public interface WorkflowService extends Service
 {
@@ -55,18 +55,24 @@ public interface WorkflowService extends Service
      * Filter based on status of the task. <br/>
      * Value can be {@link #FILTER_STATUS_ANY}, {@link #FILTER_STATUS_ACTIVE} ,
      * {@link #FILTER_STATUS_COMPLETE}
-     * 
+     *
      * @see {@link #getTasks(ListingContext)}
      */
     String FILTER_KEY_STATUS = "filterStatus";
 
-    /** All tasks are returned. */
+    /**
+     * All tasks are returned.
+     */
     int FILTER_STATUS_ANY = 0;
 
-    /** Only active (not completed) tasks are returned. */
+    /**
+     * Only active (not completed) tasks are returned.
+     */
     int FILTER_STATUS_ACTIVE = 1;
 
-    /** Only completed tasks are returned. */
+    /**
+     * Only completed tasks are returned.
+     */
     int FILTER_STATUS_COMPLETE = 2;
 
     /**
@@ -74,42 +80,58 @@ public interface WorkflowService extends Service
      * Value can be {@link #FILTER_DUE_TODAY}, {@link #FILTER_DUE_TOMORROW},
      * {@link #FILTER_DUE_7DAYS}, {@link #FILTER_DUE_OVERDUE},
      * {@link #FILTER_DUE_NODATE}
-     * 
+     *
      * @see {@link #getTasks(ListingContext)}
      */
     String FILTER_KEY_DUE = "filterDue";
 
-    /** Only tasks which are due today. */
+    /**
+     * Only tasks which are due today.
+     */
     int FILTER_DUE_TODAY = 0;
 
-    /** Only tasks which are due tomorrow. */
+    /**
+     * Only tasks which are due tomorrow.
+     */
     int FILTER_DUE_TOMORROW = 1;
 
-    /** Only tasks which are due in the next 7 days. */
+    /**
+     * Only tasks which are due in the next 7 days.
+     */
     int FILTER_DUE_7DAYS = 7;
 
-    /** Only tasks which are overdue. */
+    /**
+     * Only tasks which are overdue.
+     */
     int FILTER_DUE_OVERDUE = 100;
 
-    /** Only tasks with no due date. */
+    /**
+     * Only tasks with no due date.
+     */
     int FILTER_DUE_NODATE = -1;
 
     /**
      * Filter based on priority of the task. <br/>
      * Value can be {@link #FILTER_PRIORITY_HIGH},
      * {@link #FILTER_PRIORITY_MEDIUM}, {@link #FILTER_PRIORITY_LOW}
-     * 
+     *
      * @see {@link #getTasks(ListingContext)}
      */
     String FILTER_KEY_PRIORITY = "filterPriority";
 
-    /** Only tasks with a low priority. */
+    /**
+     * Only tasks with a low priority.
+     */
     int FILTER_PRIORITY_LOW = 3;
 
-    /** Only tasks with a medium priority. */
+    /**
+     * Only tasks with a medium priority.
+     */
     int FILTER_PRIORITY_MEDIUM = 2;
 
-    /** Only tasks with a high priority. */
+    /**
+     * Only tasks with a high priority.
+     */
     int FILTER_PRIORITY_HIGH = 1;
 
     /**
@@ -117,34 +139,47 @@ public interface WorkflowService extends Service
      * Value can be {@link #FILTER_ASSIGNEE_ME},
      * {@link #FILTER_ASSIGNEE_UNASSIGNED} or the string value representing the
      * unique identifier of a person.
-     * 
+     *
      * @see {@link #getTasks(ListingContext)}
      */
     String FILTER_KEY_ASSIGNEE = "filterAssignee";
 
-    /** Only tasks explicitly assign to the current user. */
+    /**
+     * Only tasks explicitly assign to the current user.
+     */
     int FILTER_ASSIGNEE_ME = 1;
 
-    /** Only unassigned tasks current user can claim (member of the group)*/
+    /**
+     * Only unassigned tasks current user can claim (member of the group)
+     */
     int FILTER_ASSIGNEE_UNASSIGNED = 2;
-    
-    /** tasks assigned to the current user and unassigned task current user can claim (member of the group)*/
+
+    /**
+     * tasks assigned to the current user and unassigned task current user can claim (member of the group)
+     */
     int FILTER_ASSIGNEE_ALL = 3;
-    
-    /** tasks not assigned to the current user*/
+
+    /**
+     * tasks not assigned to the current user
+     */
     int FILTER_NO_ASSIGNEE = 4;
-    
+
     String FILTER_KEY_INITIATOR = "filterInitiator";
-    
-    /** Only tasks explicitly assign to the current user. */
+
+    /**
+     * Only tasks explicitly assign to the current user.
+     */
     int FILTER_INITIATOR_ME = 1;
-    
-    /** tasks assigned to anybody. */
+
+    /**
+     * tasks assigned to anybody.
+     */
     int FILTER_INITIATOR_ANY = 2;
 
     // ////////////////////////////////////////////////////////////////
     // PROCESS DEFINITIONS
     // ////////////////////////////////////////////////////////////////
+
     /**
      * @return a list of process definitions.
      */
@@ -152,22 +187,22 @@ public interface WorkflowService extends Service
 
     /**
      * @param listingContext : Listing context that define the behavior of
-     *            paging results
-     *            {@link org.alfresco.mobile.android.api.model.ListingContext
-     *            ListingContext}
+     *                       paging results
+     *                       {@link org.alfresco.mobile.android.api.model.ListingContext
+     *                       ListingContext}
      * @return Return a paged list of all the ProcessDefinition available inside
-     *         the repository.
+     * the repository.
      * @since 1.3.0
      */
     PagingResult<ProcessDefinition> getProcessDefinitions(ListingContext listingContext);
 
     /**
      * Returns a single process definition.
-     * 
+     *
      * @param processDefinitionIdentifier : unique identifier
      * @return Returns a processDefinition object with the given identifier. If
-     *         the processDefinitionIdentifier doesn’t match an existing one
-     *         null is returned.
+     * the processDefinitionIdentifier doesn’t match an existing one
+     * null is returned.
      * @since 1.3.0
      */
     ProcessDefinition getProcessDefinition(String processDefinitionIdentifier);
@@ -175,26 +210,27 @@ public interface WorkflowService extends Service
     // ////////////////////////////////////////////////////////////////
     // PROCESS
     // ////////////////////////////////////////////////////////////////
+
     /**
      * Returns a list of processes in progress for the current user.<br/>
      * Each process is an execution of a process definition.
-     * 
-     * @since 1.3.0
+     *
      * @return list of processes
+     * @since 1.3.0
      */
     List<Process> getProcesses();
 
     /**
      * Returns a list of process. <br/>
      * Each process is an execution of a process definition. <br/>
-     * 
-     * @since 1.3.0
+     *
      * @param listingContext : Listing context that define the behavior of
-     *            paging results
-     *            {@link org.alfresco.mobile.android.api.model.ListingContext
-     *            ListingContext}
+     *                       paging results
+     *                       {@link org.alfresco.mobile.android.api.model.ListingContext
+     *                       ListingContext}
      * @return Return a paged list of processes available that meet certain
-     *         criteria.
+     * criteria.
+     * @since 1.3.0
      */
     PagingResult<Process> getProcesses(ListingContext listingContext);
 
@@ -213,10 +249,10 @@ public interface WorkflowService extends Service
      * WorkflowModel}
      * </p>
      * <p>
-     * 
+     * <p/>
      * <pre>
      * <b>Starting an Adhoc Process</b>
-     *   <code>{@code 
+     *   <code>{@code
      *    // Process Definition Listing
      *    List<ProcessDefinition> definitions = workflowService.getProcessDefinitions();
      *    // Retrieve adhoc processDefinition
@@ -229,79 +265,77 @@ public interface WorkflowService extends Service
      *            break;
      *        }
      *    }
-     *  
+     *
      *    // Start Process : Prepare Variables
      *    Map<String, Serializable> variables = new HashMap<String, Serializable>();
-     *  
+     *
      *    // ASSIGNEE
      *    Person user = alfsession.getServiceRegistry().getPersonService().getPerson(alfsession.getPersonIdentifier());
      *    List<Person> users = new ArrayList<Person>();
      *    users.add(user);
-     *  
+     *
      *    // DUE DATE
      *    GregorianCalendar calendar = new GregorianCalendar();
      *    calendar.set(Calendar.YEAR, 2000);
      *    variables.put(WorkflowModel.PROP_WORKFLOW_DUE_DATE, DateUtils.format(calendar));
-     *  
+     *
      *    // PRIORITY
      *    variables.put(WorkflowModel.PROP_WORKFLOW_PRIORITY, priority);
-     *  
+     *
      *    // DESCRIPTION
      *    variables.put(WorkflowModel.PROP_WORKFLOW_DESCRIPTION, description);
-     *  
+     *
      *    // START THE PROCESS
      *    return workflowService.startProcess(def, users, variables, null);
      * }
      *   </code>
      * </pre>
-     * 
+     * <p/>
      * </p>
-     * 
-     * @since 1.3.0
+     *
      * @param processDefinition (mandatory) : Represents the process definition
-     *            to execute.
-     * @param assignees (optional) : List of person to assign. In case of
-     *            "group based process", leave this parameter as null and add
-     *            inside the variables map the correct key/value like
-     *            bpm__groupAssignee. <i>Warning : Majority of default alfresco
-     *            workflow/process require an assignee.</i>
-     * @param variables (optional) : Map of process variables to add at the
-     *            start.
-     * @param items (optional) : List of document object.
+     *                          to execute.
+     * @param assignees         (optional) : List of person to assign. In case of
+     *                          "group based process", leave this parameter as null and add
+     *                          inside the variables map the correct key/value like
+     *                          bpm__groupAssignee. <i>Warning : Majority of default alfresco
+     *                          workflow/process require an assignee.</i>
+     * @param variables         (optional) : Map of process variables to add at the
+     *                          start.
+     * @param items             (optional) : List of document object.
      * @return the started process object.
+     * @since 1.3.0
      */
     Process startProcess(ProcessDefinition processDefinition, List<Person> assignees,
-            Map<String, Serializable> variables, List<Document> items);
+                         Map<String, Serializable> variables, List<Document> items);
 
     /**
      * Deletes a process. An authenticated user can only delete a process if the
      * authenticated user has started the process.
-     * 
-     * @since 1.3.0
+     *
      * @param process : process object to delete
+     * @since 1.3.0
      */
     void deleteProcess(Process process);
 
     /**
      * Retrieves a single process.
-     * 
-     * @since 1.3.0
+     *
      * @param processId : unique identifier of the process
      * @return Returns a process object with the given identifier. If the
-     *         processId doesn’t match an existing one null is returned.
+     * processId doesn’t match an existing one null is returned.
      * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     *                                  during the process.
+     * @since 1.3.0
      */
     Process getProcess(String processId);
 
     /**
      * Get all the tasks in progress for the specified process.
-     * 
-     * @since 1.3.0
-     * @param process
-     * @return
+     *
      * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     *                                  during the process.
+     * @since 1.3.0
      */
     List<Task> getTasks(Process process);
 
@@ -310,26 +344,26 @@ public interface WorkflowService extends Service
      * {@link org.alfresco.mobile.android.api.model.ListingFilter ListingFilter}
      * inside the ListingContext parameter to get task that meet certain
      * criteria like {@link #FILTER_KEY_STATUS}.
-     * 
-     * @since 1.3.0
-     * @param process : process specified
+     *
+     * @param process        : process specified
      * @param listingContext : defines the behavior of paging results
-     *            {@link org.alfresco.mobile.android.api.model.ListingContext
-     *            ListingContext}
+     *                       {@link org.alfresco.mobile.android.api.model.ListingContext
+     *                       ListingContext}
      * @return Return a paged list of tasks available associated to the process.
      * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     *                                  during the process.
+     * @since 1.3.0
      */
     PagingResult<Task> getTasks(Process process, ListingContext listingContext);
 
     /**
      * Returns the latest (and complete) variables for the provided process.
-     * 
+     *
      * @param process : process to refresh
      * @return the refreshed task with all available variables.
-     * @since 1.3.0
      * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     *                                  during the process.
+     * @since 1.3.0
      */
     Process refresh(Process process);
 
@@ -339,83 +373,76 @@ public interface WorkflowService extends Service
 
     /**
      * Returns a list items associated to the process.
-     * 
-     * @since 1.3.0
-     * @param process
+     *
      * @return a list of documents attached to the specified process.
      * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     *                                  during the process.
+     * @since 1.3.0
      */
     List<Document> getDocuments(Process process);
 
     /**
-     * @since 1.3.0
-     * @param process
      * @param listingContext : defines the behavior of paging results
-     *            {@link org.alfresco.mobile.android.api.model.ListingContext
-     *            ListingContext}
+     *                       {@link org.alfresco.mobile.android.api.model.ListingContext
+     *                       ListingContext}
      * @return Return a paged list of documents attached to the specified
-     *         process.
+     * process.
      * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     *                                  during the process.
+     * @since 1.3.0
      */
     PagingResult<Document> getDocuments(Process process, ListingContext listingContext);
 
     /**
      * Returns a list items associated to the the task.
-     * 
-     * @since 1.3.0
-     * @param task
+     *
      * @return a list of documents attached to the specified task.
      * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     *                                  during the process.
+     * @since 1.3.0
      */
     List<Document> getDocuments(Task task);
 
     /**
-     * @since 1.3.0
-     * @param task
      * @param listingContext : defines the behavior of paging results
-     *            {@link org.alfresco.mobile.android.api.model.ListingContext
-     *            ListingContext}
+     *                       {@link org.alfresco.mobile.android.api.model.ListingContext
+     *                       ListingContext}
      * @return Return a paged list of documents attached to the specified task.
      * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     *                                  during the process.
+     * @since 1.3.0
      */
     PagingResult<Document> getDocuments(Task task, ListingContext listingContext);
 
     /**
      * Add a list of items to the the specified task.
-     * 
-     * @since 1.3.0
-     * @param process
-     * @param items
+     *
      * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     *                                  during the process.
+     * @since 1.3.0
      */
     void addDocuments(Task task, List<Document> items);
 
     /**
      * Delete a list of items to the the task.
-     * 
-     * @since 1.3.0
-     * @param process
-     * @param items
+     *
      * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     *                                  during the process.
+     * @since 1.3.0
      */
     void removeDocuments(Task task, List<Document> items);
 
     // ////////////////////////////////////////////////////////////////
     // TASKS
     // ////////////////////////////////////////////////////////////////
+
     /**
      * Returns a list of task in progress for the current user.<br/>
-     * 
-     * @since 1.3.0
+     *
      * @return list of task
      * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     *                                  during the process.
+     * @since 1.3.0
      */
     List<Task> getTasks();
 
@@ -429,9 +456,9 @@ public interface WorkflowService extends Service
      * add more than one filter. In this case filters value are joined with an
      * AND operator.
      * <p>
-     * 
+     * <p/>
      * <pre>
-     *  <code>{@code 
+     *  <code>{@code
      *   // We wants tasks which are unassigned AND active
      *   ListingFilter lf = new ListingFilter();
      *   lf.addFilter(WorkflowService.FILTER_STATUS, WorkflowService.FILTER_STATUS_ACTIVE);
@@ -442,40 +469,39 @@ public interface WorkflowService extends Service
      *   }
      *  </code>
      * </pre>
-     * 
+     * <p/>
      * </p>
-     * 
-     * @since 1.3.0
+     *
      * @param listingContext : defines the behavior of paging results
-     *            {@link org.alfresco.mobile.android.api.model.ListingContext
-     *            ListingContext}
+     *                       {@link org.alfresco.mobile.android.api.model.ListingContext
+     *                       ListingContext}
      * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
-     * @return
+     *                                  during the process.
+     * @since 1.3.0
      */
     PagingResult<Task> getTasks(ListingContext listingContext);
 
     /**
      * Retrieves a single task by its id.
-     * 
-     * @since 1.3.0
+     *
      * @param taskIdentifier : unique identifier of the task
      * @return Returns a task object with the given identifier. If the
-     *         taskIdentifier doesn’t match an existing one null is returned.
+     * taskIdentifier doesn’t match an existing one null is returned.
      * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     *                                  during the process.
+     * @since 1.3.0
      */
     Task getTask(String taskIdentifier);
 
     /**
      * Claiming a task is done by one of the candidates of a task, task owner or
      * process-initiator
-     * 
-     * @since 1.3.0
+     *
      * @param task : Task object to claim
      * @return claimed task object.
      * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     *                                  during the process.
+     * @since 1.3.0
      */
     Task claimTask(Task task);
 
@@ -483,12 +509,12 @@ public interface WorkflowService extends Service
      * This removes the assignee of the task i.e the current user. In order to
      * unclaim a task, the authenticated user should be a either the
      * assignee/owner of the task or process initiator.
-     * 
-     * @since 1.3.0
+     *
      * @param task : Task object to unclaim
      * @return unclaimed task object.
      * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     *                                  during the process.
+     * @since 1.3.0
      */
     Task unClaimTask(Task task);
 
@@ -496,67 +522,68 @@ public interface WorkflowService extends Service
      * Completing a task. In order to complete a task, the authenticated user
      * has to be the assignee of the task, the task owner or the process
      * initiator.
-     * 
-     * @since 1.3.0
+     *
      * @param task : Task object to complete
      * @return completed task object.
      * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     *                                  during the process.
+     * @since 1.3.0
      */
     Task completeTask(Task task, Map<String, Serializable> variables);
 
     /**
      * Reassign the task from the owner to an assignee
-     * 
-     * @since 1.3.0
-     * @param task : Task object to reassign
+     *
+     * @param task     : Task object to reassign
      * @param assignee : New assignee username/identifier of the task
      * @return updated task object.
      * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     *                                  during the process.
+     * @since 1.3.0
      */
     Task reassignTask(Task task, Person assignee);
 
     /**
      * Update the variables for a given process. If the variable doesn't exist
      * yet, it will be created. Only small subset of variables can be upgraded.
-     * 
-     * @since 1.3.0
-     * @param task : tak to update
+     *
+     * @param task      : tak to update
      * @param variables : map of variables to update
      * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     *                                  during the process.
+     * @since 1.3.0
      */
     Task updateVariables(Task task, Map<String, Serializable> variables);
 
     /**
      * Returns the latest (and complete) variables for the provided task.
-     * 
+     *
      * @param task : task to refresh
      * @return the refreshed task with all available variables.
-     * @since 1.3.0
      * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     *                                  during the process.
+     * @since 1.3.0
      */
     Task refresh(Task task);
 
     // ////////////////////////////////////////////////////////////////
     // DIAGRAM
     // ////////////////////////////////////////////////////////////////
+
     /**
      * This process diagram shows a user the context of the task that is being
      * performed. The user can check the status of processes he or she is
      * involved in. This can be used to see the context when a user is
      * performing a task as part of a process. Or when a user wants to check the
      * status of a process that he/she was involved in at another time.
-     * 
-     * @since 1.3.0
+     *
      * @param process : process object
      * @return the contentFile representation that contains file informations +
-     *         inputStream of the content. Null in other case.
-     * @throws AlfrescoServiceException : if network or internal problems occur
-     *             during the process.
+     * inputStream of the content. Null in other case.
+     * @throws AlfrescoServiceException      : if network or internal problems occur
+     *                                       during the process.
      * @throws UnsupportedOperationException : if the workflow engine is jBPM
+     * @since 1.3.0
      */
     ContentStream getProcessDiagram(Process process);
 
@@ -566,12 +593,12 @@ public interface WorkflowService extends Service
      * involved in. This can be used to see the context when a user is
      * performing a task as part of a process. Or when a user wants to check the
      * status of a process that he/she was involved in at another time.
-     * 
-     * @since 1.3.0
+     *
      * @param processId : process unique identifier
      * @return the contentFile representation that contains file informations +
-     *         inputStream of the content.
+     * inputStream of the content.
      * @throws UnsupportedOperationException : if the workflow engine is jBPM
+     * @since 1.3.0
      */
     ContentStream getProcessDiagram(String processId);
 }

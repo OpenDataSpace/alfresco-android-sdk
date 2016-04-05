@@ -1,31 +1,33 @@
 /*******************************************************************************
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
+import android.text.TextUtils;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.Company;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class CompanyImpl implements Company
 {
@@ -54,6 +56,7 @@ public class CompanyImpl implements Company
     private static final ArrayList<String> CLOUD = new ArrayList<String>(8)
     {
         private static final long serialVersionUID = 1L;
+
         {
             add(CloudConstant.ORGANIZATION_VALUE);
             add(CloudConstant.COMPANYADDRESS1_VALUE);
@@ -102,56 +105,80 @@ public class CompanyImpl implements Company
     @Override
     public String getName()
     {
-        if (isCloud) { return properties.get(CloudConstant.ORGANIZATION_VALUE); }
+        if (isCloud)
+        {
+            return properties.get(CloudConstant.ORGANIZATION_VALUE);
+        }
         return properties.get(OnPremiseConstant.ORGANIZATION_VALUE);
     }
 
     @Override
     public String getAddress1()
     {
-        if (isCloud) { return properties.get(CloudConstant.COMPANYADDRESS1_VALUE); }
+        if (isCloud)
+        {
+            return properties.get(CloudConstant.COMPANYADDRESS1_VALUE);
+        }
         return properties.get(OnPremiseConstant.COMPANYADDRESS1_VALUE);
     }
 
     @Override
     public String getAddress2()
     {
-        if (isCloud) { return properties.get(CloudConstant.COMPANYADDRESS2_VALUE); }
+        if (isCloud)
+        {
+            return properties.get(CloudConstant.COMPANYADDRESS2_VALUE);
+        }
         return properties.get(OnPremiseConstant.COMPANYADDRESS2_VALUE);
     }
 
     @Override
     public String getAddress3()
     {
-        if (isCloud) { return properties.get(CloudConstant.COMPANYADDRESS3_VALUE); }
+        if (isCloud)
+        {
+            return properties.get(CloudConstant.COMPANYADDRESS3_VALUE);
+        }
         return properties.get(OnPremiseConstant.COMPANYADDRESS3_VALUE);
     }
 
     @Override
     public String getPostCode()
     {
-        if (isCloud) { return properties.get(CloudConstant.COMPANYPOSTCODE_VALUE); }
+        if (isCloud)
+        {
+            return properties.get(CloudConstant.COMPANYPOSTCODE_VALUE);
+        }
         return properties.get(OnPremiseConstant.COMPANYPOSTCODE_VALUE);
     }
 
     @Override
     public String getTelephoneNumber()
     {
-        if (isCloud) { return properties.get(CloudConstant.COMPANYTELEPHONE_VALUE); }
+        if (isCloud)
+        {
+            return properties.get(CloudConstant.COMPANYTELEPHONE_VALUE);
+        }
         return properties.get(OnPremiseConstant.COMPANYTELEPHONE_VALUE);
     }
 
     @Override
     public String getFaxNumber()
     {
-        if (isCloud) { return properties.get(CloudConstant.COMPANYFAX_VALUE); }
+        if (isCloud)
+        {
+            return properties.get(CloudConstant.COMPANYFAX_VALUE);
+        }
         return properties.get(OnPremiseConstant.COMPANYFAX_VALUE);
     }
 
     @Override
     public String getEmail()
     {
-        if (isCloud) { return properties.get(CloudConstant.COMPANYEMAIL_VALUE); }
+        if (isCloud)
+        {
+            return properties.get(CloudConstant.COMPANYEMAIL_VALUE);
+        }
         return properties.get(OnPremiseConstant.COMPANYEMAIL_VALUE);
     }
 
@@ -164,7 +191,10 @@ public class CompanyImpl implements Company
     {
         for (Entry<String, String> prop : properties.entrySet())
         {
-            if (prop.getValue() != null && !prop.getValue().isEmpty()) { return false; }
+            if (!TextUtils.isEmpty(prop.getValue()))
+            {
+                return false;
+            }
         }
         return true;
     }
@@ -205,7 +235,10 @@ public class CompanyImpl implements Company
             sb.deleteCharAt(sb.length() - 1);
         }
 
-        if (sb.length() == 0) { return null; }
+        if (sb.length() == 0)
+        {
+            return null;
+        }
         return sb.toString();
     }
 

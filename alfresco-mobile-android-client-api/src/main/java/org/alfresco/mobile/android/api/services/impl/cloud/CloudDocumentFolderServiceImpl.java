@@ -1,23 +1,24 @@
 /*******************************************************************************
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl.cloud;
 
-import java.util.List;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ContentStream;
@@ -35,12 +36,11 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundExcept
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.util.List;
 
 /**
  * Cloud implementation of DocumentFolderService
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class CloudDocumentFolderServiceImpl extends PublicAPIDocumentFolderServiceImpl
@@ -48,8 +48,6 @@ public class CloudDocumentFolderServiceImpl extends PublicAPIDocumentFolderServi
 
     /**
      * Default Constructor. Only used inside ServiceRegistry.
-     * 
-     * @param repositorySession : Repository Session.
      */
     public CloudDocumentFolderServiceImpl(AlfrescoSession cloudSession)
     {
@@ -58,7 +56,7 @@ public class CloudDocumentFolderServiceImpl extends PublicAPIDocumentFolderServi
 
     public UrlBuilder getRenditionUrl(String identifier, String title)
     {
-        UrlBuilder cf = null;
+        //UrlBuilder cf = null;
         try
         {
             String internalRenditionType = null;
@@ -73,26 +71,27 @@ public class CloudDocumentFolderServiceImpl extends PublicAPIDocumentFolderServi
 
             // First GetInfo
             String renditionIdentifier = getRendition(identifier, internalRenditionType, title);
-            if (renditionIdentifier == null) { return null; }
+            if (renditionIdentifier == null)
+            {
+                return null;
+            }
 
             // Second getData
-            return new UrlBuilder(CloudUrlRegistry.getThumbnailUrl((CloudSession) session, identifier,
-                    renditionIdentifier));
+            return new UrlBuilder(
+                    CloudUrlRegistry.getThumbnailUrl((CloudSession) session, identifier, renditionIdentifier));
         }
-        catch (CmisObjectNotFoundException e)
+        catch (CmisObjectNotFoundException ignored)
         {
-            cf = null;
         }
         catch (Exception e)
         {
             convertException(e);
         }
-        return cf;
+        return null;
     }
 
     @Override
-    /** {@inheritDoc} */
-    public ContentStream getRenditionStream(String identifier, String title)
+    /** {@inheritDoc} */ public ContentStream getRenditionStream(String identifier, String title)
     {
         ContentStream cf = null;
         try
@@ -125,20 +124,25 @@ public class CloudDocumentFolderServiceImpl extends PublicAPIDocumentFolderServi
         return cf;
     }
 
-    /** Constant to retrieve cmis:thumbnail data inside the atompub response. */
+    /**
+     * Constant to retrieve cmis:thumbnail data inside the atompub response.
+     */
     private static final String RENDITION_CMIS_THUMBNAIL = "cmis:thumbnail";
 
-    /** Constant to retrieve alf:webpreview data inside the atompub response. */
+    /**
+     * Constant to retrieve alf:webpreview data inside the atompub response.
+     */
     private static final String RENDITION_WEBPREVIEW = "alf:webpreview";
 
-    /** Constant to retrieve all rendition data inside the atompub response. */
+    /**
+     * Constant to retrieve all rendition data inside the atompub response.
+     */
     private static final String RENDITION_ALL = "*";
 
     /**
      * Internal method to retrieve unique identifier of a node rendition.
-     * 
+     *
      * @param identifier : node identifier
-     * @param type : kind of rendition
      * @return unique identifier of rendition node.
      */
     private String getRendition(String identifier, String kind, String title)
@@ -149,11 +153,16 @@ public class CloudDocumentFolderServiceImpl extends PublicAPIDocumentFolderServi
         if (object != null && kind != null)
         {
             List<Rendition> renditions = object.getRenditions();
-            if (renditions == null){ return null;}
+            if (renditions == null)
+            {
+                return null;
+            }
             for (Rendition rendition : renditions)
             {
-                if (kind.equalsIgnoreCase(rendition.getKind()) && title.equalsIgnoreCase(rendition.getTitle())) { return rendition
-                        .getStreamId(); }
+                if (kind.equalsIgnoreCase(rendition.getKind()) && title.equalsIgnoreCase(rendition.getTitle()))
+                {
+                    return rendition.getStreamId();
+                }
             }
         }
         return null;
@@ -162,18 +171,19 @@ public class CloudDocumentFolderServiceImpl extends PublicAPIDocumentFolderServi
     // ////////////////////////////////////////////////////
     // Save State - serialization / deserialization
     // ////////////////////////////////////////////////////
-    public static final Parcelable.Creator<CloudDocumentFolderServiceImpl> CREATOR = new Parcelable.Creator<CloudDocumentFolderServiceImpl>()
-    {
-        public CloudDocumentFolderServiceImpl createFromParcel(Parcel in)
-        {
-            return new CloudDocumentFolderServiceImpl(in);
-        }
+    public static final Parcelable.Creator<CloudDocumentFolderServiceImpl> CREATOR =
+            new Parcelable.Creator<CloudDocumentFolderServiceImpl>()
+            {
+                public CloudDocumentFolderServiceImpl createFromParcel(Parcel in)
+                {
+                    return new CloudDocumentFolderServiceImpl(in);
+                }
 
-        public CloudDocumentFolderServiceImpl[] newArray(int size)
-        {
-            return new CloudDocumentFolderServiceImpl[size];
-        }
-    };
+                public CloudDocumentFolderServiceImpl[] newArray(int size)
+                {
+                    return new CloudDocumentFolderServiceImpl[size];
+                }
+            };
 
     public CloudDocumentFolderServiceImpl(Parcel o)
     {

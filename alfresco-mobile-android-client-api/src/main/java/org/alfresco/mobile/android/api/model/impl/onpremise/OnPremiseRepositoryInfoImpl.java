@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.impl.onpremise;
 
@@ -26,7 +26,7 @@ import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
  * The RepositoryInfo class provides information on the repository the session
  * is connected to, for example, repository version number, edition,
  * capabilities etc.
- * 
+ *
  * @author Jean Marie PASCAL
  */
 public class OnPremiseRepositoryInfoImpl extends AbstractRepositoryInfo
@@ -38,9 +38,8 @@ public class OnPremiseRepositoryInfoImpl extends AbstractRepositoryInfo
 
     /**
      * Constructor that wrapp RepositoryInfo CMIS object .
-     * 
+     *
      * @param repositoryInfo : cmis object.
-     * @param rootNode
      */
     public OnPremiseRepositoryInfoImpl(org.apache.chemistry.opencmis.commons.data.RepositoryInfo repositoryInfo)
     {
@@ -49,12 +48,12 @@ public class OnPremiseRepositoryInfoImpl extends AbstractRepositoryInfo
 
     /**
      * Specific constructor to support MOBSDK-508 issue.
-     * 
+     *
      * @param repositoryInfo : cmis object.
-     * @param editionValue : Override this specific value.
+     * @param editionValue   : Override this specific value.
      */
     public OnPremiseRepositoryInfoImpl(org.apache.chemistry.opencmis.commons.data.RepositoryInfo repositoryInfo,
-            String editionValue)
+                                       String editionValue)
     {
         super(repositoryInfo);
         edition = editionValue;
@@ -70,7 +69,7 @@ public class OnPremiseRepositoryInfoImpl extends AbstractRepositoryInfo
 
     /**
      * Pattern : major.minor.maintenance (build)
-     * 
+     *
      * @return Returns the major version of the repository
      */
     public Integer getMajorVersion()
@@ -80,7 +79,7 @@ public class OnPremiseRepositoryInfoImpl extends AbstractRepositoryInfo
 
     /**
      * Pattern : major.minor.maintenance (build)
-     * 
+     *
      * @return Returns the minor version of the repository
      */
     public Integer getMinorVersion()
@@ -90,36 +89,51 @@ public class OnPremiseRepositoryInfoImpl extends AbstractRepositoryInfo
 
     /**
      * Pattern : major.minor.maintenance (build)
-     * 
+     *
      * @return Returns the maintenance version of the repository
      */
     public Integer getMaintenanceVersion()
     {
-        int separator = RepositoryVersionHelper.getVersionString(getVersion(), 2).indexOf(' ');
-        return Integer.parseInt(RepositoryVersionHelper.getVersionString(getVersion(), 2).substring(0, separator));
+        final String ver = RepositoryVersionHelper.getVersionString(getVersion(), 2);
+        if (ver == null)
+        {
+            return 0;
+        }
+
+        int separator = ver.indexOf(' ');
+        return Integer.parseInt(ver.substring(0, separator));
     }
 
     /**
      * Pattern : major.minor.maintenance (build)
-     * 
+     *
      * @return Returns the build number as string.
      */
     public String getBuildNumber()
     {
-        int separator = RepositoryVersionHelper.getVersionString(getVersion(), 2).indexOf(' ');
-        return RepositoryVersionHelper.getVersionString(getVersion(), 2).substring(separator);
+        final String ver = RepositoryVersionHelper.getVersionString(getVersion(), 2);
+        if (ver == null)
+        {
+            return "";
+        }
+
+        int separator = ver.indexOf(' ');
+        return ver.substring(separator);
     }
 
     /**
      * Returns Community or Enterprise if it's an alfresco Repository. Returns
      * product name if it's a CMIS server.
-     * 
+     *
      * @return null if it's not an alfresco repository.
      */
     public String getEdition()
     {
         // Related to MOBSDK-508 issue.
-        if (edition != null) { return edition; }
+        if (edition != null)
+        {
+            return edition;
+        }
 
         // In normal case
         if (repositoryInfo.getProductName().startsWith(OnPremiseConstant.ALFRESCO_VENDOR))
@@ -145,13 +159,13 @@ public class OnPremiseRepositoryInfoImpl extends AbstractRepositoryInfo
 
     /**
      * Check if the repository is an Alfresco Repository.
-     * 
+     *
      * @return true if alfresco product.
      */
     public boolean isAlfrescoProduct()
     {
-        if (repositoryInfo.getProductName() == null) { return false; }
-        return repositoryInfo.getProductName().startsWith(OnPremiseConstant.ALFRESCO_VENDOR);
+        return repositoryInfo.getProductName() != null &&
+                repositoryInfo.getProductName().startsWith(OnPremiseConstant.ALFRESCO_VENDOR);
     }
 
     @Override

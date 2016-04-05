@@ -1,25 +1,23 @@
 /*******************************************************************************
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl;
 
-import java.io.File;
-import java.util.List;
-import java.util.Map;
+import android.os.Parcel;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
@@ -49,19 +47,23 @@ import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
 
-import android.os.Parcel;
+import java.io.File;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Abstract base class for all public Alfresco SDK Services. Contains all
  * utility methods that are common for building a service. </br> Developers can
  * extend this class if they want to add new services inside the SDK.</br> NB :
  * Don't forget to add the newly service to a custom {@link ServiceRegistry}
- * 
+ *
  * @author Jean Marie Pascal
  */
 public abstract class AlfrescoService implements Service
 {
-    /** Repository Session. */
+    /**
+     * Repository Session.
+     */
     protected AlfrescoSession session;
 
     private BindingSession bindingSession;
@@ -76,9 +78,8 @@ public abstract class AlfrescoService implements Service
     /**
      * Default constructor for service. </br> Used by the
      * {@link ServiceRegistry}.
-     * 
+     *
      * @param repositorySession : Repository Session.
-     * @param cmisSession : CMIS session.
      */
     public AlfrescoService(AlfrescoSession repositorySession)
     {
@@ -97,7 +98,7 @@ public abstract class AlfrescoService implements Service
     /**
      * Performs a GET on an URL, checks the response code and returns the
      * result.
-     * 
+     *
      * @param url : requested URL. @ : if network or internal problems occur
      *            during the process.
      */
@@ -123,7 +124,7 @@ public abstract class AlfrescoService implements Service
     {
         // make the call
         Response resp = getHttpInvoker().invokePOST(url, contentType, writer, getSessionHttp());
-        
+
         // check response code
         if (resp.getResponseCode() != HttpStatus.SC_OK && resp.getResponseCode() != HttpStatus.SC_CREATED)
         {
@@ -154,7 +155,8 @@ public abstract class AlfrescoService implements Service
      * Performs a PUT on an URL, checks the response code and returns the
      * result. @ : if network or internal problems occur during the process.
      */
-    protected Response put(UrlBuilder url, String contentType, Map<String, String> headers, Output writer, int errorCode)
+    protected Response put(UrlBuilder url, String contentType, Map<String, String> headers, Output writer,
+                           int errorCode)
     {
         Response resp = getHttpInvoker().invokePUT(url, contentType, headers, writer, getSessionHttp());
 
@@ -169,7 +171,7 @@ public abstract class AlfrescoService implements Service
 
     /**
      * @return Binding session for passing the authenticationProvider to execute
-     *         the http request.
+     * the http request.
      */
     protected BindingSession getSessionHttp()
     {
@@ -179,10 +181,9 @@ public abstract class AlfrescoService implements Service
             bindingSession.put(CmisBindingsHelper.AUTHENTICATION_PROVIDER_OBJECT,
                     ((AbstractAlfrescoSessionImpl) session).getPassthruAuthenticationProvider());
             bindingSession.put(SessionParameter.HTTP_INVOKER_CLASS,
-                    ((AbstractAlfrescoSessionImpl) session).getParameter(AlfrescoSession.HTTP_INVOKER_CLASSNAME));
+                    session.getParameter(AlfrescoSession.HTTP_INVOKER_CLASSNAME));
         }
-        else if (bindingSession != null
-                && bindingSession.get(CmisBindingsHelper.AUTHENTICATION_PROVIDER_OBJECT) == null)
+        else if (bindingSession.get(CmisBindingsHelper.AUTHENTICATION_PROVIDER_OBJECT) == null)
         {
             bindingSession.put(CmisBindingsHelper.AUTHENTICATION_PROVIDER_OBJECT,
                     ((AbstractAlfrescoSessionImpl) session).getPassthruAuthenticationProvider());
@@ -201,9 +202,10 @@ public abstract class AlfrescoService implements Service
     // //////////////////////////////////////////////////////////////////////////////////////////
     // UTILS
     // /////////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * Wrap and transform cmisobject into NodeObject
-     * 
+     *
      * @param object : Underlying OpenCMIS Object
      * @return Alfresco Node Object.
      */
@@ -214,25 +216,28 @@ public abstract class AlfrescoService implements Service
 
     protected Node convertNode(CmisObject object, boolean hasAllProperties)
     {
-        if (isObjectNull(object)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "object")); }
+        if (isObjectNull(object))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "object"));
+        }
 
         /* determine type */
         switch (object.getBaseTypeId())
         {
-            case CMIS_DOCUMENT:
-                return new DocumentImpl(object, hasAllProperties);
-            case CMIS_FOLDER:
-                return new FolderImpl(object, hasAllProperties);
-            default:
-                throw new AlfrescoServiceException(ErrorCodeRegistry.DOCFOLDER_WRONG_NODE_TYPE,
-                        Messagesl18n.getString("AlfrescoService.2") + object.getBaseTypeId());
+        case CMIS_DOCUMENT:
+            return new DocumentImpl(object, hasAllProperties);
+        case CMIS_FOLDER:
+            return new FolderImpl(object, hasAllProperties);
+        default:
+            throw new AlfrescoServiceException(ErrorCodeRegistry.DOCFOLDER_WRONG_NODE_TYPE,
+                    Messagesl18n.getString("AlfrescoService.2") + object.getBaseTypeId());
         }
     }
 
     /**
      * Utils method to check if an object is null.
-     * 
+     *
      * @param o : object to check
      * @return true if the object is null.
      */
@@ -243,7 +248,7 @@ public abstract class AlfrescoService implements Service
 
     /**
      * Utils method to check if a string objec is null or empty.
-     * 
+     *
      * @param s : String to check
      * @return true if the string is null/empty.
      */
@@ -254,7 +259,7 @@ public abstract class AlfrescoService implements Service
 
     /**
      * Utils method to check if a list is null/empty.
-     * 
+     *
      * @param l : object to check
      * @return true if the list is null or empty.
      */
@@ -266,8 +271,7 @@ public abstract class AlfrescoService implements Service
 
     /**
      * Utils method to check if a map is null/empty.
-     * 
-     * @param l : object to check
+     *
      * @return true if the list is null or empty.
      */
     @SuppressWarnings("rawtypes")
@@ -289,13 +293,14 @@ public abstract class AlfrescoService implements Service
     // //////////////////////////////////////////////////////////////////////////////////////////
     // EXCEPTION
     // /////////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * Catch all underlying CMIS or not exception and throw them as
      * {@link AlfrescoServiceException}
-     * 
+     *
      * @param t : exceptions catched
-     * @throw AlfrescoServiceException : Reasons why the requested response code
-     *        is not valid.
+     * @throws AlfrescoServiceException : Reasons why the requested response code
+     *                                  is not valid.
      */
     protected static void convertException(Exception t)
     {
@@ -306,8 +311,8 @@ public abstract class AlfrescoService implements Service
      * Try to convert error response from repository into high level
      * ErrorContent object. This object allow developper to retrieve information
      * on the exception.
-     * 
-     * @param resp : http response.
+     *
+     * @param resp             : http response.
      * @param serviceErrorCode : service from which the error occurs.
      */
     public void convertStatusCode(Response resp, int serviceErrorCode)
@@ -326,30 +331,33 @@ public abstract class AlfrescoService implements Service
      * Allow to save a contentStream inside the devices file system. The content
      * is saved as cache file inside a cache folder. It's possible to determine
      * the subfolders.
-     * 
+     *
      * @param contentStream : Content stream of any content
      * @param cacheFileName : Name of the cache file
-     * @param storageType : Determine in which subfolders the content is stored
+     * @param storageType   : Determine in which subfolders the content is stored
      * @return ContentFile associated to the cache file.
      */
     protected ContentFile saveContentStream(ContentStream contentStream, String cacheFileName, int storageType)
 
     {
-        if (contentStream == null || contentStream.getInputStream() == null) { return null; }
+        if (contentStream == null || contentStream.getInputStream() == null)
+        {
+            return null;
+        }
 
         try
         {
             String folderName = (String) session.getParameter(AlfrescoSession.CACHE_FOLDER);
             switch (storageType)
             {
-                case RENDITION_CACHE:
-                    folderName += "/rendition";
-                    break;
-                case CONTENT_CACHE:
-                    folderName += "/content";
-                    break;
-                default:
-                    break;
+            case RENDITION_CACHE:
+                folderName += "/rendition";
+                break;
+            case CONTENT_CACHE:
+                folderName += "/content";
+                break;
+            default:
+                break;
             }
 
             File f = new File(folderName, cacheFileName);

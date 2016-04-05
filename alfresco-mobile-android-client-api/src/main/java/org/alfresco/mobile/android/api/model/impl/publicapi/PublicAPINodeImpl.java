@@ -1,21 +1,38 @@
 /*******************************************************************************
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.impl.publicapi;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.model.Property;
+import org.alfresco.mobile.android.api.model.impl.PropertyImpl;
+import org.alfresco.mobile.android.api.utils.DateUtils;
+import org.alfresco.mobile.android.api.utils.NodeRefUtils;
+import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.alfresco.mobile.android.api.model.impl.publicapi.PublicAPIPropertyIds.CREATEDAT;
 import static org.alfresco.mobile.android.api.model.impl.publicapi.PublicAPIPropertyIds.CREATEDBY;
@@ -31,28 +48,13 @@ import static org.alfresco.mobile.android.api.model.impl.publicapi.PublicAPIProp
 import static org.alfresco.mobile.android.api.model.impl.publicapi.PublicAPIPropertyIds.TYPE;
 import static org.alfresco.mobile.android.api.model.impl.publicapi.PublicAPIPropertyIds.VERSIONLABEL;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.model.Property;
-import org.alfresco.mobile.android.api.model.impl.PropertyImpl;
-import org.alfresco.mobile.android.api.utils.DateUtils;
-import org.alfresco.mobile.android.api.utils.NodeRefUtils;
-import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
-
-import android.os.Parcel;
-import android.os.Parcelable;
-
 public class PublicAPINodeImpl implements Node
 {
     private static final long serialVersionUID = 1L;
 
-    /** Map of properties available for this Node. */
+    /**
+     * Map of properties available for this Node.
+     */
     private Map<String, Property> properties = new HashMap<String, Property>();
 
     private boolean hasAllProperties;
@@ -70,8 +72,6 @@ public class PublicAPINodeImpl implements Node
 
     /**
      * Default constructor of a Node based on CMIS service and object.
-     * 
-     * @param o
      */
     public PublicAPINodeImpl(String type, Map<String, Object> json)
     {
@@ -99,7 +99,8 @@ public class PublicAPINodeImpl implements Node
     @Override
     public String getIdentifier()
     {
-        if (getPropertyValue(GUID) == null &&  getPropertyValue(ID) != null){
+        if (getPropertyValue(GUID) == null && getPropertyValue(ID) != null)
+        {
             return NodeRefUtils.getNodeIdentifier((String) getPropertyValue(ID));
         }
         return getPropertyValue(GUID);
@@ -190,10 +191,16 @@ public class PublicAPINodeImpl implements Node
         return properties;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public <T> T getPropertyValue(String name)
     {
-        if (getProp(name) != null) { return getProp(name).getValue(); }
+        final Property prop = getProp(name);
+        if (prop != null)
+        {
+            return prop.getValue();
+        }
         return null;
     }
 
@@ -230,13 +237,15 @@ public class PublicAPINodeImpl implements Node
     @Override
     public boolean isFolder()
     {
-        return PublicAPIBaseTypeIds.FOLDER.value().equals(getProp(TYPE).getValue());
+        final Property prop = getProp(TYPE);
+        return prop != null && PublicAPIBaseTypeIds.FOLDER.value().equals(prop.getValue());
     }
 
     @Override
     public boolean isDocument()
     {
-        return PublicAPIBaseTypeIds.DOCUMENT.value().equals(getProp(TYPE).getValue());
+        final Property prop = getProp(TYPE);
+        return prop != null && PublicAPIBaseTypeIds.DOCUMENT.value().equals(prop.getValue());
     }
 
     // ////////////////////////////////////////////////////

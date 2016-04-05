@@ -33,9 +33,9 @@ public class NodeComparator implements Serializable, Comparator<Node>
 {
     private static final long serialVersionUID = 1L;
 
-    protected boolean asc;
+    protected final boolean asc;
 
-    protected String propertySorting;
+    protected final String propertySorting;
 
     public NodeComparator(boolean asc, String propertySorting)
     {
@@ -50,7 +50,7 @@ public class NodeComparator implements Serializable, Comparator<Node>
             return 0;
         }
 
-        int b = 0;
+        int b;
         if (DocumentFolderService.SORT_PROPERTY_NAME.equals(propertySorting))
         {
             b = nodeA.getName().compareToIgnoreCase(nodeB.getName());

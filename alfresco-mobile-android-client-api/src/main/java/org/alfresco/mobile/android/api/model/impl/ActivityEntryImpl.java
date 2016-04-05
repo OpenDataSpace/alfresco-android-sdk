@@ -1,27 +1,21 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.impl;
-
-import java.text.SimpleDateFormat;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
@@ -29,6 +23,12 @@ import org.alfresco.mobile.android.api.model.ActivityEntry;
 import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
+
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * ActivityEntry :
@@ -40,7 +40,7 @@ import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
  * added)</li>
  * <li>is performed at a particular point in time (post date)</li>
  * </ul>
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class ActivityEntryImpl implements ActivityEntry
@@ -70,7 +70,7 @@ public class ActivityEntryImpl implements ActivityEntry
 
     /**
      * Parse Json Response from Alfresco REST API to create an ActivityEntry.
-     * 
+     *
      * @param jo : json response that contains data from the repository
      * @return ActivityEntry that contains informations about the activity.
      */
@@ -96,47 +96,51 @@ public class ActivityEntryImpl implements ActivityEntry
         activityItem.data = new HashMap<String, String>();
         activityItem.data.put(OnPremiseConstant.FEEDUSERID_VALUE,
                 JSONConverter.getString(jo, OnPremiseConstant.FEEDUSERID_VALUE));
-        activityItem.data.put(OnPremiseConstant.FORMAT_VALUE,
-                JSONConverter.getString(jo, OnPremiseConstant.FORMAT_VALUE));
-        activityItem.data.put(OnPremiseConstant.LASTNAME_VALUE,
-                JSONConverter.getString(activitySummary, OnPremiseConstant.LASTNAME_VALUE));
-        activityItem.data.put(OnPremiseConstant.FIRSTNAME_VALUE,
-                JSONConverter.getString(activitySummary, OnPremiseConstant.FIRSTNAME_VALUE));
-        activityItem.data.put(OnPremiseConstant.TITLE_VALUE,
-                JSONConverter.getString(activitySummary, OnPremiseConstant.TITLE_VALUE));
-        activityItem.data.put(OnPremiseConstant.PAGE_VALUE,
-                JSONConverter.getString(activitySummary, OnPremiseConstant.PAGE_VALUE));
-        activityItem.data.put(OnPremiseConstant.NODEREF_VALUE,
-                JSONConverter.getString(activitySummary, OnPremiseConstant.NODEREF_VALUE));
-        activityItem.data.put(OnPremiseConstant.MEMBERLASTNAME_VALUE,
-                JSONConverter.getString(activitySummary, OnPremiseConstant.MEMBERLASTNAME_VALUE));
-        activityItem.data.put(OnPremiseConstant.ROLE_VALUE,
-                JSONConverter.getString(activitySummary, OnPremiseConstant.ROLE_VALUE));
-        activityItem.data.put(OnPremiseConstant.STATUS_VALUE,
-                JSONConverter.getString(activitySummary, OnPremiseConstant.STATUS_VALUE));
-        activityItem.data.put(OnPremiseConstant.MEMEBERFIRSTNAME_VALUE,
-                JSONConverter.getString(activitySummary, OnPremiseConstant.MEMEBERFIRSTNAME_VALUE));
-        activityItem.data.put(OnPremiseConstant.MEMEBERUSERNAME_VALUE,
-                JSONConverter.getString(activitySummary, OnPremiseConstant.MEMEBERUSERNAME_VALUE));
-        activityItem.data.put(OnPremiseConstant.FOLLOWERUSERNAME_VALUE,
-                JSONConverter.getString(activitySummary, OnPremiseConstant.FOLLOWERUSERNAME_VALUE));
-        activityItem.data.put(OnPremiseConstant.SUBSCRIBERFIRSTNAME_VALUE,
-                JSONConverter.getString(activitySummary, OnPremiseConstant.SUBSCRIBERFIRSTNAME_VALUE));
-        activityItem.data.put(OnPremiseConstant.SUBSCRIBERLASTNAME_VALUE,
-                JSONConverter.getString(activitySummary, OnPremiseConstant.SUBSCRIBERLASTNAME_VALUE));
-        activityItem.data.put(CloudConstant.USERFIRSTNAME_VALUE,
-                JSONConverter.getString(activitySummary, CloudConstant.USERFIRSTNAME_VALUE));
-        activityItem.data.put(CloudConstant.USERUSERNAME_VALUE,
-                JSONConverter.getString(activitySummary, CloudConstant.USERUSERNAME_VALUE));
-        activityItem.data.put(CloudConstant.USERLASTNAME_VALUE,
-                JSONConverter.getString(activitySummary, CloudConstant.USERLASTNAME_VALUE));
-        
+        activityItem.data
+                .put(OnPremiseConstant.FORMAT_VALUE, JSONConverter.getString(jo, OnPremiseConstant.FORMAT_VALUE));
+
+        if (activitySummary != null)
+        {
+            activityItem.data.put(OnPremiseConstant.LASTNAME_VALUE,
+                    JSONConverter.getString(activitySummary, OnPremiseConstant.LASTNAME_VALUE));
+            activityItem.data.put(OnPremiseConstant.FIRSTNAME_VALUE,
+                    JSONConverter.getString(activitySummary, OnPremiseConstant.FIRSTNAME_VALUE));
+            activityItem.data.put(OnPremiseConstant.TITLE_VALUE,
+                    JSONConverter.getString(activitySummary, OnPremiseConstant.TITLE_VALUE));
+            activityItem.data.put(OnPremiseConstant.PAGE_VALUE,
+                    JSONConverter.getString(activitySummary, OnPremiseConstant.PAGE_VALUE));
+            activityItem.data.put(OnPremiseConstant.NODEREF_VALUE,
+                    JSONConverter.getString(activitySummary, OnPremiseConstant.NODEREF_VALUE));
+            activityItem.data.put(OnPremiseConstant.MEMBERLASTNAME_VALUE,
+                    JSONConverter.getString(activitySummary, OnPremiseConstant.MEMBERLASTNAME_VALUE));
+            activityItem.data.put(OnPremiseConstant.ROLE_VALUE,
+                    JSONConverter.getString(activitySummary, OnPremiseConstant.ROLE_VALUE));
+            activityItem.data.put(OnPremiseConstant.STATUS_VALUE,
+                    JSONConverter.getString(activitySummary, OnPremiseConstant.STATUS_VALUE));
+            activityItem.data.put(OnPremiseConstant.MEMEBERFIRSTNAME_VALUE,
+                    JSONConverter.getString(activitySummary, OnPremiseConstant.MEMEBERFIRSTNAME_VALUE));
+            activityItem.data.put(OnPremiseConstant.MEMEBERUSERNAME_VALUE,
+                    JSONConverter.getString(activitySummary, OnPremiseConstant.MEMEBERUSERNAME_VALUE));
+            activityItem.data.put(OnPremiseConstant.FOLLOWERUSERNAME_VALUE,
+                    JSONConverter.getString(activitySummary, OnPremiseConstant.FOLLOWERUSERNAME_VALUE));
+            activityItem.data.put(OnPremiseConstant.SUBSCRIBERFIRSTNAME_VALUE,
+                    JSONConverter.getString(activitySummary, OnPremiseConstant.SUBSCRIBERFIRSTNAME_VALUE));
+            activityItem.data.put(OnPremiseConstant.SUBSCRIBERLASTNAME_VALUE,
+                    JSONConverter.getString(activitySummary, OnPremiseConstant.SUBSCRIBERLASTNAME_VALUE));
+            activityItem.data.put(CloudConstant.USERFIRSTNAME_VALUE,
+                    JSONConverter.getString(activitySummary, CloudConstant.USERFIRSTNAME_VALUE));
+            activityItem.data.put(CloudConstant.USERUSERNAME_VALUE,
+                    JSONConverter.getString(activitySummary, CloudConstant.USERUSERNAME_VALUE));
+            activityItem.data.put(CloudConstant.USERLASTNAME_VALUE,
+                    JSONConverter.getString(activitySummary, CloudConstant.USERLASTNAME_VALUE));
+        }
+
         return activityItem;
     }
 
     /**
      * Parse Json Response from Alfresco Public API to create an ActivityEntry.
-     * 
+     *
      * @param jo : json response that contains data from the repository
      * @return ActivityEntry that contains informations about the activity.
      */
@@ -157,31 +161,30 @@ public class ActivityEntryImpl implements ActivityEntry
 
         activityItem.type = JSONConverter.getString(jo, CloudConstant.ACTIVITYTYPE_VALUE);
 
-        Map<String, Object> activitySummary = (Map<String, Object>) ((Map<String, Object>) jo)
-                .get(CloudConstant.ACTIVITYSUMMARY_VALUE);
+        Map<String, Object> activitySummary = (Map<String, Object>) jo.get(CloudConstant.ACTIVITYSUMMARY_VALUE);
 
         activityItem.data = new HashMap<String, String>();
-        activityItem.data.put(CloudConstant.FEEDUSERID_VALUE,
-                JSONConverter.getString(jo, CloudConstant.FEEDUSERID_VALUE));
+        activityItem.data
+                .put(CloudConstant.FEEDUSERID_VALUE, JSONConverter.getString(jo, CloudConstant.FEEDUSERID_VALUE));
         activityItem.data.put(CloudConstant.FORMAT_VALUE, JSONConverter.getString(jo, CloudConstant.FORMAT_VALUE));
         activityItem.data.put(CloudConstant.LASTNAME_VALUE,
                 JSONConverter.getString(activitySummary, CloudConstant.LASTNAME_VALUE));
         activityItem.data.put(CloudConstant.FIRSTNAME_VALUE,
                 JSONConverter.getString(activitySummary, CloudConstant.FIRSTNAME_VALUE));
-        activityItem.data.put(CloudConstant.TITLE_VALUE,
-                JSONConverter.getString(activitySummary, CloudConstant.TITLE_VALUE));
-        activityItem.data.put(CloudConstant.PAGE_VALUE,
-                JSONConverter.getString(activitySummary, CloudConstant.PAGE_VALUE));
+        activityItem.data
+                .put(CloudConstant.TITLE_VALUE, JSONConverter.getString(activitySummary, CloudConstant.TITLE_VALUE));
+        activityItem.data
+                .put(CloudConstant.PAGE_VALUE, JSONConverter.getString(activitySummary, CloudConstant.PAGE_VALUE));
         activityItem.data.put(CloudConstant.OBJECTID_VALUE,
                 JSONConverter.getString(activitySummary, CloudConstant.OBJECTID_VALUE));
         activityItem.data.put(CloudConstant.NETWORKID_VALUE,
                 JSONConverter.getString(activitySummary, CloudConstant.NETWORKID_VALUE));
         activityItem.data.put(CloudConstant.MEMBERLASTNAME_VALUE,
                 JSONConverter.getString(activitySummary, CloudConstant.MEMBERLASTNAME_VALUE));
-        activityItem.data.put(CloudConstant.ROLE_VALUE,
-                JSONConverter.getString(activitySummary, CloudConstant.ROLE_VALUE));
-        activityItem.data.put(CloudConstant.STATUS_VALUE,
-                JSONConverter.getString(activitySummary, CloudConstant.STATUS_VALUE));
+        activityItem.data
+                .put(CloudConstant.ROLE_VALUE, JSONConverter.getString(activitySummary, CloudConstant.ROLE_VALUE));
+        activityItem.data
+                .put(CloudConstant.STATUS_VALUE, JSONConverter.getString(activitySummary, CloudConstant.STATUS_VALUE));
         activityItem.data.put(CloudConstant.MEMEBERFIRSTNAME_VALUE,
                 JSONConverter.getString(activitySummary, CloudConstant.MEMEBERFIRSTNAME_VALUE));
         activityItem.data.put(CloudConstant.MEMEBERUSERNAME_VALUE,
@@ -198,7 +201,7 @@ public class ActivityEntryImpl implements ActivityEntry
                 JSONConverter.getString(activitySummary, CloudConstant.USERUSERNAME_VALUE));
         activityItem.data.put(CloudConstant.USERLASTNAME_VALUE,
                 JSONConverter.getString(activitySummary, CloudConstant.USERLASTNAME_VALUE));
-        
+
         return activityItem;
     }
 
@@ -211,7 +214,10 @@ public class ActivityEntryImpl implements ActivityEntry
     /** {@inheritDoc} */
     public String getData(String key)
     {
-        if (data == null || !data.containsKey(key)) { return null; }
+        if (data == null || !data.containsKey(key))
+        {
+            return null;
+        }
         return data.get(key);
     }
 

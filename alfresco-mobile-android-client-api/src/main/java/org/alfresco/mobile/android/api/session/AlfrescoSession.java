@@ -1,37 +1,37 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.session;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
+import android.os.Parcelable;
 
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.RepositoryInfo;
 import org.alfresco.mobile.android.api.services.ServiceRegistry;
 
-import android.os.Parcelable;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * RepositorySession represents a connection to an on-premise repository as a
  * specific user.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public interface AlfrescoSession extends Parcelable
@@ -48,7 +48,7 @@ public interface AlfrescoSession extends Parcelable
      * <li>any string value : replace the default value.</li>
      * </ul>
      * <b>This parameter can't be changed after the session creation</b>.
-     * 
+     *
      * @since 1.3
      */
     String HTTP_ACCEPT_ENCODING = "org.alfresco.mobile.http.encoding";
@@ -57,17 +57,17 @@ public interface AlfrescoSession extends Parcelable
      * Define the HTTP Header "Accept-Language" for all requests.<br/>
      * By default it's system Locale + ", en-us;q=0.8" <b>This parameter can't
      * be changed after the session creation</b>.
-     * 
+     *
      * @since 1.3
      */
     String HTTP_ACCEPT_LANGUAGE = "org.alfresco.mobile.http.language";
-    
+
     /**
      * Used by the NetworkHttpInvoker to enable/disable the chunkStreamingMode.
      * Some HTTP server configuration doesn't support this mode. <br/>
      * By default the mode is disabled.
      * <b>This parameter can't be changed after the session creation</b>.
-     * 
+     *
      * @since 1.3
      */
     String HTTP_CHUNK_TRANSFERT = "org.alfresco.mobile.http.transfert.chunk";
@@ -172,7 +172,7 @@ public interface AlfrescoSession extends Parcelable
 
     /**
      * Return all services available with this repository.
-     * 
+     *
      * @return Service Provider associated to the session.
      */
     ServiceRegistry getServiceRegistry();
@@ -186,9 +186,6 @@ public interface AlfrescoSession extends Parcelable
      * Allow to add some extra parameters as settings to modify behaviour of the
      * session. Settings provide session configuration parameters e.g. cache
      * settings, default paging values, ordering etc.
-     * 
-     * @param key
-     * @param value
      */
     void addParameter(String key, Serializable value);
 
@@ -196,24 +193,17 @@ public interface AlfrescoSession extends Parcelable
      * Allow to add some extra parameters as settings to modify behaviour of the
      * session. Settings provide session configuration parameters e.g. cache
      * settings, default paging values, ordering etc.
-     * 
-     * @param parameters
      */
     void addParameters(Map<String, Serializable> parameters);
 
     /**
      * Returns the value of a parameter with the given key stored in the
      * session.
-     * 
-     * @param key
-     * @return
      */
     Serializable getParameter(String key);
 
     /**
      * Removes a parameter stored in the session.
-     * 
-     * @param key
      */
     void removeParameter(String key);
 

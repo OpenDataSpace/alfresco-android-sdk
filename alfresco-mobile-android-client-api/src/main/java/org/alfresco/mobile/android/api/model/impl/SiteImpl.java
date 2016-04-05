@@ -1,23 +1,21 @@
 /*******************************************************************************
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.impl;
-
-import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
@@ -26,12 +24,14 @@ import org.alfresco.mobile.android.api.model.SiteVisibility;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
+import java.util.Map;
+
 /**
  * Provides informations about Alfresco Share site. </br> A site is a project
  * area where you can share content and collaborate with other site
  * members.</br> Each site has a visibility setting that marks the site as
  * public or private.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class SiteImpl implements Site
@@ -63,7 +63,6 @@ public class SiteImpl implements Site
     /** Indicates if the user has favorite this site. */
     private Boolean isFavorite = false;
 
-    
 
     /**
      * Default constructor.
@@ -74,12 +73,11 @@ public class SiteImpl implements Site
 
     /**
      * Constructor of SiteImpl. </br>
-     * 
+     *
      * @param site : site to update.
      * @param isPendingMember : value of pending member.
      * @param isMember : if user is member of
      * @param isFavorite : if user has favorite the site
-     * @return a newly Site object with updated values.
      */
     public SiteImpl(Site site, boolean isPendingMember, boolean isMember, boolean isFavorite)
     {
@@ -92,10 +90,10 @@ public class SiteImpl implements Site
         this.isMember = isMember;
         this.isFavorite = isFavorite;
     }
-    
+
     /**
      * Parse Json Response from Alfresco REST API to create a Site.
-     * 
+     *
      * @param json : json response that contains data from the repository
      * @return Site object that contains essential information about it.
      */
@@ -118,19 +116,19 @@ public class SiteImpl implements Site
         site.visibility = JSONConverter.getString(json, OnPremiseConstant.VISIBILITY_VALUE);
 
         // Extra properties
-        site.isPendingMember = (JSONConverter.getBoolean(json, OnPremiseConstant.ISPENDINGMEMBER_VALUE) != null) ? JSONConverter
-                .getBoolean(json, OnPremiseConstant.ISPENDINGMEMBER_VALUE) : false;
-        site.isMember = (JSONConverter.getBoolean(json, OnPremiseConstant.ISMEMBER_VALUE) != null) ? JSONConverter
-                .getBoolean(json, OnPremiseConstant.ISMEMBER_VALUE) : false;
-        site.isFavorite = (JSONConverter.getBoolean(json, OnPremiseConstant.ISFAVORITE_VALUE) != null) ? JSONConverter
-                .getBoolean(json, OnPremiseConstant.ISFAVORITE_VALUE) : false;
+        site.isPendingMember = (JSONConverter.getBoolean(json, OnPremiseConstant.ISPENDINGMEMBER_VALUE) != null) ?
+                JSONConverter.getBoolean(json, OnPremiseConstant.ISPENDINGMEMBER_VALUE) : false;
+        site.isMember = (JSONConverter.getBoolean(json, OnPremiseConstant.ISMEMBER_VALUE) != null) ?
+                JSONConverter.getBoolean(json, OnPremiseConstant.ISMEMBER_VALUE) : false;
+        site.isFavorite = (JSONConverter.getBoolean(json, OnPremiseConstant.ISFAVORITE_VALUE) != null) ?
+                JSONConverter.getBoolean(json, OnPremiseConstant.ISFAVORITE_VALUE) : false;
 
         return site;
     }
 
     /**
      * Parse Json Response from Alfresco Public API to create a Site.
-     * 
+     *
      * @param json : json response that contains data from the repository
      * @return Site object that contains essential information about it.
      */
@@ -146,12 +144,12 @@ public class SiteImpl implements Site
         site.nodeIdentifier = JSONConverter.getString(json, CloudConstant.GUID_VALUE);
 
         // Extra properties
-        site.isPendingMember = (JSONConverter.getBoolean(json, CloudConstant.ISPENDINGMEMBER_VALUE) != null) ? JSONConverter
-                .getBoolean(json, OnPremiseConstant.ISPENDINGMEMBER_VALUE) : false;
-        site.isMember = (JSONConverter.getBoolean(json, CloudConstant.ISMEMBER_VALUE) != null) ? JSONConverter
-                .getBoolean(json, OnPremiseConstant.ISMEMBER_VALUE) : false;
-        site.isFavorite = (JSONConverter.getBoolean(json, CloudConstant.ISFAVORITE_VALUE) != null) ? JSONConverter
-                .getBoolean(json, OnPremiseConstant.ISFAVORITE_VALUE) : false;
+        site.isPendingMember = (JSONConverter.getBoolean(json, CloudConstant.ISPENDINGMEMBER_VALUE) != null) ?
+                JSONConverter.getBoolean(json, OnPremiseConstant.ISPENDINGMEMBER_VALUE) : false;
+        site.isMember = (JSONConverter.getBoolean(json, CloudConstant.ISMEMBER_VALUE) != null) ?
+                JSONConverter.getBoolean(json, OnPremiseConstant.ISMEMBER_VALUE) : false;
+        site.isFavorite = (JSONConverter.getBoolean(json, CloudConstant.ISFAVORITE_VALUE) != null) ?
+                JSONConverter.getBoolean(json, OnPremiseConstant.ISFAVORITE_VALUE) : false;
 
         return site;
     }
@@ -195,7 +193,10 @@ public class SiteImpl implements Site
     @Override
     public boolean equals(Object obj)
     {
-        if (obj instanceof Site) { return getIdentifier().equals(((Site) obj).getIdentifier()); }
+        if (obj instanceof Site)
+        {
+            return getIdentifier().equals(((Site) obj).getIdentifier());
+        }
         return super.equals(obj);
     }
 

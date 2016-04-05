@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,7 +23,7 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 
 /**
  * Provides Paging Result for all Mobile SDK object.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class PagingResultImpl<T> implements PagingResult<T>
@@ -40,13 +40,13 @@ public class PagingResultImpl<T> implements PagingResult<T>
     }
 
     /** List of all object present in a page. */
-    private List<T> objects;
+    private final List<T> objects;
 
     /** Indicator to know if there's some extra page. */
     private boolean hasMoreItems = Boolean.FALSE;
 
     /** Total size of items available. */
-    private int numItems;
+    private final int numItems;
 
     /** {@inheritDoc} */
     public List<T> getList()

@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -55,7 +55,7 @@ import android.os.Parcelable;
 
 /**
  * Cloud implementation of DocumentFolderService
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class PublicAPIDocumentFolderServiceImpl extends AbstractDocumentFolderServiceImpl
@@ -63,8 +63,7 @@ public class PublicAPIDocumentFolderServiceImpl extends AbstractDocumentFolderSe
 
     /**
      * Default Constructor. Only used inside ServiceRegistry.
-     * 
-     * @param repositorySession : Repository Session.
+     *
      */
     public PublicAPIDocumentFolderServiceImpl(AlfrescoSession cloudSession)
     {
@@ -86,7 +85,7 @@ public class PublicAPIDocumentFolderServiceImpl extends AbstractDocumentFolderSe
         }
         return null;
     }
-    
+
     @Override
     /** {@inheritDoc} */
     public ContentStream getRenditionStream(String identifier, String type)
@@ -188,8 +187,7 @@ public class PublicAPIDocumentFolderServiceImpl extends AbstractDocumentFolderSe
                 NodeRefUtils.getCleanIdentifier(node.getIdentifier()));
         UrlBuilder url = new UrlBuilder(link);
         Response resp = getHttpInvoker().invokeGET(url, getSessionHttp());
-        if (resp.getResponseCode() == HttpStatus.SC_OK) { return true; }
-        return false;
+        return resp.getResponseCode() == HttpStatus.SC_OK;
     }
 
     @Override
@@ -214,10 +212,10 @@ public class PublicAPIDocumentFolderServiceImpl extends AbstractDocumentFolderSe
             JSONObject jroot = new JSONObject();
             JSONObject jt = null;
             JSONObject jp = jroot;
-            for (int i = 0; i < filter.length; i++)
+            for (String aFilter : filter)
             {
                 jt = new JSONObject();
-                jp.put(filter[i], jt);
+                jp.put(aFilter, jt);
                 jp = jt;
             }
 
@@ -273,12 +271,12 @@ public class PublicAPIDocumentFolderServiceImpl extends AbstractDocumentFolderSe
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
         List<Document> result = new ArrayList<Document>();
-        Map<String, Object> entryData = null, targetData = null, fileData = null;
+        Map<String, Object> entryData, targetData, fileData;
         for (Object entry : response.getEntries())
         {
             entryData = (Map<String, Object>) ((Map<String, Object>) entry).get(PublicAPIConstant.ENTRY_VALUE);
-            targetData = (Map<String, Object>) ((Map<String, Object>) entryData).get(PublicAPIConstant.TARGET_VALUE);
-            fileData = (Map<String, Object>) ((Map<String, Object>) targetData).get(PublicAPIConstant.FILE_VALUE);
+            targetData = (Map<String, Object>) entryData.get(PublicAPIConstant.TARGET_VALUE);
+            fileData = (Map<String, Object>) targetData.get(PublicAPIConstant.FILE_VALUE);
             result.add(new CloudDocumentImpl(fileData));
         }
         return new PagingResultImpl<Document>(result, response.getHasMoreItems(), response.getSize());
@@ -292,12 +290,12 @@ public class PublicAPIDocumentFolderServiceImpl extends AbstractDocumentFolderSe
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
         List<Folder> result = new ArrayList<Folder>();
-        Map<String, Object> entryData = null, targetData = null, fileData = null;
+        Map<String, Object> entryData, targetData, fileData;
         for (Object entry : response.getEntries())
         {
             entryData = (Map<String, Object>) ((Map<String, Object>) entry).get(PublicAPIConstant.ENTRY_VALUE);
-            targetData = (Map<String, Object>) ((Map<String, Object>) entryData).get(PublicAPIConstant.TARGET_VALUE);
-            fileData = (Map<String, Object>) ((Map<String, Object>) targetData).get(PublicAPIConstant.FOLDER_VALUE);
+            targetData = (Map<String, Object>) entryData.get(PublicAPIConstant.TARGET_VALUE);
+            fileData = (Map<String, Object>) targetData.get(PublicAPIConstant.FOLDER_VALUE);
             if (fileData != null)
             {
                 result.add(new CloudFolderImpl(fileData));
@@ -313,27 +311,23 @@ public class PublicAPIDocumentFolderServiceImpl extends AbstractDocumentFolderSe
         PublicAPIResponse response = new PublicAPIResponse(resp);
 
         List<Node> result = new ArrayList<Node>();
-        Map<String, Object> entryData = null, targetData = null, fileData = null;
-        boolean isDocument = true;
+        Map<String, Object> entryData, targetData, fileData;
+        boolean isDocument;
         for (Object entry : response.getEntries())
         {
             entryData = (Map<String, Object>) ((Map<String, Object>) entry).get(PublicAPIConstant.ENTRY_VALUE);
-            targetData = (Map<String, Object>) ((Map<String, Object>) entryData).get(PublicAPIConstant.TARGET_VALUE);
+            targetData = (Map<String, Object>) entryData.get(PublicAPIConstant.TARGET_VALUE);
 
-            isDocument = true;
-            if (((Map<String, Object>) targetData).containsKey(PublicAPIConstant.FOLDER_VALUE))
-            {
-                isDocument = false;
-            }
+            isDocument = !targetData.containsKey(PublicAPIConstant.FOLDER_VALUE);
 
             if (isDocument)
             {
-                fileData = (Map<String, Object>) ((Map<String, Object>) targetData).get(PublicAPIConstant.FILE_VALUE);
+                fileData = (Map<String, Object>) targetData.get(PublicAPIConstant.FILE_VALUE);
                 result.add(new CloudDocumentImpl(fileData));
             }
             else
             {
-                fileData = (Map<String, Object>) ((Map<String, Object>) targetData).get(PublicAPIConstant.FOLDER_VALUE);
+                fileData = (Map<String, Object>) targetData.get(PublicAPIConstant.FOLDER_VALUE);
                 result.add(new CloudFolderImpl(fileData));
             }
         }

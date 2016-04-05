@@ -1,21 +1,23 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.utils;
+
+import org.alfresco.mobile.android.api.model.ContentFile;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -28,11 +30,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.alfresco.mobile.android.api.model.ContentFile;
-
 /**
  * List of static methods to manage I/O operations.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public final class IOUtils
@@ -56,7 +56,7 @@ public final class IOUtils
 
         /**
          * Set the ContentFile object associated with this operation
-         * 
+         *
          * @param cf : ContentFile object to notify
          */
 
@@ -135,7 +135,10 @@ public final class IOUtils
 
     private static File createUniqueName(File file)
     {
-        if (!file.exists()) { return file; }
+        if (!file.exists())
+        {
+            return file;
+        }
 
         int index = 1;
 
@@ -143,7 +146,10 @@ public final class IOUtils
         while (index < 500)
         {
             tmpFile = new File(tmpFile.getParentFile(), tmpFile.getName() + "-" + index);
-            if (!tmpFile.exists()) { return tmpFile; }
+            if (!tmpFile.exists())
+            {
+                return tmpFile;
+            }
             index++;
         }
         return null;
@@ -151,6 +157,7 @@ public final class IOUtils
 
     public static void ensureOrCreatePathAndFile(File contentFile)
     {
+        //noinspection ResultOfMethodCallIgnored
         contentFile.getParentFile().mkdirs();
         createUniqueName(contentFile);
     }
@@ -158,11 +165,7 @@ public final class IOUtils
     /**
      * Copy inputStream into the specified file. If file already present, we
      * create a new one.
-     * 
-     * @param src
-     * @param size : inputstream size.
-     * @param dest
-     * @return
+     *
      * @throws FileNotFoundException
      * @throws IOException
      */
@@ -174,9 +177,9 @@ public final class IOUtils
 
     public static boolean copyStream(InputStream src, OutputStream osstream) throws IOException
     {
-        BufferedOutputStream bos = null;
+        BufferedOutputStream bos;
         MonitoredBufferedInputStream bis = null;
-        boolean copied = true;
+        //boolean copied = true;
 
         try
         {
@@ -193,18 +196,13 @@ public final class IOUtils
             }
             bos.flush();
         }
-        catch (IOException e)
-        {
-            copied = false;
-            throw e;
-        }
         finally
         {
             closeStream(osstream);
             closeStream(src);
             closeStream(bis);
         }
-        return copied;
+        return true;
     }
 
     public static InputStream getContentFileInputStream(ContentFile contentFile)
@@ -214,13 +212,13 @@ public final class IOUtils
         {
             if (contentFile != null)
             {
-                MonitoredBufferedInputStream mb = new MonitoredBufferedInputStream(new FileInputStream(
-                        contentFile.getFile()));
+                MonitoredBufferedInputStream mb =
+                        new MonitoredBufferedInputStream(new FileInputStream(contentFile.getFile()));
                 mb.setContentFile(contentFile);
                 return mb;
             }
         }
-        catch (FileNotFoundException e)
+        catch (FileNotFoundException ignored)
         {
         }
         return null;

@@ -1,30 +1,24 @@
 /*******************************************************************************
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import org.alfresco.cmis.client.AlfrescoAspects;
 import org.alfresco.mobile.android.api.constants.ContentModel;
@@ -37,8 +31,14 @@ import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.enums.Action;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Base Implementation of Alfresco Node object.
@@ -49,22 +49,34 @@ public class NodeImpl implements Node
 {
     private static final long serialVersionUID = 1L;
 
-    /** NodeRef of the Node (Unique reference). */
+    /**
+     * NodeRef of the Node (Unique reference).
+     */
     private String identifier;
 
-    /** Map of properties available for this Node. */
+    /**
+     * Map of properties available for this Node.
+     */
     private Map<String, Property> properties;
 
-    /** List of Aspects available for this Node. */
+    /**
+     * List of Aspects available for this Node.
+     */
     private List<String> aspects;
 
-    /** List of allowable actions. */
+    /**
+     * List of allowable actions.
+     */
     private List<String> allowableActions;
 
-    /** CMIS Object associated to a Node. */
+    /**
+     * CMIS Object associated to a Node.
+     */
     protected transient CmisObject object;
 
-    /** Indicates whether the node has all it’s metadata populated. */
+    /**
+     * Indicates whether the node has all it’s metadata populated.
+     */
     private boolean hasAllProperties = true;
 
     // ////////////////////////////////////////////////////
@@ -76,8 +88,6 @@ public class NodeImpl implements Node
 
     /**
      * Default constructor of a Node based on CMIS service and object.
-     *
-     * @param o
      */
     public NodeImpl(CmisObject o)
     {
@@ -86,7 +96,6 @@ public class NodeImpl implements Node
     }
 
     /**
-     * @param o
      * @since 1.2
      */
     public NodeImpl(CmisObject o, boolean hasAllProperties)
@@ -98,31 +107,42 @@ public class NodeImpl implements Node
     // ////////////////////////////////////////////////////
     // Shortcut and common methods
     // ////////////////////////////////////////////////////
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     public String getIdentifier()
     {
         return getPropertyValue(PropertyIds.OBJECT_ID);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public String getName()
     {
         return getPropertyValue(PropertyIds.NAME);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public String getTitle()
     {
         return getPropertyValue(ContentModel.PROP_TITLE);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public String getDescription()
     {
         return getPropertyValue(ContentModel.PROP_DESCRIPTION);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public String getType()
     {
         if (getPropertyValue(PropertyIds.OBJECT_TYPE_ID) != null)
@@ -130,20 +150,23 @@ public class NodeImpl implements Node
             if (((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID))
                     .startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_DOCUMENT))
             {
-                return ((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID)).replaceFirst(
-                        AbstractDocumentFolderServiceImpl.CMISPREFIX_DOCUMENT, "");
+                return ((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID))
+                        .replaceFirst(AbstractDocumentFolderServiceImpl.CMISPREFIX_DOCUMENT, "");
             }
             else if (((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID))
                     .startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_FOLDER))
             {
-                return ((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID)).replaceFirst(
-                        AbstractDocumentFolderServiceImpl.CMISPREFIX_FOLDER, "");
+                return ((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID))
+                        .replaceFirst(AbstractDocumentFolderServiceImpl.CMISPREFIX_FOLDER, "");
             }
             else if (BaseTypeId.CMIS_DOCUMENT.value().equals(getPropertyValue(PropertyIds.OBJECT_TYPE_ID)))
             {
                 return ContentModel.TYPE_CONTENT;
             }
-            else if (BaseTypeId.CMIS_FOLDER.value().equals(getPropertyValue(PropertyIds.OBJECT_TYPE_ID))) { return ContentModel.TYPE_FOLDER; }
+            else if (BaseTypeId.CMIS_FOLDER.value().equals(getPropertyValue(PropertyIds.OBJECT_TYPE_ID)))
+            {
+                return ContentModel.TYPE_FOLDER;
+            }
             return getPropertyValue(PropertyIds.OBJECT_TYPE_ID);
         }
         else
@@ -152,25 +175,33 @@ public class NodeImpl implements Node
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public String getCreatedBy()
     {
         return getPropertyValue(PropertyIds.CREATED_BY);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public GregorianCalendar getCreatedAt()
     {
         return getPropertyValue(PropertyIds.CREATION_DATE);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public String getModifiedBy()
     {
         return getPropertyValue(PropertyIds.LAST_MODIFIED_BY);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public GregorianCalendar getModifiedAt()
     {
         return getPropertyValue(PropertyIds.LAST_MODIFICATION_DATE);
@@ -180,7 +211,9 @@ public class NodeImpl implements Node
     // Properties and Aspects
     // ////////////////////////////////////////////////////
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Property getProperty(String name)
     {
         // Match specific alfresco metadata name to its translated cmis version
@@ -188,7 +221,9 @@ public class NodeImpl implements Node
         return getProp(AbstractDocumentFolderServiceImpl.getPropertyName(name));
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Map<String, Property> getProperties()
     {
         if (object != null)
@@ -201,15 +236,25 @@ public class NodeImpl implements Node
             }
             return s;
         }
-        else if (properties != null) { return properties; }
+        else if (properties != null)
+        {
+            return properties;
+        }
         return null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     public <T> T getPropertyValue(String name)
     {
-        if (getProp(name) != null) { return (T) getProp(name).getValue(); }
+        final Property prop = getProp(name);
+
+        if (prop != null)
+        {
+            return (T) prop.getValue();
+        }
         return null;
     }
 
@@ -239,7 +284,9 @@ public class NodeImpl implements Node
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public boolean hasAspect(String aspectName)
     {
         String tmpAspectName = aspectName;
@@ -252,17 +299,15 @@ public class NodeImpl implements Node
             AlfrescoAspects alf = (AlfrescoAspects) object;
             return alf.hasAspect(tmpAspectName);
         }
-        else if (aspects != null)
-        {
-            return aspects.contains(tmpAspectName);
-        }
         else
         {
-            return false;
+            return aspects != null && aspects.contains(tmpAspectName);
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public List<String> getAspects()
     {
         AlfrescoAspects alf = (AlfrescoAspects) object;
@@ -281,20 +326,24 @@ public class NodeImpl implements Node
     @Override
     public boolean hasAllProperties()
     {
-         return hasAllProperties;
+        return hasAllProperties;
     }
 
     // ////////////////////////////////////////////////////
     // Types
     // ////////////////////////////////////////////////////
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public boolean isFolder()
     {
         return BaseTypeId.CMIS_FOLDER.value().equals(getPropertyValue(PropertyIds.BASE_TYPE_ID));
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public boolean isDocument()
     {
         return BaseTypeId.CMIS_DOCUMENT.value().equals(getPropertyValue(PropertyIds.BASE_TYPE_ID));
@@ -303,6 +352,7 @@ public class NodeImpl implements Node
     // ////////////////////////////////////////////////////
     // PERMISSION
     // ////////////////////////////////////////////////////
+
     /**
      * @param action : cmis type of action like move, delete, create...
      * @return Returns true if the specific action is allowable
@@ -314,13 +364,9 @@ public class NodeImpl implements Node
         {
             return object.getAllowableActions().getAllowableActions().contains(action);
         }
-        else if (allowableActions != null)
-        {
-            return allowableActions.contains(action.value());
-        }
         else
         {
-            return false;
+            return allowableActions != null && allowableActions.contains(action.value());
         }
     }
 
@@ -331,34 +377,33 @@ public class NodeImpl implements Node
      */
     public boolean hasAllowableAction(String action)
     {
-        if (object != null && object.getAllowableActions() != null
-                && object.getAllowableActions().getAllowableActions() != null)
+        if (object != null && object.getAllowableActions() != null &&
+                object.getAllowableActions().getAllowableActions() != null)
         {
             for (Action c : object.getAllowableActions().getAllowableActions())
             {
-                if (c.value().equals(action)) { return true; }
+                if (c.value().equals(action))
+                {
+                    return true;
+                }
             }
             return false;
         }
-        else if (allowableActions != null)
-        {
-            return allowableActions.contains(action);
-        }
         else
         {
-            return false;
+            return allowableActions != null && allowableActions.contains(action);
         }
     }
 
     /**
      * @return Returns a set of all available allowable actions. If no allowable
-     *         actions available returns an empty collection.
+     * actions available returns an empty collection.
      */
     public Set<String> getAllowableActions()
     {
         Set<String> s = new HashSet<String>();
-        if (object != null && object.getAllowableActions() != null
-                && object.getAllowableActions().getAllowableActions() != null)
+        if (object != null && object.getAllowableActions() != null &&
+                object.getAllowableActions().getAllowableActions() != null)
         {
             Set<Action> actions = object.getAllowableActions().getAllowableActions();
             s = new HashSet<String>(actions.size());
@@ -380,8 +425,10 @@ public class NodeImpl implements Node
 
     public String getPath()
     {
-        if (getProperty(PropertyIds.PATH) != null && getProperty(PropertyIds.PATH).getValue() != null) { return getProperty(
-                PropertyIds.PATH).getValue().toString(); }
+        if (getProperty(PropertyIds.PATH) != null && getProperty(PropertyIds.PATH).getValue() != null)
+        {
+            return getProperty(PropertyIds.PATH).getValue().toString();
+        }
         return null;
     }
 

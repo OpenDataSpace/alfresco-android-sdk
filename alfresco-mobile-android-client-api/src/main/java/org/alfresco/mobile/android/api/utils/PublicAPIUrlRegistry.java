@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.utils;
 
@@ -66,8 +66,8 @@ public class PublicAPIUrlRegistry
     public static final String PREFERENCE_FAVOURITES_FOLDERS = URL_USER_PREFERENCE + "?where=(EXISTS(target/folder))";
 
     /** @since 1.2.0 */
-    public static final String PREFERENCE_FAVOURITES_ALL = URL_USER_PREFERENCE
-            + "? where=(EXISTS(target/file) OR EXISTS(target/folder))";
+    public static final String PREFERENCE_FAVOURITES_ALL =
+            URL_USER_PREFERENCE + "? where=(EXISTS(target/file) OR EXISTS(target/folder))";
 
     /** @since 1.1.0 */
     public static final String PREFERENCE_FAVOURITE = URL_USER_PREFERENCE + "/{nodeId}";
@@ -78,47 +78,48 @@ public class PublicAPIUrlRegistry
     /** @since 1.1.0 */
     public static String getUserPreferenceUrl(AlfrescoSession session, String username)
     {
-        return createPrefix(session).append(
-                URL_USER_PREFERENCE.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username))).toString();
+        return createPrefix(session)
+                .append(URL_USER_PREFERENCE.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username)))
+                .toString();
     }
 
     /** @since 1.1.0 */
     public static String getRemoveUserPreferenceUrl(AlfrescoSession session, String username, String siteGUID)
     {
-        return createPrefix(session).append(
-                URL_USER_PREFERENCE_REMOVE.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username)).replace(
-                        VARIABLE_SITEID, siteGUID)).toString();
+        return createPrefix(session)
+                .append(URL_USER_PREFERENCE_REMOVE.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username))
+                                .replace(VARIABLE_SITEID, siteGUID)).toString();
     }
 
     /** @since 1.2.0 */
     public static String getUserFavouriteDocumentsUrl(AlfrescoSession session, String username)
     {
-        return createPrefix(session).append(
-                PREFERENCE_FAVOURITES_DOCUMENTS.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username)))
-                .toString();
+        return createPrefix(session).append(PREFERENCE_FAVOURITES_DOCUMENTS
+                .replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username))).toString();
     }
 
     /** @since 1.2.0 */
     public static String getUserFavouriteFoldersUrl(AlfrescoSession session, String username)
     {
-        return createPrefix(session).append(
-                PREFERENCE_FAVOURITES_FOLDERS.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username)))
+        return createPrefix(session)
+                .append(PREFERENCE_FAVOURITES_FOLDERS.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username)))
                 .toString();
     }
 
     /** @since 1.2.0 */
     public static String getUserFavouritesUrl(AlfrescoSession session, String username)
     {
-        return createPrefix(session).append(
-                PREFERENCE_FAVOURITES_ALL.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username))).toString();
+        return createPrefix(session)
+                .append(PREFERENCE_FAVOURITES_ALL.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username)))
+                .toString();
     }
 
     /** @since 1.2.0 */
     public static String getUserFavouriteUrl(AlfrescoSession session, String username, String identifier)
     {
-        return createPrefix(session).append(
-                PREFERENCE_FAVOURITE.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username)).replace(
-                        VARIABLE_NODEID, identifier)).toString();
+        return createPrefix(session)
+                .append(PREFERENCE_FAVOURITE.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username))
+                                .replace(VARIABLE_NODEID, identifier)).toString();
     }
 
     // ///////////////////////////////////////////////////////////////////////////////
@@ -145,12 +146,11 @@ public class PublicAPIUrlRegistry
 
     /** @since 1.3.0 */
     public static final String URL_ALLMEMBERSOF = "sites/{siteId}/members";
-    
+
     /** @since 1.3.0 */
     public static final String URL_MEMBEROF = "sites/{siteId}/members/{personId}";
 
     /**
-     * @param session
      * @return Returns an URL to get all sites objects.
      */
     public static String getAllSitesUrl(AlfrescoSession session)
@@ -160,14 +160,15 @@ public class PublicAPIUrlRegistry
 
     public static String getUserSitesUrl(AlfrescoSession session, String username)
     {
-        return createPrefix(session).append(
-                URL_USER_SITES.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username))).toString();
+        return createPrefix(session)
+                .append(URL_USER_SITES.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username))).toString();
     }
 
     public static String getUserFavoriteSitesUrl(AlfrescoSession session, String username)
     {
-        return createPrefix(session).append(
-                URL_USER_FAVORITES_SITES.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username))).toString();
+        return createPrefix(session)
+                .append(URL_USER_FAVORITES_SITES.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username)))
+                .toString();
     }
 
     public static String getSiteUrl(AlfrescoSession session, String siteShortName)
@@ -183,15 +184,15 @@ public class PublicAPIUrlRegistry
     /** @since 1.1.0 */
     public static String getJoinSiteUrl(AlfrescoSession session, String username)
     {
-        return createPrefix(session).append(
-                URL_JOIN_SITE.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username))).toString();
+        return createPrefix(session)
+                .append(URL_JOIN_SITE.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username))).toString();
     }
 
     /** @since 1.1.0 */
     public static String getLeaveSiteUrl(AlfrescoSession session, String siteShortName, String username)
     {
-        return createPrefix(session).append(
-                URL_LEAVE_SITE.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(session.getPersonIdentifier()))
+        return createPrefix(session).append(URL_LEAVE_SITE
+                        .replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(session.getPersonIdentifier()))
                         .replace(VARIABLE_SITEID, siteShortName)).toString();
     }
 
@@ -204,9 +205,9 @@ public class PublicAPIUrlRegistry
     /** @since 1.1.0 */
     public static String getCancelJoinSiteRequestUrl(AlfrescoSession session, String siteIdentifier, String username)
     {
-        return createPrefix(session).append(
-                URL_CANCEL_JOIN_SITE_REQUEST.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username)).replace(
-                        VARIABLE_SITEID, siteIdentifier)).toString();
+        return createPrefix(session)
+                .append(URL_CANCEL_JOIN_SITE_REQUEST.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username))
+                                .replace(VARIABLE_SITEID, siteIdentifier)).toString();
     }
 
     /** @since 1.3.0 */
@@ -214,13 +215,12 @@ public class PublicAPIUrlRegistry
     {
         return createPrefix(session).append(URL_ALLMEMBERSOF.replace(VARIABLE_SITEID, siteShortName)).toString();
     }
-    
+
     /** @since 1.3.0 */
     public static String getMemberOfSiteUrl(AlfrescoSession session, String siteIdentifier, String inviteId)
     {
-        return createPrefix(session)
-                .append((URL_MEMBEROF.replace(VARIABLE_SITEID, siteIdentifier).replace(VARIABLE_PERSONID,
-                        getEncodingPersonIdentifier(inviteId)))).toString();
+        return createPrefix(session).append((URL_MEMBEROF.replace(VARIABLE_SITEID, siteIdentifier)
+                .replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(inviteId)))).toString();
     }
 
     // ///////////////////////////////////////////////////////////////////////////////
@@ -254,9 +254,8 @@ public class PublicAPIUrlRegistry
      */
     public static String getUserActivitiesUrl(AlfrescoSession session)
     {
-        return createPrefix(session).append(
-                URL_ACTIVITIES.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(session.getPersonIdentifier())))
-                .toString();
+        return createPrefix(session).append(URL_ACTIVITIES
+                .replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(session.getPersonIdentifier()))).toString();
     }
 
     /**
@@ -266,8 +265,8 @@ public class PublicAPIUrlRegistry
      */
     public static String getUserActivitiesUrl(AlfrescoSession session, String username)
     {
-        return createPrefix(session).append(
-                URL_ACTIVITIES.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username))).toString();
+        return createPrefix(session)
+                .append(URL_ACTIVITIES.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username))).toString();
     }
 
     /**
@@ -277,10 +276,9 @@ public class PublicAPIUrlRegistry
      */
     public static String getSiteActivitiesUrl(AlfrescoSession session, String siteShortName)
     {
-        return createPrefix(session).append(
-                URL_SITE_ACTIVITIES.replace(VARIABLE_PERSONID,
-                        getEncodingPersonIdentifier(session.getPersonIdentifier())).replace(VARIABLE_SITEID,
-                        siteShortName)).toString();
+        return createPrefix(session).append(URL_SITE_ACTIVITIES
+                        .replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(session.getPersonIdentifier()))
+                        .replace(VARIABLE_SITEID, siteShortName)).toString();
     }
 
     // ///////////////////////////////////////////////////////////////////////////////
@@ -297,9 +295,8 @@ public class PublicAPIUrlRegistry
 
     public static String getCommentUrl(AlfrescoSession session, String nodeIdentifier, String commentIdentifier)
     {
-        return createPrefix(session).append(
-                URL_COMMENT.replace(VARIABLE_NODEID, nodeIdentifier).replace(VARIABLE_COMMENTID, commentIdentifier))
-                .toString();
+        return createPrefix(session).append(URL_COMMENT.replace(VARIABLE_NODEID, nodeIdentifier)
+                .replace(VARIABLE_COMMENTID, commentIdentifier)).toString();
     }
 
     // ///////////////////////////////////////////////////////////////////////////////
@@ -332,8 +329,9 @@ public class PublicAPIUrlRegistry
      */
     public static String getPersonDetailssUrl(AlfrescoSession session, String username)
     {
-        return createPrefix(session).append(
-                URL_PERSON_DETAILS.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username))).toString();
+        return createPrefix(session)
+                .append(URL_PERSON_DETAILS.replace(VARIABLE_PERSONID, getEncodingPersonIdentifier(username)))
+                .toString();
     }
 
     /** @since 1.3.0 */
@@ -408,8 +406,8 @@ public class PublicAPIUrlRegistry
     /** @since 1.3.0 */
     public static String getProcessDefinitionUrl(AlfrescoSession session, String workflowDefinitionId)
     {
-        return createWorkflowPrefix(session).append(
-                URL_PROCESS_DEFINITION.replace(VARIABLE_PROCESSDEFINITIONID, workflowDefinitionId)).toString();
+        return createWorkflowPrefix(session)
+                .append(URL_PROCESS_DEFINITION.replace(VARIABLE_PROCESSDEFINITIONID, workflowDefinitionId)).toString();
     }
 
     /** @since 1.3.0 */
@@ -465,8 +463,9 @@ public class PublicAPIUrlRegistry
     /** @since 1.3.0 */
     public static String getTaskVariableUrl(AlfrescoSession session, String taskId, String variableId)
     {
-        return createWorkflowPrefix(session).append(
-                URL_TASK_VARIABLE.replace(VARIABLE_TASKID, taskId).replace(VARIABLE_NAME, variableId)).toString();
+        return createWorkflowPrefix(session)
+                .append(URL_TASK_VARIABLE.replace(VARIABLE_TASKID, taskId).replace(VARIABLE_NAME, variableId))
+                .toString();
     }
 
     /** @since 1.3.0 */
@@ -478,8 +477,9 @@ public class PublicAPIUrlRegistry
     /** @since 1.3.0 */
     public static String getTaskItemByIdUrl(AlfrescoSession session, String taskId, String documentId)
     {
-        return createWorkflowPrefix(session).append(
-                URL_ITEM_ID_TASK.replace(VARIABLE_TASKID, taskId).replace(VARIABLE_ITEMID, documentId)).toString();
+        return createWorkflowPrefix(session)
+                .append(URL_ITEM_ID_TASK.replace(VARIABLE_TASKID, taskId).replace(VARIABLE_ITEMID, documentId))
+                .toString();
     }
 
     public static String getWorkflowDiagram(AlfrescoSession session, String processId)
@@ -614,10 +614,7 @@ public class PublicAPIUrlRegistry
 
     public static String getPublicAPIUrl(String baseUrl)
     {
-        StringBuilder sb = new StringBuilder(baseUrl);
-        sb.append(BINDING_NETWORK_CMISATOM);
-        sb.append("/");
 
-        return sb.toString();
+        return baseUrl + BINDING_NETWORK_CMISATOM + "/";
     }
 }

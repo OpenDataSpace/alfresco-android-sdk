@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,17 +20,16 @@ package org.alfresco.mobile.android.api.model;
 import java.io.Serializable;
 
 import org.alfresco.mobile.android.api.model.Folder;
-import org.alfresco.mobile.android.api.model.KeywordSearchOptions;
 
 /**
  * Search Parameters provides informations to manage the behaviour of a search.
  * It define how a query search available at SearchService.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class KeywordSearchOptions implements Serializable
 {
-    
+
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
@@ -55,7 +54,7 @@ public class KeywordSearchOptions implements Serializable
 
     /**
      * Base constructor for a KeywordSearchOptions.
-     * 
+     *
      * @param folder : Relative folder from where a search start. Default is null.
      * @param doesIncludeDescendants : Default is true.
      * @param doesIncludeContent : Default is true.
@@ -106,7 +105,7 @@ public class KeywordSearchOptions implements Serializable
 
     /**
      * Specifies whether the search should include child folders.
-     * 
+     *
      * @param includeDescendents the includeDescendents to set
      */
     public void setIncludeDescendants(boolean includeDescendents)

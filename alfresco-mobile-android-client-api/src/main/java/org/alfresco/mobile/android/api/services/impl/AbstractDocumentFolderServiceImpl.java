@@ -99,7 +99,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
     private static final long CHUNK_SIZE = 4 * 1024 * 1024;
 
-    protected Session cmisSession;
+    protected final Session cmisSession;
 
     /**
      * Default Constructor. Only used inside ServiceRegistry.
@@ -1188,7 +1188,6 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     /**
      * Internal : Retrieves the downloading url for the given document.
      *
-     * @param document
      * @return @ : if network or internal problems occur during the process.
      */
     public String getDownloadUrl(Document document)
@@ -1295,7 +1294,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
      * Static Map of all sorting possibility for DocumentFolderService.
      */
     @SuppressWarnings("serial")
-    private static Map<String, String> sortingMap = new HashMap<String, String>()
+    private static final Map<String, String> sortingMap = new HashMap<String, String>()
     {
         {
             put(SORT_PROPERTY_NAME, PropertyIds.NAME);
@@ -1308,10 +1307,6 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
 
     /**
      * Utility method to create the sorting open cmis extension.
-     *
-     * @param sortingKey
-     * @param modifier
-     * @return
      */
     private String getSorting(String sortingKey, boolean modifier)
     {
@@ -1433,6 +1428,7 @@ public abstract class AbstractDocumentFolderServiceImpl extends AlfrescoService 
     /**
      * All CMIS properties identifier in one list.
      */
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private static final Set<String> CMISMODEL_KEYS = new HashSet<String>();
 
     static

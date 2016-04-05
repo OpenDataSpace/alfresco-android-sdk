@@ -1,23 +1,21 @@
 /*******************************************************************************
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl;
-
-import java.util.List;
 
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Document;
@@ -30,10 +28,12 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
+import java.util.List;
+
 /**
  * Abstract class implementation of WorkflowService. Responsible of sharing
  * common methods between child class (OnPremise and PublicAPI)
- * 
+ *
  * @since 1.3
  * @author Jean Marie Pascal
  */
@@ -42,8 +42,7 @@ public abstract class AbstractWorkflowService extends AlfrescoService implements
     /**
      * Default constructor for service. </br> Used by the
      * {@link AbstractServiceRegistry}.
-     * 
-     * @param repositorySession
+     *
      */
     public AbstractWorkflowService(AlfrescoSession repositorySession)
     {
@@ -61,10 +60,11 @@ public abstract class AbstractWorkflowService extends AlfrescoService implements
     // ////////////////////////////////////////////////////////////////
     // PROCESS
     // ////////////////////////////////////////////////////////////////
+
     /**
      * Internal method to retrieve a specific process url. (depending on
      * repository type)
-     * 
+     *
      * @param process : a process object
      * @return UrlBuilder to retrieve for a specific process url.
      */
@@ -73,8 +73,11 @@ public abstract class AbstractWorkflowService extends AlfrescoService implements
     /** {@inheritDoc} */
     public void deleteProcess(Process process)
     {
-        if (isObjectNull(process)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "process")); }
+        if (isObjectNull(process))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "process"));
+        }
         try
         {
             delete(getProcessUrl(process), ErrorCodeRegistry.WORKFLOW_GENERIC);
@@ -96,12 +99,13 @@ public abstract class AbstractWorkflowService extends AlfrescoService implements
     {
         return getTasks(process, null).getList();
     }
-    
+
     public abstract UrlBuilder getProcessDiagramUrl(String processId);
 
     // ////////////////////////////////////////////////////////////////
     // ITEMS
     // ////////////////////////////////////////////////////////////////
+
     /** {@inheritDoc} */
     public List<Document> getDocuments(Task task)
     {
@@ -117,6 +121,7 @@ public abstract class AbstractWorkflowService extends AlfrescoService implements
     // ////////////////////////////////////////////////////////////////
     // TASKS
     // ////////////////////////////////////////////////////////////////
+
     /** {@inheritDoc} */
     public List<Task> getTasks()
     {

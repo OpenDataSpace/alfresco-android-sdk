@@ -1,30 +1,25 @@
 /*******************************************************************************
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl.onpremise;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.text.TextUtils;
 
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.ContentStream;
@@ -50,20 +45,25 @@ import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
 import org.apache.http.HttpStatus;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.text.TextUtils;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * OnPremise implementation of DocumentFolderService
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderServiceImpl
 {
     /**
      * Default Constructor. Only used inside ServiceRegistry.
-     * 
+     *
      * @param repositorySession : Repository Session.
      */
     public OnPremiseDocumentFolderServiceImpl(AlfrescoSession repositorySession)
@@ -88,8 +88,7 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
     }
 
     @Override
-    /** {@inheritDoc} */
-    public ContentStream getRenditionStream(String identifier, String type)
+    /** {@inheritDoc} */ public ContentStream getRenditionStream(String identifier, String type)
     {
         try
         {
@@ -123,18 +122,19 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
     // ////////////////////////////////////////////////////
     // Save State - serialization / deserialization
     // ////////////////////////////////////////////////////
-    public static final Parcelable.Creator<OnPremiseDocumentFolderServiceImpl> CREATOR = new Parcelable.Creator<OnPremiseDocumentFolderServiceImpl>()
-    {
-        public OnPremiseDocumentFolderServiceImpl createFromParcel(Parcel in)
-        {
-            return new OnPremiseDocumentFolderServiceImpl(in);
-        }
+    public static final Parcelable.Creator<OnPremiseDocumentFolderServiceImpl> CREATOR =
+            new Parcelable.Creator<OnPremiseDocumentFolderServiceImpl>()
+            {
+                public OnPremiseDocumentFolderServiceImpl createFromParcel(Parcel in)
+                {
+                    return new OnPremiseDocumentFolderServiceImpl(in);
+                }
 
-        public OnPremiseDocumentFolderServiceImpl[] newArray(int size)
-        {
-            return new OnPremiseDocumentFolderServiceImpl[size];
-        }
-    };
+                public OnPremiseDocumentFolderServiceImpl[] newArray(int size)
+                {
+                    return new OnPremiseDocumentFolderServiceImpl[size];
+                }
+            };
 
     public OnPremiseDocumentFolderServiceImpl(Parcel o)
     {
@@ -150,12 +150,15 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
             String[] favoriteDocumentsIdentifier = parsePreferenceResponse(session, session.getPersonIdentifier(),
                     OnPremiseUrlRegistry.PREFERENCE_FAVOURITES_DOCUMENTS);
 
-            if (favoriteDocumentsIdentifier == null) { return favoriteDocumentsList; }
+            if (favoriteDocumentsIdentifier == null)
+            {
+                return favoriteDocumentsList;
+            }
             StringBuilder builder = new StringBuilder("SELECT * FROM cmis:document WHERE cmis:objectId=");
             JsonUtils.join(builder, " OR cmis:objectId=", favoriteDocumentsIdentifier);
 
-            List<Node> nodes = session.getServiceRegistry().getSearchService()
-                    .search(builder.toString(), SearchLanguage.CMIS);
+            List<Node> nodes =
+                    session.getServiceRegistry().getSearchService().search(builder.toString(), SearchLanguage.CMIS);
 
             for (Node node : nodes)
             {
@@ -186,12 +189,15 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
             String[] favoriteFoldersIdentifier = parsePreferenceResponse(session, session.getPersonIdentifier(),
                     OnPremiseUrlRegistry.PREFERENCE_FAVOURITES_FOLDERS);
 
-            if (favoriteFoldersIdentifier == null) { return favoriteFolderList; }
+            if (favoriteFoldersIdentifier == null)
+            {
+                return favoriteFolderList;
+            }
             StringBuilder builder = new StringBuilder("SELECT * FROM cmis:folder WHERE cmis:objectId=");
             JsonUtils.join(builder, " OR cmis:objectId=", favoriteFoldersIdentifier);
 
-            List<Node> nodes = session.getServiceRegistry().getSearchService()
-                    .search(builder.toString(), SearchLanguage.CMIS);
+            List<Node> nodes =
+                    session.getServiceRegistry().getSearchService().search(builder.toString(), SearchLanguage.CMIS);
 
             for (Node node : nodes)
             {
@@ -233,7 +239,7 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
     @Override
     public boolean isFavorite(Node node)
     {
-        String[] favoriteIdentifier = null;
+        String[] favoriteIdentifier;
         String filter = OnPremiseUrlRegistry.PREFERENCE_FAVOURITES_DOCUMENTS;
         if (node.isFolder())
         {
@@ -241,7 +247,10 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
         }
         favoriteIdentifier = parsePreferenceResponse(session, session.getPersonIdentifier(), filter);
 
-        if (favoriteIdentifier == null) { return false; }
+        if (favoriteIdentifier == null)
+        {
+            return false;
+        }
 
         Set<String> h = new HashSet<String>(Arrays.asList(favoriteIdentifier));
 
@@ -262,8 +271,11 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
 
     private void favoriteNode(Node node, boolean addFavorite)
     {
-        if (isObjectNull(node)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node")); }
+        if (isObjectNull(node))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "node"));
+        }
 
         try
         {
@@ -273,7 +285,7 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
             String link = OnPremiseUrlRegistry.getUserPreferenceUrl(session, session.getPersonIdentifier());
             UrlBuilder url = new UrlBuilder(link);
 
-            List<String> favoriteIdentifier = null;
+            List<String> favoriteIdentifier;
             String filter = OnPremiseUrlRegistry.PREFERENCE_FAVOURITES_DOCUMENTS;
             if (node.isFolder())
             {
@@ -296,12 +308,12 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
                 else if (!addFavorite && hasIdentifier)
                 {
                     index.remove(cleanIdentifier);
-                    joined = TextUtils.join(",", index.toArray(new String[0]));
+                    joined = TextUtils.join(",", index.toArray(new String[index.size()]));
                 }
-                else
-                {
-                    // Throw exceptions ????
-                }
+//                else
+//                {
+//                    // Throw exceptions ????
+//                }
             }
 
             // prepare json data
@@ -363,7 +375,10 @@ public class OnPremiseDocumentFolderServiceImpl extends AbstractDocumentFolderSe
         }
 
         String favourites = (String) json.get(OnPremiseUrlRegistry.FAVOURITES);
-        if (!isStringNull(favourites)) { return favourites.split(","); }
+        if (!isStringNull(favourites))
+        {
+            return favourites.split(",");
+        }
 
         return null;
     }

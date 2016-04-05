@@ -1,28 +1,25 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl.onpremise;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.Log;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.constants.PublicAPIConstant;
@@ -55,9 +52,12 @@ import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
 import org.apache.http.HttpStatus;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.util.Log;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Sites are a key concept within Alfresco Share for managing documents, wiki
@@ -68,39 +68,43 @@ import android.util.Log;
  * <ul>
  * <li>List Sites (Favorites, all sites, user are member of)</li>
  * </ul>
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
 {
-    private static final String TAG = "OnPremiseSiteServiceImpl";
+    private static final String TAG = "OnPremiseSiteSvcImpl";
 
     /**
      * Default constructor for service. </br> Used by the
      * {@link AbstractServiceRegistry}.
-     * 
-     * @param repositorySession
      */
     public OnPremiseSiteServiceImpl(RepositorySession repositorySession)
     {
         super(repositorySession);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     protected UrlBuilder getAllSitesUrl(ListingContext listingContext)
     {
         String link = OnPremiseUrlRegistry.getAllSitesUrl(session);
         return new UrlBuilder(link);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     protected UrlBuilder getUserSitesUrl(String personIdentifier, ListingContext listingContext)
     {
         String link = OnPremiseUrlRegistry.getUserSitesUrl(session, session.getPersonIdentifier());
         return new UrlBuilder(link);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public List<Site> getFavoriteSites()
     {
         try
@@ -110,7 +114,10 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
             List<String> favoriteSites = computeFavoriteSite(session.getPersonIdentifier());
 
             List<Site> finalList = new ArrayList<Site>();
-            if (favoriteSites == null) { return finalList; }
+            if (favoriteSites == null)
+            {
+                return finalList;
+            }
             for (Site site : sites)
             {
                 if (favoriteSites.contains(site.getShortName()))
@@ -121,7 +128,7 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
             }
 
             // Retrieve site user has favorite but user is not member of.
-            Site tmpSite = null;
+            Site tmpSite;
             for (String siteIdentifier : favoriteSites)
             {
                 tmpSite = getSite(siteIdentifier);
@@ -140,7 +147,9 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         return null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     protected PagingResult<Site> computeFavoriteSites(ListingContext listingContext)
     {
         List<Site> result = getFavoriteSites();
@@ -154,8 +163,8 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         Boolean hasMoreItems = false;
         if (listingContext != null)
         {
-            int fromIndex = (listingContext.getSkipCount() > result.size()) ? result.size() : listingContext
-                    .getSkipCount();
+            int fromIndex =
+                    (listingContext.getSkipCount() > result.size()) ? result.size() : listingContext.getSkipCount();
 
             // Case if skipCount > result size
             if (listingContext.getSkipCount() < result.size())
@@ -178,27 +187,37 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         return new PagingResultImpl<Site>(result, hasMoreItems, result.size());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     protected UrlBuilder getSiteUrl(String siteIdentifier)
     {
         String link = OnPremiseUrlRegistry.getSiteUrl(session, siteIdentifier);
         return new UrlBuilder(link);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     protected Site parseData(String siteIdentifier, Map<String, Object> json)
     {
         if (extraPropertiesCache.get(siteIdentifier) != null)
         {
             CacheSiteExtraProperties extraProperties = extraPropertiesCache.get(siteIdentifier);
-            json.put(OnPremiseConstant.ISPENDINGMEMBER_VALUE, extraProperties.isPendingMember);
-            json.put(OnPremiseConstant.ISMEMBER_VALUE, extraProperties.isMember);
-            json.put(OnPremiseConstant.ISFAVORITE_VALUE, extraProperties.isFavorite);
+
+            if (extraProperties != null)
+            {
+                json.put(OnPremiseConstant.ISPENDINGMEMBER_VALUE, extraProperties.isPendingMember);
+                json.put(OnPremiseConstant.ISMEMBER_VALUE, extraProperties.isMember);
+                json.put(OnPremiseConstant.ISFAVORITE_VALUE, extraProperties.isFavorite);
+            }
         }
-        return SiteImpl.parseJson((Map<String, Object>) json);
+        return SiteImpl.parseJson(json);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     protected String getDocContainerSiteUrl(Site site)
     {
         return OnPremiseUrlRegistry.getDocContainerSiteUrl(session, site.getShortName());
@@ -207,16 +226,20 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
     // ////////////////////////////////////////////////////
     // FAVORITES
     // ////////////////////////////////////////////////////
+
     /**
      * Favorite or unfavorite a site.
-     * 
-     * @param site : Site object to manage
+     *
+     * @param site    : Site object to manage
      * @param addSite : true to favorite the site. False to unfavorite the site.
      */
     private Site favoriteSite(Site site, boolean addSite)
     {
-        if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
+        if (isObjectNull(site))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site"));
+        }
 
         Site updatedSite = null;
 
@@ -226,15 +249,15 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
             UrlBuilder url = new UrlBuilder(link);
 
             // prepare json data
-            String[] sitePrefence = { "org", "alfresco", "share", "sites", "favourites" };
+            String[] sitePrefence = {"org", "alfresco", "share", "sites", "favourites"};
 
             JSONObject jroot = new JSONObject();
             JSONObject jt = null;
             JSONObject jp = jroot;
-            for (int i = 0; i < sitePrefence.length; i++)
+            for (String aSitePrefence : sitePrefence)
             {
                 jt = new JSONObject();
-                jp.put(sitePrefence[i], jt);
+                jp.put(aSitePrefence, jt);
                 jp = jt;
             }
 
@@ -265,13 +288,17 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         return updatedSite;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Site addFavoriteSite(Site site)
     {
         return favoriteSite(site, true);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public Site removeFavoriteSite(Site site)
     {
         return favoriteSite(site, false);
@@ -283,18 +310,24 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
     @Override
     public boolean isMember(Site site, Person person)
     {
-        if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
+        if (isObjectNull(site))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site"));
+        }
 
-        if (isObjectNull(person)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "person")); }
+        if (isObjectNull(person))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "person"));
+        }
 
         return isMemberOf(site, person.getIdentifier());
     }
 
     /**
      * Determine if the current user is member of the specific site.
-     * 
+     *
      * @param site :
      * @return true if the current user is member. False otherwise.
      */
@@ -334,114 +367,128 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         List<JoinSiteRequestImpl> requestedSites = getJoinSiteRequests();
         for (JoinSiteRequestImpl joinSiteRequest : requestedSites)
         {
-            if (site.getIdentifier().equals(joinSiteRequest.getSiteShortName())) { return true; }
+            if (site.getIdentifier().equals(joinSiteRequest.getSiteShortName()))
+            {
+                return true;
+            }
         }
         return false;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     public Site joinSite(Site site)
     {
-        if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
+        if (isObjectNull(site))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site"));
+        }
 
         Site updatedSite = null;
 
         try
         {
-            String link = null;
-            UrlBuilder url = null;
-            Response resp = null;
-            JSONObject jo = null;
-            Map<String, Object> json = null;
+            String link;
+            UrlBuilder url;
+            Response resp;
+            JSONObject jo;
+            Map<String, Object> json;
 
             // Check isMember because on onPremise theres no error message if
             // the user is already member of a site.
-            if (isMemberOf(site, session.getPersonIdentifier())) { throw new AlfrescoServiceException(
-                    ErrorCodeRegistry.SITE_ALREADY_MEMBER,
-                    Messagesl18n.getString("ErrorCodeRegistry.SITE_ALREADY_MEMBER")); }
+            if (isMemberOf(site, session.getPersonIdentifier()))
+            {
+                throw new AlfrescoServiceException(ErrorCodeRegistry.SITE_ALREADY_MEMBER,
+                        Messagesl18n.getString("ErrorCodeRegistry.SITE_ALREADY_MEMBER"));
+            }
 
             switch (site.getVisibility())
             {
-                case PUBLIC:
-                    // Prepare URL
-                    link = OnPremiseUrlRegistry.getJoinPublicSiteUrl(session, site.getIdentifier());
-                    url = new UrlBuilder(link);
+            case PUBLIC:
+                // Prepare URL
+                link = OnPremiseUrlRegistry.getJoinPublicSiteUrl(session, site.getIdentifier());
+                url = new UrlBuilder(link);
 
-                    // prepare json data
-                    jo = new JSONObject();
-                    jo.put(OnPremiseConstant.ROLE_VALUE, DEFAULT_ROLE);
-                    JSONObject jp = new JSONObject();
-                    jp.put(OnPremiseConstant.USERNAME_VALUE, session.getPersonIdentifier());
-                    jo.put(OnPremiseConstant.PERSON_VALUE, jp);
+                // prepare json data
+                jo = new JSONObject();
+                jo.put(OnPremiseConstant.ROLE_VALUE, DEFAULT_ROLE);
+                JSONObject jp = new JSONObject();
+                jp.put(OnPremiseConstant.USERNAME_VALUE, session.getPersonIdentifier());
+                jo.put(OnPremiseConstant.PERSON_VALUE, jp);
 
-                    final JsonDataWriter formData = new JsonDataWriter(jo);
+                final JsonDataWriter formData = new JsonDataWriter(jo);
 
-                    // send and parse
-                    resp = post(url, formData.getContentType(), new Output()
+                // send and parse
+                /*resp =*/
+                post(url, formData.getContentType(), new Output()
+                {
+                    public void write(OutputStream out) throws IOException
                     {
-                        public void write(OutputStream out) throws IOException
-                        {
-                            formData.write(out);
-                        }
-                    }, ErrorCodeRegistry.SITE_GENERIC);
+                        formData.write(out);
+                    }
+                }, ErrorCodeRegistry.SITE_GENERIC);
 
-                    // By default Contains informations about authority &
-                    // membership
-                    json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
+                // By default Contains informations about authority &
+                // membership
+                //json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 
-                    updateExtraPropertyCache(site.getIdentifier(), false, true, site.isFavorite());
-                    updatedSite = new SiteImpl(site, false, true, site.isFavorite());
+                updateExtraPropertyCache(site.getIdentifier(), false, true, site.isFavorite());
+                updatedSite = new SiteImpl(site, false, true, site.isFavorite());
+                validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_GENERIC);
+                break;
+
+            case MODERATED:
+
+                if (hasJoinRequest(site))
+                {
+                    throw new AlfrescoServiceException(ErrorCodeRegistry.SITE_ALREADY_MEMBER,
+                            Messagesl18n.getString("ErrorCodeRegistry.SITE_ALREADY_MEMBER.request"));
+                }
+
+                link = OnPremiseUrlRegistry.getJoinModeratedSiteUrl(session, site.getIdentifier());
+                url = new UrlBuilder(link);
+
+                // prepare json data
+                jo = new JSONObject();
+                jo.put(OnPremiseConstant.INVITATIONTYPE_VALUE, SiteVisibility.MODERATED.value());
+                jo.put(OnPremiseConstant.INVITEEUSERNAME_VALUE, session.getPersonIdentifier());
+                jo.put(OnPremiseConstant.INVITEECOMMENTS_VALUE, null);
+                jo.put(OnPremiseConstant.INVITEEROLENAME_VALUE, DEFAULT_ROLE);
+
+                final JsonDataWriter formDataM = new JsonDataWriter(jo);
+
+                // send and parse
+                resp = post(url, formDataM.getContentType(), new Output()
+                {
+                    public void write(OutputStream out) throws IOException
+                    {
+                        formDataM.write(out);
+                    }
+                }, ErrorCodeRegistry.SITE_GENERIC);
+                json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
+                Map<String, Object> jmo = (Map<String, Object>) json.get(OnPremiseConstant.DATA_VALUE);
+                if (jmo != null)
+                {
+                    updateExtraPropertyCache(site.getIdentifier(), true, false, site.isFavorite());
+                    updatedSite = new SiteImpl(site, true, false, site.isFavorite());
                     validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_GENERIC);
-                    break;
-
-                case MODERATED:
-
-                    if (hasJoinRequest(site)) { throw new AlfrescoServiceException(
-                            ErrorCodeRegistry.SITE_ALREADY_MEMBER,
-                            Messagesl18n.getString("ErrorCodeRegistry.SITE_ALREADY_MEMBER.request")); }
-
-                    link = OnPremiseUrlRegistry.getJoinModeratedSiteUrl(session, site.getIdentifier());
-                    url = new UrlBuilder(link);
-
-                    // prepare json data
-                    jo = new JSONObject();
-                    jo.put(OnPremiseConstant.INVITATIONTYPE_VALUE, SiteVisibility.MODERATED.value());
-                    jo.put(OnPremiseConstant.INVITEEUSERNAME_VALUE, session.getPersonIdentifier());
-                    jo.put(OnPremiseConstant.INVITEECOMMENTS_VALUE, null);
-                    jo.put(OnPremiseConstant.INVITEEROLENAME_VALUE, DEFAULT_ROLE);
-
-                    final JsonDataWriter formDataM = new JsonDataWriter(jo);
-
-                    // send and parse
-                    resp = post(url, formDataM.getContentType(), new Output()
-                    {
-                        public void write(OutputStream out) throws IOException
-                        {
-                            formDataM.write(out);
-                        }
-                    }, ErrorCodeRegistry.SITE_GENERIC);
-                    json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
-                    Map<String, Object> jmo = (Map<String, Object>) json.get(OnPremiseConstant.DATA_VALUE);
-                    if (jmo != null)
-                    {
-                        updateExtraPropertyCache(site.getIdentifier(), true, false, site.isFavorite());
-                        updatedSite = new SiteImpl(site, true, false, site.isFavorite());
-                        validateUpdateSite(updatedSite, ErrorCodeRegistry.SITE_GENERIC);
-                    }
-                    else
-                    {
-                        throw new AlfrescoServiceException(ErrorCodeRegistry.SITE_GENERIC,
-                                Messagesl18n.getString("ErrorCodeRegistry.SITE_NOT_JOINED.parsing"));
-                    }
-                    break;
-                case PRIVATE:
+                }
+                else
+                {
                     throw new AlfrescoServiceException(ErrorCodeRegistry.SITE_GENERIC,
-                            Messagesl18n.getString("ErrorCodeRegistry.SITE_NOT_JOINED.private"));
-                default:
-                    throw new IllegalArgumentException(String.format(
-                            Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "visibility"));
+                            Messagesl18n.getString("ErrorCodeRegistry.SITE_NOT_JOINED.parsing"));
+                }
+                break;
+            case PRIVATE:
+                throw new AlfrescoServiceException(ErrorCodeRegistry.SITE_GENERIC,
+                        Messagesl18n.getString("ErrorCodeRegistry.SITE_NOT_JOINED.private"));
+            default:
+                throw new IllegalArgumentException(
+                        String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"),
+                                "visibility"));
             }
         }
         catch (Exception e)
@@ -452,7 +499,9 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         return updatedSite;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     protected List<JoinSiteRequestImpl> getJoinSiteRequests()
     {
@@ -481,7 +530,9 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         return requestList;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     protected PagingResult<JoinSiteRequestImpl> getJoinSiteRequests(ListingContext listingContext)
     {
@@ -518,11 +569,11 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
             }
         }
 
-        Map<String, Object> mapProperties = null;
+        Map<String, Object> mapProperties;
         for (int i = fromIndex; i < toIndex; i++)
         {
             mapProperties = (Map<String, Object>) jo.get(i);
-            requestList.add(JoinSiteRequestImpl.parseJson((Map<String, Object>) mapProperties));
+            requestList.add(JoinSiteRequestImpl.parseJson(mapProperties));
         }
 
         if (listingContext != null)
@@ -534,44 +585,59 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         return new PagingResultImpl<JoinSiteRequestImpl>(requestList, hasMoreItems, size);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     protected String getCancelJoinSiteRequestUrl(JoinSiteRequestImpl joinSiteRequest)
     {
         return OnPremiseUrlRegistry.getCancelJoinSiteRequestUrl(session, joinSiteRequest.getSiteShortName(),
                 joinSiteRequest.getIdentifier());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     protected String getLeaveSiteUrl(Site site)
     {
         return OnPremiseUrlRegistry.getLeaveSiteUrl(session, site.getIdentifier(), session.getPersonIdentifier());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public List<Person> getAllMembers(Site site)
     {
         return getAllMembers(site, null).getList();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public PagingResult<Person> getAllMembers(Site site, ListingContext listingContext)
     {
         return searchMembers(site, null, listingContext);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public List<Person> searchMembers(Site site, String keywords)
     {
         return searchMembers(site, keywords, null).getList();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     public PagingResult<Person> searchMembers(Site site, String keywords, ListingContext listingContext)
     {
-        if (isObjectNull(site)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site")); }
-        
+        if (isObjectNull(site))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "site"));
+        }
+
         List<Person> persons = new ArrayList<Person>();
         int maxItems = -1;
         try
@@ -597,8 +663,9 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
 
             for (Object obj : json)
             {
-                persons.add(PersonImpl.parseJson((Map<String, Object>) ((Map<String, Object>) obj)
-                        .get(OnPremiseConstant.AUTHORITY_VALUE), false));
+                persons.add(PersonImpl.parseJson(
+                        (Map<String, Object>) ((Map<String, Object>) obj).get(OnPremiseConstant.AUTHORITY_VALUE),
+                        false));
             }
         }
         catch (Exception e)
@@ -611,7 +678,10 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
     // ////////////////////////////////////////////////////////////////////////////////////
     // / INTERNAL
     // ////////////////////////////////////////////////////////////////////////////////////
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     protected PagingResult<Site> computeSites(UrlBuilder url, ListingContext listingContext)
     {
@@ -642,9 +712,9 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
             }
         }
 
-        String siteName = null;
-        Map<String, Object> mapProperties = null;
-        CacheSiteExtraProperties extraProperties = null;
+        String siteName;
+        Map<String, Object> mapProperties;
+        CacheSiteExtraProperties extraProperties;
         for (int i = fromIndex; i < toIndex; i++)
         {
             mapProperties = (Map<String, Object>) json.get(i);
@@ -654,9 +724,12 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
                 if (extraPropertiesCache.get(siteName) != null)
                 {
                     extraProperties = extraPropertiesCache.get(siteName);
-                    mapProperties.put(OnPremiseConstant.ISPENDINGMEMBER_VALUE, extraProperties.isPendingMember);
-                    mapProperties.put(OnPremiseConstant.ISMEMBER_VALUE, extraProperties.isMember);
-                    mapProperties.put(OnPremiseConstant.ISFAVORITE_VALUE, extraProperties.isFavorite);
+                    if (extraProperties != null)
+                    {
+                        mapProperties.put(OnPremiseConstant.ISPENDINGMEMBER_VALUE, extraProperties.isPendingMember);
+                        mapProperties.put(OnPremiseConstant.ISMEMBER_VALUE, extraProperties.isMember);
+                        mapProperties.put(OnPremiseConstant.ISFAVORITE_VALUE, extraProperties.isFavorite);
+                    }
                 }
                 result.add(SiteImpl.parseJson((Map<String, Object>) json.get(i)));
             }
@@ -687,7 +760,9 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         return userSites;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     protected String parseContainer(String link)
     {
@@ -710,15 +785,17 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
 
         if (json.size() == 1)
         {
-            Map<String, Object> jo = (Map<String, Object>) ((List<Object>) json.get(OnPremiseConstant.CONTAINER_VALUE))
-                    .get(0);
+            Map<String, Object> jo =
+                    (Map<String, Object>) ((List<Object>) json.get(OnPremiseConstant.CONTAINER_VALUE)).get(0);
             n = (String) jo.get(OnPremiseConstant.NODEREF_VALUE);
         }
 
         return n;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     private List<String> computeFavoriteSite(String username)
     {
@@ -732,11 +809,11 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
 
         String[] s = OnPremiseUrlRegistry.PREFERENCE_SITES.split("\\.");
-        for (int i = 0; i < s.length; i++)
+        for (String value : s)
         {
-            if (json.get(s[i]) != null)
+            if (json.get(value) != null)
             {
-                json = (Map<String, Object>) json.get(s[i]);
+                json = (Map<String, Object>) json.get(value);
             }
         }
 
@@ -756,7 +833,9 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
         return tmpList;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected PagingResult<Site> computeAllSites(UrlBuilder url, ListingContext listingContext)
     {
@@ -795,18 +874,19 @@ public class OnPremiseSiteServiceImpl extends AbstractSiteServiceImpl
     // ////////////////////////////////////////////////////
     // Save State - serialization / deserialization
     // ////////////////////////////////////////////////////
-    public static final Parcelable.Creator<OnPremiseSiteServiceImpl> CREATOR = new Parcelable.Creator<OnPremiseSiteServiceImpl>()
-    {
-        public OnPremiseSiteServiceImpl createFromParcel(Parcel in)
-        {
-            return new OnPremiseSiteServiceImpl(in);
-        }
+    public static final Parcelable.Creator<OnPremiseSiteServiceImpl> CREATOR =
+            new Parcelable.Creator<OnPremiseSiteServiceImpl>()
+            {
+                public OnPremiseSiteServiceImpl createFromParcel(Parcel in)
+                {
+                    return new OnPremiseSiteServiceImpl(in);
+                }
 
-        public OnPremiseSiteServiceImpl[] newArray(int size)
-        {
-            return new OnPremiseSiteServiceImpl[size];
-        }
-    };
+                public OnPremiseSiteServiceImpl[] newArray(int size)
+                {
+                    return new OnPremiseSiteServiceImpl[size];
+                }
+            };
 
     public OnPremiseSiteServiceImpl(Parcel o)
     {

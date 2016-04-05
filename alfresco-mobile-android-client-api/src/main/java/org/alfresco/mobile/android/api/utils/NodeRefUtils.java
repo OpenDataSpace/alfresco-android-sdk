@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.utils;
 
@@ -22,37 +22,38 @@ import java.util.regex.Pattern;
 
 /**
  * List of static methods to manage Alfresco NodeRef.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public final class NodeRefUtils
 {
     public static final int IDENTIFIER_LENGTH = 36;
-    
+
     public static final String URI_FILLER = "://";
 
     private static final Pattern NODEREF_PATTERN = Pattern.compile(".+://.+/.+");
 
-    private static final Pattern IDENTIFIER_PATTERN = Pattern
-            .compile("[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}");
+    private static final Pattern IDENTIFIER_PATTERN =
+            Pattern.compile("[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}");
 
-    private static final Pattern IDENTIFIER_VERSION_PATTERN = Pattern
-            .compile("[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12};.+");
+    private static final Pattern IDENTIFIER_VERSION_PATTERN =
+            Pattern.compile("[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12};.+");
 
     public static final String PROTOCOL_WORKSPACE = "workspace";
 
     public static final String IDENTIFIER_SPACESSTORE = "SpacesStore";
 
-    public static final String STORE_REF_WORKSPACE_SPACESSTORE = PROTOCOL_WORKSPACE + URI_FILLER
-            + IDENTIFIER_SPACESSTORE;
+    public static final String STORE_REF_WORKSPACE_SPACESSTORE =
+            PROTOCOL_WORKSPACE + URI_FILLER + IDENTIFIER_SPACESSTORE;
 
-    private NodeRefUtils(){
-        
+    private NodeRefUtils()
+    {
+
     }
-    
+
     /**
      * Determine if passed string conforms to the pattern of a node reference
-     * 
+     *
      * @param nodeRef the node reference as a string
      * @return true => it matches the pattern of a node reference
      */
@@ -96,9 +97,6 @@ public final class NodeRefUtils
     /**
      * Returns the identifier of a nodeRef(extract the version number if added
      * by cmis)
-     * 
-     * @param nodeRef
-     * @return
      */
     public static String getNodeIdentifier(String nodeRef)
     {
@@ -149,7 +147,10 @@ public final class NodeRefUtils
         {
             return nodeRef;
         }
-        else if (isIdentifier(nodeRef)) { return nodeRef; }
+        else if (isIdentifier(nodeRef))
+        {
+            return nodeRef;
+        }
         return null;
     }
 }

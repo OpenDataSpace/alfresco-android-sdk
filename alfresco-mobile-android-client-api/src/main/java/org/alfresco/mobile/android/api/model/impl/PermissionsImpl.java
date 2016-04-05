@@ -6,7 +6,7 @@ import org.apache.chemistry.opencmis.commons.enums.Action;
 
 /**
  * Permissions represent the actions a person can perform on a node.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class PermissionsImpl implements Permissions
@@ -42,13 +42,9 @@ public class PermissionsImpl implements Permissions
         {
             return node.hasAllowableAction(Action.CAN_DELETE_OBJECT);
         }
-        else if (node.isFolder())
-        {
-            return node.hasAllowableAction(Action.CAN_DELETE_TREE);
-        }
         else
         {
-            return false;
+            return node.isFolder() && node.hasAllowableAction(Action.CAN_DELETE_TREE);
         }
     }
 

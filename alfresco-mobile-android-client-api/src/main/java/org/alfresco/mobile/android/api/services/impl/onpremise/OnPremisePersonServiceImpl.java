@@ -1,26 +1,24 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.api.services.impl.onpremise;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
@@ -43,27 +41,30 @@ import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.http.HttpStatus;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The PersonService can be used to get informations about people.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class OnPremisePersonServiceImpl extends AbstractPersonService
 {
     /**
      * Default Constructor. Only used inside ServiceRegistry.
-     * 
+     *
      * @param repositorySession : Repository Session.
      */
     public OnPremisePersonServiceImpl(RepositorySession repositorySession)
     {
         super(repositorySession);
     }
-    
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     protected UrlBuilder getPersonDetailssUrl(String personIdentifier)
     {
         return new UrlBuilder(OnPremiseUrlRegistry.getPersonDetailsUrl(session, personIdentifier));
@@ -71,8 +72,12 @@ public class OnPremisePersonServiceImpl extends AbstractPersonService
 
     public UrlBuilder getAvatarUrl(String personIdentifier)
     {
-        if (isStringNull(personIdentifier)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "personIdentifier")); }
+        if (isStringNull(personIdentifier))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"),
+                            "personIdentifier"));
+        }
 
         String url = getAvatarURL(personIdentifier);
 
@@ -80,27 +85,33 @@ public class OnPremisePersonServiceImpl extends AbstractPersonService
         if (session.getRepositoryInfo().getMajorVersion() < OnPremiseConstant.ALFRESCO_VERSION_4)
         {
             Person person = getPerson(personIdentifier);
-            url = OnPremiseUrlRegistry.getThumbnailsUrl(session, person.getAvatarIdentifier(),
-                    OnPremiseConstant.AVATAR_VALUE);
+            url = OnPremiseUrlRegistry
+                    .getThumbnailsUrl(session, person.getAvatarIdentifier(), OnPremiseConstant.AVATAR_VALUE);
         }
 
         return new UrlBuilder(url);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public ContentStream getAvatarStream(String personIdentifier)
     {
-        if (isStringNull(personIdentifier)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "personIdentifier")); }
+        if (isStringNull(personIdentifier))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"),
+                            "personIdentifier"));
+        }
 
         try
         {
-            ContentStream cf = null;
+            ContentStream cf;
             UrlBuilder builder = getAvatarUrl(personIdentifier);
             Response resp = read(builder, ErrorCodeRegistry.PERSON_GENERIC);
 
-            cf = new ContentStreamImpl(resp.getStream(), resp.getContentTypeHeader() + ";" + resp.getCharset(), resp
-                    .getContentLength().longValue());
+            cf = new ContentStreamImpl(resp.getStream(), resp.getContentTypeHeader() + ";" + resp.getCharset(),
+                    resp.getContentLength().longValue());
 
             return cf;
         }
@@ -110,7 +121,7 @@ public class OnPremisePersonServiceImpl extends AbstractPersonService
         }
         return null;
     }
-    
+
     // ////////////////////////////////////////////////////
     // Search
     // ////////////////////////////////////////////////////
@@ -124,11 +135,14 @@ public class OnPremisePersonServiceImpl extends AbstractPersonService
     @Override
     public PagingResult<Person> search(String keyword, ListingContext listingContext)
     {
-        if (isStringNull(keyword)) { throw new IllegalArgumentException(String.format(
-                Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "keyword")); }
-        
+        if (isStringNull(keyword))
+        {
+            throw new IllegalArgumentException(
+                    String.format(Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "keyword"));
+        }
+
         List<Person> definitions = new ArrayList<Person>();
-        Map<String, Object> json = new HashMap<String, Object>(0);
+        Map<String, Object> json;
         int size = 0;
         try
         {
@@ -160,18 +174,18 @@ public class OnPremisePersonServiceImpl extends AbstractPersonService
 
         return new PagingResultImpl<Person>(definitions, false, size);
     }
-    
+
     @Override
     public Person refresh(Person person)
     {
         return getPerson(person.getIdentifier());
     }
-    
+
     // ////////////////////////////////////////////////////////////////////////////////////
     // / INTERNAL
     // ////////////////////////////////////////////////////////////////////////////////////
+
     /**
-     * @param username
      * @return Returns avatar url for the specified username
      */
     private String getAvatarURL(String username)
@@ -179,7 +193,9 @@ public class OnPremisePersonServiceImpl extends AbstractPersonService
         return OnPremiseUrlRegistry.getAvatarUrl(session, username);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     protected Person computePerson(UrlBuilder url)
     {
         Response resp = getHttpInvoker().invokeGET(url, getSessionHttp());
@@ -198,22 +214,23 @@ public class OnPremisePersonServiceImpl extends AbstractPersonService
 
         return PersonImpl.parseJson(json);
     }
-    
+
     // ////////////////////////////////////////////////////
     // Save State - serialization / deserialization
     // ////////////////////////////////////////////////////
-    public static final Parcelable.Creator<OnPremisePersonServiceImpl> CREATOR = new Parcelable.Creator<OnPremisePersonServiceImpl>()
-    {
-        public OnPremisePersonServiceImpl createFromParcel(Parcel in)
-        {
-            return new OnPremisePersonServiceImpl(in);
-        }
+    public static final Parcelable.Creator<OnPremisePersonServiceImpl> CREATOR =
+            new Parcelable.Creator<OnPremisePersonServiceImpl>()
+            {
+                public OnPremisePersonServiceImpl createFromParcel(Parcel in)
+                {
+                    return new OnPremisePersonServiceImpl(in);
+                }
 
-        public OnPremisePersonServiceImpl[] newArray(int size)
-        {
-            return new OnPremisePersonServiceImpl[size];
-        }
-    };
+                public OnPremisePersonServiceImpl[] newArray(int size)
+                {
+                    return new OnPremisePersonServiceImpl[size];
+                }
+            };
 
     public OnPremisePersonServiceImpl(Parcel o)
     {
