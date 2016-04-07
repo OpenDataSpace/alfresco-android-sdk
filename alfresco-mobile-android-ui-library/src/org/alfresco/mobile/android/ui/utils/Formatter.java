@@ -1,30 +1,30 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.ui.utils;
 
-import java.util.Date;
+import android.content.Context;
+import android.content.res.Resources;
 
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.ui.R;
 
-import android.content.Context;
-import android.content.res.Resources;
+import java.util.Date;
 
 public final class Formatter
 {
@@ -37,20 +37,18 @@ public final class Formatter
     private static final int YEAR_IN_SECONDS = 31536000;
     private static final int YEAR_IN_DAYS = 365;
 
-    
-    private Formatter(){
+
+    private Formatter()
+    {
     }
-    
+
     /**
      * Format a date into a relative human readable date.
-     * 
-     * @param c
-     * @param date
-     * @return
      */
     public static String formatToRelativeDate(Context c, Date date)
     {
-        if (date == null) {
+        if (date == null)
+        {
             return null;
         }
 
@@ -91,10 +89,6 @@ public final class Formatter
 
     /**
      * Format a file size in human readable text.
-     * 
-     * @param context
-     * @param sizeInByte
-     * @return
      */
     public static String formatFileSize(Context context, long sizeInByte)
     {
@@ -103,10 +97,6 @@ public final class Formatter
 
     /**
      * Create default bottom text for a node.
-     * 
-     * @param context
-     * @param node
-     * @return
      */
     public static String createContentBottomText(Context context, Node node)
     {

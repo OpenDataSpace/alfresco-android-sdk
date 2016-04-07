@@ -1,15 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2012 Alfresco Software Limited.
-  
+
   このファイルは、Alfresco Mobile SDKの一部です。
-  
+
   Apacheライセンスバージョン2.0（「ライセンス」）に基づき、
   ライセンスに準ずる場合を除き、このファイルを使用することはできません。
   本ライセンスのコピーは、
-   
+
    http://www.apache.org/licenses/LICENSE-2.0で入手できます。
-  
+
    適用される法律により求められる場合または書面により合意する場合を除き、
    本ライセンスに基づくソフトウェアは「現状渡し」の状態で提供され、明示または暗示を問わず、
    一切の保証または条件は適用されません。
@@ -28,19 +27,15 @@
     <string name="relative_date_less_than_a_minute_ago">1分以内</string>
 
     <plurals name="relative_date_minutes_ago">
-        <item quantity="one">%1$s 分前</item>
         <item quantity="other">%1$s 分前</item>
     </plurals>
     <plurals name="relative_date_hours_ago">
-        <item quantity="one">%1$s 時間前</item>
         <item quantity="other">%1$s 時間前</item>
     </plurals>
     <plurals name="relative_date_days_ago">
-        <item quantity="one">%1$s 日前</item>
         <item quantity="other">%1$s 日前</item>
     </plurals>
     <plurals name="relative_date_years_ago">
-        <item quantity="one">%1$s 年前</item>
         <item quantity="other">%1$s 年前</item>
     </plurals>
 
@@ -54,8 +49,8 @@
     <string name="ok">OK</string>
     <string name="cancel">キャンセル</string>
     <!-- Listing -->
-    <string name="load_more">さらに読み込む...</string>
-    <string name="load_more_progress">読み込んでいます...</string>
+    <string name="load_more">さらに読み込む…</string>
+    <string name="load_more_progress">読み込んでいます…</string>
     <string name="listing_nodata">データがありません。</string>
     <!-- Dialog -->
     <string name="dialog_ok">OK</string>
@@ -189,7 +184,7 @@
     <!-- Create Folder -->
     <string name="folder_create">新規フォルダの作成</string>
     <string name="folder_name">会社名</string>
-    <string name="folder_name_hint">ここにフォルダ名を入力...</string>
+    <string name="folder_name_hint">ここにフォルダ名を入力…</string>
     <!-- Update Properties -->
     <string name="edit">編集</string>
     <string name="update">更新</string>
@@ -198,7 +193,7 @@
     <string name="download">ダウンロード</string>
     <string name="download_complete">ダウンロード完了</string>
     <string name="download_error">ダウンロード中にエラーが発生しました。</string>
-    <string name="download_progress">ダウンロード中です...</string>
+    <string name="download_progress">ダウンロード中です…</string>
     <!-- Empty -->
     <string name="empty_child">ファイルが見つかりません</string>
     <string name="empty_site">サイトがありません</string>
@@ -219,7 +214,7 @@
     <string name="search_hint">検索キーワードの入力</string>
     <!-- Comments -->
     <string name="comments">コメント</string>
-    <string name="comment_add_hint">ここにコメントを入力...</string>
+    <string name="comment_add_hint">ここにコメントを入力…</string>
     <!-- Actions -->
     <string name="create">作成</string>
     <string name="add">追加</string>

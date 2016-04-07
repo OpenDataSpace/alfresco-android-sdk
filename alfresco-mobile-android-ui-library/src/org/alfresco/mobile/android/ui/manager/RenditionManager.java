@@ -1,28 +1,34 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.ui.manager;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.ref.WeakReference;
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
+import android.widget.ImageView;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.ContentStream;
@@ -38,22 +44,16 @@ import org.alfresco.mobile.android.ui.utils.thirdparty.DiskLruCache.Snapshot;
 import org.alfresco.mobile.android.ui.utils.thirdparty.LruCache;
 import org.opendataspace.android.ui.logging.OdsLog;
 
-import android.app.Activity;
-import android.app.ActivityManager;
-import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
-import android.widget.ImageView;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.ref.WeakReference;
 
 /**
  * Utility class for downloading content and display it.
- * 
+ *
  * @author jpascal
  */
 public class RenditionManager
@@ -61,13 +61,13 @@ public class RenditionManager
 
     private static final String TAG = "RenditionManager";
 
-    private Activity context;
+    private final Activity context;
 
-    private AlfrescoSession session;
+    private final AlfrescoSession session;
 
-    private DisplayMetrics dm;
+    private final DisplayMetrics dm;
 
-    private LruCache<String, Bitmap> mMemoryCache;
+    private final LruCache<String, Bitmap> mMemoryCache;
 
     private DiskLruCache mDiskCache;
 
@@ -85,7 +85,7 @@ public class RenditionManager
         this.session = session;
 
         dm = new DisplayMetrics();
-        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(dm);
+        context.getWindowManager().getDefaultDisplay().getMetrics(dm);
 
         // Get memory class of this device, exceeding this amount will throw an
         // OutOfMemory exception.
@@ -118,7 +118,10 @@ public class RenditionManager
 
     public void addBitmapToMemoryCache(String key, Bitmap bitmap)
     {
-        if (key == null || bitmap == null) { return; }
+        if (key == null || bitmap == null)
+        {
+            return;
+        }
         String hashKey = StorageManager.md5(key);
         if (getBitmapFromMemCache(hashKey) == null)
         {
@@ -129,7 +132,10 @@ public class RenditionManager
 
     public void addBitmapToDiskMemoryCache(String key, ContentStream cf)
     {
-        if (key == null || key.isEmpty()) { return; }
+        if (key == null || key.isEmpty())
+        {
+            return;
+        }
         String hashKey = StorageManager.md5(key);
         try
         {
@@ -150,7 +156,10 @@ public class RenditionManager
 
     public Bitmap getBitmapFromMemCache(String key)
     {
-        if (key == null || key.isEmpty()) { return null; }
+        if (key == null || key.isEmpty())
+        {
+            return null;
+        }
         String hashKey = StorageManager.md5(key);
         return mMemoryCache.get(hashKey);
     }
@@ -162,9 +171,12 @@ public class RenditionManager
 
     public Bitmap getBitmapFromDiskCache(String key, Integer preview)
     {
-        if (key == null || key.isEmpty()) { return null; }
+        if (key == null || key.isEmpty())
+        {
+            return null;
+        }
         String hashKey = StorageManager.md5(key);
-        Snapshot snapshot = null;
+        Snapshot snapshot;
         try
         {
             snapshot = mDiskCache.get(hashKey);
@@ -190,10 +202,6 @@ public class RenditionManager
 
     /**
      * Display the content of the url inside an imageview. (thumbnails)
-     * 
-     * @param iv
-     * @param url
-     * @param initDrawableId
      */
     public void display(ImageView iv, Node n, int initDrawableId)
     {
@@ -222,8 +230,7 @@ public class RenditionManager
 
     private void display(ImageView iv, String identifier, int initDrawableId, int type, Integer preview)
     {
-        final String imageKey = identifier;
-        final Bitmap bitmap = getBitmapFromMemCache(imageKey);
+        final Bitmap bitmap = getBitmapFromMemCache(identifier);
         if (bitmap != null)
         {
             iv.setImageBitmap(bitmap);
@@ -306,7 +313,19 @@ public class RenditionManager
         Bitmap bmp = null;
         try
         {
-            fis = new BufferedInputStream(mDiskCache.get(snap).getInputStream(0));
+            if (mDiskCache == null)
+            {
+                return null;
+            }
+
+            final Snapshot shot = mDiskCache.get(snap);
+
+            if (shot == null)
+            {
+                return null;
+            }
+
+            fis = new BufferedInputStream(shot.getInputStream(0));
             // decode image size
             BitmapFactory.Options o = new BitmapFactory.Options();
             o.inJustDecodeBounds = true;
@@ -319,7 +338,7 @@ public class RenditionManager
             //Log.d(TAG, "Scale:" + scale + " Px" + requiredSizePx + " Dpi" + dm.densityDpi);
 
             // decode with inSampleSize
-            fis = new BufferedInputStream(mDiskCache.get(snap).getInputStream(0));
+            fis = new BufferedInputStream(shot.getInputStream(0));
             BitmapFactory.Options o2 = new BitmapFactory.Options();
             o2.inSampleSize = scale;
             o2.inPurgeable = true;
@@ -343,7 +362,10 @@ public class RenditionManager
 
     public static Bitmap decodeStream(InputStream is, DisplayMetrics dm)
     {
-        if (is == null) { return null; }
+        if (is == null)
+        {
+            return null;
+        }
         try
         {
             BufferedInputStream bis = new BufferedInputStream(is);
@@ -375,11 +397,11 @@ public class RenditionManager
 
         private String identifier;
 
-        private AlfrescoSession session;
+        private final AlfrescoSession session;
 
         private String username;
 
-        private Integer preview;
+        private final Integer preview;
 
         public BitmapWorkerTask(AlfrescoSession session, ImageView imageView, String identifier, int type)
         {
@@ -387,7 +409,7 @@ public class RenditionManager
         }
 
         public BitmapWorkerTask(AlfrescoSession session, ImageView imageView, String identifier, int type,
-                Integer preview)
+                                Integer preview)
         {
             // Use a WeakReference to ensure the ImageView can be garbage
             // collected
@@ -411,7 +433,10 @@ public class RenditionManager
             {
                 return identifier;
             }
-            else if (username != null) { return username; }
+            else if (username != null)
+            {
+                return username;
+            }
             return null;
         }
 
@@ -419,7 +444,10 @@ public class RenditionManager
         @Override
         protected Bitmap doInBackground(Void... params)
         {
-            if (session == null) { return null; }
+            if (session == null)
+            {
+                return null;
+            }
 
             Bitmap bm = null;
             ContentStream cf = null;
@@ -494,7 +522,7 @@ public class RenditionManager
             {
                 final ImageView imageView = imageViewReference.get();
                 final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
-                if (this == bitmapWorkerTask && imageView != null)
+                if (this == bitmapWorkerTask)
                 {
                     imageView.setImageBitmap(bitmap);
                 }

@@ -1,44 +1,44 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.ui.tag;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.app.Activity;
+import android.view.View;
+import android.widget.Filter;
 
 import org.alfresco.mobile.android.api.model.Tag;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
-import android.app.Activity;
-import android.view.View;
-import android.widget.Filter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Provides access to tags and displays them as a view based on
  * GenericViewHolder.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class TagsAdapter extends BaseListAdapter<Tag, GenericViewHolder>
 {
 
-    private List<Tag> selectedItems;
+    private final List<Tag> selectedItems;
 
     private List<Tag> mOriginalValues;
 
@@ -141,12 +141,11 @@ public class TagsAdapter extends BaseListAdapter<Tag, GenericViewHolder>
                     values = new ArrayList<Tag>(mOriginalValues);
                 }
 
-                final int count = values.size();
+                //final int count = values.size();
                 final ArrayList<Tag> newValues = new ArrayList<Tag>();
 
-                for (int i = 0; i < count; i++)
+                for (final Tag value : values)
                 {
-                    final Tag value = values.get(i);
                     final String valueText = value.getValue().toLowerCase();
 
                     // First match against the whole, non-splitted value
@@ -157,13 +156,13 @@ public class TagsAdapter extends BaseListAdapter<Tag, GenericViewHolder>
                     else
                     {
                         final String[] words = valueText.split(" ");
-                        final int wordCount = words.length;
+                        //final int wordCount = words.length;
 
                         // Start at index 0, in case valueText starts with
                         // space(s)
-                        for (int k = 0; k < wordCount; k++)
+                        for (String word : words)
                         {
-                            if (words[k].startsWith(prefixString))
+                            if (word.startsWith(prefixString))
                             {
                                 newValues.add(value);
                                 break;

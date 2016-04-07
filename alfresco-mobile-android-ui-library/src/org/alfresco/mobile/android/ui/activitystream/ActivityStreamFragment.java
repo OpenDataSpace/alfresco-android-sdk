@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,7 +34,7 @@ import android.os.Bundle;
 
 /**
  * Displays a fragment list of activity entries.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public abstract class ActivityStreamFragment extends BaseListFragment implements
@@ -61,7 +61,7 @@ public abstract class ActivityStreamFragment extends BaseListFragment implements
         // Case Init & case Reload
         bundle = (ba == null) ? getArguments() : ba;
 
-        ListingContext lc = null, lcorigin = null;
+        ListingContext lc = null, lcorigin;
 
         if (bundle != null)
         {
@@ -86,7 +86,7 @@ public abstract class ActivityStreamFragment extends BaseListFragment implements
                     new ArrayList<ActivityEntry>(0));
             ((BaseListAdapter) adapter).setFragmentSettings(getArguments());
         }
-        
+
         if (checkException(results))
         {
             onLoaderException(results.getException());

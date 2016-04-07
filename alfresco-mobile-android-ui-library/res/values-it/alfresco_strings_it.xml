@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   Copyright (C) 2005-2012 Alfresco Software Limited.
-  
+
   Questo file è parte integrante dell\'Alfresco Mobile SDK.
-  
+
   Concesso con licenza Apache License, versione 2.0 (la "Licenza");
   non è possibile utilizzare questo file a meno che l\'utilizzo non sia conforme con la licenza.
-  È possibile ottenere una copia della licenza collegandosi al sito Internet 
-   
+  È possibile ottenere una copia della licenza collegandosi al sito Internet
+
    http://www.apache.org/licenses/LICENSE-2.0
-  
+
    A meno che diversamente indicato dalla legge o da comunicazione scritta,
    il software distribuito con licenza viene fornito "COSÌ COM\'È",
    SENZA GARANZIE O CONDIZIONI DI QUALSIASI TIPO, espresse o implicite.
@@ -54,8 +54,8 @@
     <string name="ok">OK</string>
     <string name="cancel">Annulla</string>
     <!-- Listing -->
-    <string name="load_more">Carica più file...</string>
-    <string name="load_more_progress">Caricamento in corso...</string>
+    <string name="load_more">Carica più file…</string>
+    <string name="load_more_progress">Caricamento in corso…</string>
     <string name="listing_nodata">Nessun dato.</string>
     <!-- Dialog -->
     <string name="dialog_ok">OK</string>
@@ -189,7 +189,7 @@
     <!-- Create Folder -->
     <string name="folder_create">Crea una nuova cartella</string>
     <string name="folder_name">Nome</string>
-    <string name="folder_name_hint">Immetti qui il nome della cartella...</string>
+    <string name="folder_name_hint">Immetti qui il nome della cartella…</string>
     <!-- Update Properties -->
     <string name="edit">Modifica</string>
     <string name="update">Aggiorna</string>
@@ -198,7 +198,7 @@
     <string name="download">Download</string>
     <string name="download_complete">Download completato</string>
     <string name="download_error">Si è verificato un errore durante l\'operazione di download.</string>
-    <string name="download_progress">Download in corso...</string>
+    <string name="download_progress">Download in corso…</string>
     <!-- Empty -->
     <string name="empty_child">Nessun file trovato</string>
     <string name="empty_site">Nessun sito disponibile</string>
@@ -219,7 +219,7 @@
     <string name="search_hint">Immetti termine da cercare</string>
     <!-- Comments -->
     <string name="comments">Commenti</string>
-    <string name="comment_add_hint">Immetti qui il commento...</string>
+    <string name="comment_add_hint">Immetti qui il commento…</string>
     <!-- Actions -->
     <string name="create">Crea</string>
     <string name="add">Aggiungi</string>

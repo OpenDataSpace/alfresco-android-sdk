@@ -1,21 +1,28 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.ui.manager;
+
+import android.content.Context;
+import android.os.Environment;
+
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
+import org.opendataspace.android.ui.logging.OdsLog;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,13 +31,6 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
-import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
-import org.opendataspace.android.ui.logging.OdsLog;
-
-import android.content.Context;
-import android.os.Environment;
-
 public class StorageManager
 {
 
@@ -38,15 +38,12 @@ public class StorageManager
 
     /**
      * Return the cache dir and check if exists
-     * 
-     * @param context
-     * @param extendedPath
-     * @return
-     * @throws IOException
+     *
+     * @throws AlfrescoServiceException
      */
     public static File getCacheDir(Context context, String extendedPath)
     {
-        File folder = null;
+        File folder;
         try
         {
             folder = createFolder(context.getCacheDir(), extendedPath);
@@ -61,13 +58,15 @@ public class StorageManager
 
     protected static File createFolder(File f, String extendedPath)
     {
-        File tmpFolder = null;
+        File tmpFolder;
         tmpFolder = new File(f, extendedPath);
         if (!tmpFolder.exists())
         {
+            //noinspection ResultOfMethodCallIgnored
             tmpFolder.mkdirs();
             try
             {
+                //noinspection ResultOfMethodCallIgnored
                 new File(tmpFolder, ".nomedia").createNewFile();
             }
             catch (IOException e)
@@ -81,9 +80,6 @@ public class StorageManager
 
     /**
      * Create the MD5 representation of a string
-     * 
-     * @param s
-     * @return
      */
     public static String md5(String s)
     {
@@ -95,10 +91,10 @@ public class StorageManager
             byte messageDigest[] = digest.digest();
 
             // Create Hex String
-            StringBuffer hexString = new StringBuffer();
-            for (int i = 0; i < messageDigest.length; i++)
+            StringBuilder hexString = new StringBuilder();
+            for (byte aMessageDigest : messageDigest)
             {
-                hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+                hexString.append(Integer.toHexString(0xFF & aMessageDigest));
             }
             return hexString.toString();
         }
@@ -111,11 +107,8 @@ public class StorageManager
 
     /**
      * Get specific access to DownloadFolder
-     * 
-     * @param context
-     * @param extendedPath
-     * @return
-     * @throws IOException
+     *
+     * @throws AlfrescoServiceException
      */
     public static File getDownloadFolder(Context context, String urlValue, String username)
     {
@@ -131,12 +124,9 @@ public class StorageManager
                 folder = Environment.getDownloadCacheDirectory();
             }
 
-            folder = createFolder(
-                    folder,
-                    context.getResources()
-                            .getText(
-                                    context.getPackageManager().getPackageInfo(context.getPackageName(), 0).applicationInfo.labelRes)
-                            .toString());
+            folder = createFolder(folder, context.getResources().getText(
+                    context.getPackageManager().getPackageInfo(context.getPackageName(), 0).applicationInfo.labelRes)
+                    .toString());
             folder = createFolder(folder, getDownloadAccountFolder(urlValue, username));
         }
         catch (Exception e)
@@ -149,12 +139,8 @@ public class StorageManager
 
     /**
      * Return null if already exists
-     * 
-     * @param context
-     * @param session
-     * @param fileName
-     * @return
-     * @throws IOException
+     *
+     * @throws AlfrescoServiceException
      */
     public static File getDownloadFile(Context context, String urlValue, String username, String fileName)
     {

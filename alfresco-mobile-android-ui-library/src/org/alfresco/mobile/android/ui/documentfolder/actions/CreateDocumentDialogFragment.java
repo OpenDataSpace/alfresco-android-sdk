@@ -1,42 +1,21 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.ui.documentfolder.actions;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.alfresco.mobile.android.api.asynchronous.DocumentCreateLoader;
-import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
-import org.alfresco.mobile.android.api.constants.ContentModel;
-import org.alfresco.mobile.android.api.model.ContentFile;
-import org.alfresco.mobile.android.api.model.Document;
-import org.alfresco.mobile.android.api.model.Folder;
-import org.alfresco.mobile.android.api.model.Tag;
-import org.alfresco.mobile.android.ui.R;
-import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListener;
-import org.alfresco.mobile.android.ui.fragments.BaseFragment;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
-import org.alfresco.mobile.android.ui.utils.Formatter;
-import org.apache.chemistry.opencmis.commons.PropertyIds;
-import org.opendataspace.android.ui.logging.OdsLog;
 
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
@@ -52,8 +31,26 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public abstract class CreateDocumentDialogFragment extends BaseFragment implements
-        LoaderCallbacks<LoaderResult<Document>>
+import org.alfresco.mobile.android.api.asynchronous.DocumentCreateLoader;
+import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
+import org.alfresco.mobile.android.api.constants.ContentModel;
+import org.alfresco.mobile.android.api.model.ContentFile;
+import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.ui.R;
+import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListener;
+import org.alfresco.mobile.android.ui.fragments.BaseFragment;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
+import org.alfresco.mobile.android.ui.utils.Formatter;
+import org.apache.chemistry.opencmis.commons.PropertyIds;
+import org.opendataspace.android.ui.logging.OdsLog;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
+public abstract class CreateDocumentDialogFragment extends BaseFragment
+        implements LoaderCallbacks<LoaderResult<Document>>
 {
     public static final String TAG = "CreateContentDialogFragment";
 
@@ -69,7 +66,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment implemen
 
     // private EditText editTags;
 
-    private List<Tag> selectedTags = new ArrayList<Tag>();
+    //private final List<Tag> selectedTags = new ArrayList<Tag>();
 
     private OnNodeCreateListener onCreateListener;
 
@@ -133,15 +130,15 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment implemen
                 }
                  */
                 onValidateTags();
-                if (selectedTags != null && !selectedTags.isEmpty())
-                {
-                    ArrayList<String> listTagValue = new ArrayList<String>(selectedTags.size());
-                    for (Tag tag : selectedTags)
-                    {
-                        listTagValue.add(tag.getValue());
-                    }
-                    b.putStringArrayList(ARGUMENT_CONTENT_TAGS, listTagValue);
-                }
+//                if (selectedTags != null && !selectedTags.isEmpty())
+//                {
+//                    ArrayList<String> listTagValue = new ArrayList<String>(selectedTags.size());
+//                    for (Tag tag : selectedTags)
+//                    {
+//                        listTagValue.add(tag.getValue());
+//                    }
+//                    b.putStringArrayList(ARGUMENT_CONTENT_TAGS, listTagValue);
+//                }
                 b.putSerializable(ARGUMENT_CONTENT_FILE, getArguments().getSerializable(ARGUMENT_CONTENT_FILE));
                 getLoaderManager().initLoader(DocumentCreateLoader.ID, b, CreateDocumentDialogFragment.this);
                 getLoaderManager().getLoader(DocumentCreateLoader.ID).forceLoad();
@@ -204,7 +201,8 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment implemen
         }
 
         return new DocumentCreateLoader(getActivity(), alfSession, (Folder) getArguments().get(ARGUMENT_FOLDER),
-                args.getString(ARGUMENT_CONTENT_NAME), props, (ContentFile) args.getSerializable(ARGUMENT_CONTENT_FILE));
+                args.getString(ARGUMENT_CONTENT_NAME), props,
+                (ContentFile) args.getSerializable(ARGUMENT_CONTENT_FILE));
     }
 
     @Override

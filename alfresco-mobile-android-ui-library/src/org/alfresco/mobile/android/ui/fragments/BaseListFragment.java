@@ -1,13 +1,13 @@
 /*******************************************************************************
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,6 +25,7 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
@@ -107,7 +108,7 @@ public abstract class BaseListFragment extends BaseFragment
 
     public static final String ARGUMENT_LISTING = "listing";
 
-    private List<View> footers = new ArrayList<View>();
+    private final List<View> footers = new ArrayList<View>();
 
     private View fView;
 
@@ -133,7 +134,7 @@ public abstract class BaseListFragment extends BaseFragment
 
         return v;
     }
-    
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
@@ -153,7 +154,6 @@ public abstract class BaseListFragment extends BaseFragment
             MessengerManager.showToast(getActivity(), R.string.empty_session);
             setListShown(true);
             lv.setEmptyView(ev);
-            return;
         }
     }
 
@@ -164,7 +164,7 @@ public abstract class BaseListFragment extends BaseFragment
 
     /**
      * Control whether the list is being displayed.
-     * 
+     *
      * @param shown : If true, the list view is shown; if false, the progress
      *            indicator. The initial value is true.
      */
@@ -183,6 +183,7 @@ public abstract class BaseListFragment extends BaseFragment
         }
     }
 
+    @SuppressLint("InflateParams")
     protected void displayLoadingFooter(View footerView)
     {
         if (footer != null)
@@ -217,6 +218,7 @@ public abstract class BaseListFragment extends BaseFragment
         }
     }
 
+    @SuppressLint("InflateParams")
     protected void displayLoadingFooter()
     {
         fView = null;
@@ -405,7 +407,7 @@ public abstract class BaseListFragment extends BaseFragment
 
     /**
      * Override this method to handle an exception coming back from the server.
-     * 
+     *
      * @param e : exception raised by the client API.
      */
     public void onLoaderException(Exception e)
@@ -463,7 +465,7 @@ public abstract class BaseListFragment extends BaseFragment
             lv.setSelection(selectedPosition);
         }
     }
-    
+
     protected void displayEmptyView(){
         lv.setEmptyView(ev);
         isFullLoad = Boolean.TRUE;
@@ -477,15 +479,8 @@ public abstract class BaseListFragment extends BaseFragment
     private boolean isDataPresent(PagingResult<?> data)
     {
         ArrayAdapter<Object> arrayAdapter = ((ArrayAdapter<Object>) adapter);
-        if (arrayAdapter.isEmpty())
-        {
-            return false;
-        }
-        else
-        {
-            return !(data.getList() != null && !data.getList().contains(
-                    arrayAdapter.getItem(arrayAdapter.getCount() - 1)));
-        }
+        return !arrayAdapter.isEmpty() && !(data.getList() != null &&
+                !data.getList().contains(arrayAdapter.getItem(arrayAdapter.getCount() - 1)));
     }
 
     public void refreshListView()

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   Copyright (C) 2005-2012 Alfresco Software Limited.
-  
+
   Este fichero forma parte de Alfresco Mobile SDK.
-  
+
   Autorizado bajo la licencia Apache, Versión 2.0 (la "Licencia"),
   solo se puede utilizar este fichero en conformidad con la Licencia.
   Puede obtener una copia de la licencia en
-   
+
    http://www.apache.org/licenses/LICENSE-2.0
-  
+
    A menos que lo requiera la ley aplicable o se acuerde por escrito,
    el software distribuido bajo la licencia se distribuye "TAL CUAL",
    SIN GARANTÍAS NI CONDICIONES DE NINGÚN TIPO, ya sean expresas o implícitas.
@@ -55,7 +55,7 @@
     <string name="cancel">Cancelar</string>
     <!-- Listing -->
     <string name="load_more">Cargar más&#8230;</string>
-    <string name="load_more_progress">Cara en curso...</string>
+    <string name="load_more_progress">Cara en curso…</string>
     <string name="listing_nodata">Sin datos.</string>
     <!-- Dialog -->
     <string name="dialog_ok">OK</string>

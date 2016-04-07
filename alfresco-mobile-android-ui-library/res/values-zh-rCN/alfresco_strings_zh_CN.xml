@@ -1,15 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2012 Alfresco Software Limited.
-  
+
   本文件是 Alfresco Mobile SDK 的一部分。
-  
+
   经 2.0 版 Apache License（以下简称“许可”）许可，
   只有在遵循许可的条件下才能使用此文件。
   您可从
-   
+
    http://www.apache.org/licenses/LICENSE-2.0 获取许可的副本
-  
+
    除非适用法律要求或获得书面同意，
    依据此许可分发的软件“按照原样”分发，
    不提供任何明示或暗示的保证或条件。
@@ -28,19 +27,15 @@
     <string name="relative_date_less_than_a_minute_ago">不到一分钟之前</string>
 
     <plurals name="relative_date_minutes_ago">
-        <item quantity="one">%1$s 分钟之前</item>
         <item quantity="other">%1$s 分钟之前</item>
     </plurals>
     <plurals name="relative_date_hours_ago">
-        <item quantity="one">%1$s 小时之前</item>
         <item quantity="other">%1$s 小时之前</item>
     </plurals>
     <plurals name="relative_date_days_ago">
-        <item quantity="one">%1$s 天之前</item>
         <item quantity="other">%1$s 天之前</item>
     </plurals>
     <plurals name="relative_date_years_ago">
-        <item quantity="one">%1$s 年之前</item>
         <item quantity="other">%1$s 年之前</item>
     </plurals>
 
@@ -54,7 +49,7 @@
     <string name="ok">确定</string>
     <string name="cancel">取消</string>
     <!-- Listing -->
-    <string name="load_more">加载更多...</string>
+    <string name="load_more">加载更多…</string>
     <string name="load_more_progress">正在加载&#8230;</string>
     <string name="listing_nodata">无数据。</string>
     <!-- Dialog -->
@@ -189,7 +184,7 @@
     <!-- Create Folder -->
     <string name="folder_create">创建一个新文件夹</string>
     <string name="folder_name">名称</string>
-    <string name="folder_name_hint">在此处输入文件夹名称...</string>
+    <string name="folder_name_hint">在此处输入文件夹名称…</string>
     <!-- Update Properties -->
     <string name="edit">编辑</string>
     <string name="update">更新</string>
@@ -198,7 +193,7 @@
     <string name="download">下载</string>
     <string name="download_complete">下载完成</string>
     <string name="download_error">下载操作期间出错。</string>
-    <string name="download_progress">正在下载...</string>
+    <string name="download_progress">正在下载…</string>
     <!-- Empty -->
     <string name="empty_child">未找到文件</string>
     <string name="empty_site">无可用站点</string>
@@ -219,7 +214,7 @@
     <string name="search_hint">输入搜索词</string>
     <!-- Comments -->
     <string name="comments">评论</string>
-    <string name="comment_add_hint">在此处输入您的评论...</string>
+    <string name="comment_add_hint">在此处输入您的评论…</string>
     <!-- Actions -->
     <string name="create">创建</string>
     <string name="add">添加</string>

@@ -1,25 +1,26 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.ui.documentfolder.actions;
 
-import java.io.File;
-import java.io.Serializable;
-import java.util.Map;
+import android.app.Activity;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Loader;
+import android.os.Bundle;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.asynchronous.NodeUpdateLoader;
@@ -30,16 +31,15 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeUpdateListener;
 import org.alfresco.mobile.android.ui.fragments.BaseLoaderCallback;
 
-import android.app.Activity;
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.Loader;
-import android.os.Bundle;
+import java.io.File;
+import java.io.Serializable;
+import java.util.Map;
 
 public class UpdateLoaderCallback extends BaseLoaderCallback implements LoaderCallbacks<LoaderResult<Node>>
 {
     private File file;
 
-    private Node node;
+    private final Node node;
 
     private Map<String, Serializable> properties;
 
@@ -55,7 +55,7 @@ public class UpdateLoaderCallback extends BaseLoaderCallback implements LoaderCa
     }
 
     public UpdateLoaderCallback(AlfrescoSession session, Activity context, Node node,
-            Map<String, Serializable> properties)
+                                Map<String, Serializable> properties)
     {
         super();
         this.session = session;
@@ -77,7 +77,7 @@ public class UpdateLoaderCallback extends BaseLoaderCallback implements LoaderCa
         }
         else
         {
-            return new NodeUpdateLoader(context, session, (Document) node, properties, new ContentFileImpl(file));
+            return new NodeUpdateLoader(context, session, (Document) node, null, new ContentFileImpl(file));
         }
     }
 

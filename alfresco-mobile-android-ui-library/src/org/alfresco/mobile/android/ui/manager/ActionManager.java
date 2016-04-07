@@ -1,26 +1,21 @@
 /*******************************************************************************
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- *
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.ui.manager;
-
-import java.io.File;
-
-import org.alfresco.mobile.android.ui.R;
-import org.opendataspace.android.ui.logging.OdsLog;
 
 import android.app.Fragment;
 import android.content.ActivityNotFoundException;
@@ -30,16 +25,17 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import org.alfresco.mobile.android.ui.R;
+import org.opendataspace.android.ui.logging.OdsLog;
+
+import java.io.File;
+
 public class ActionManager
 {
 
     /**
      * Allow to open a file with an associated application installed in the
      * device.
-     *
-     * @param context
-     * @param myFile
-     * @param mimeType
      */
     public static void actionView(final Context context, File myFile, String mimeType)
     {
@@ -54,9 +50,6 @@ public class ActionManager
     }
 
     /**
-     * @param context
-     * @param myFile
-     * @param mimeType
      * @since 1.0.1
      */
     public static void actionView(Context context, File myFile, String mimeType, ActionManagerListener listener)
@@ -81,10 +74,6 @@ public class ActionManager
     /**
      * Allow to open a file with an associated application installed in the
      * device and saved it backed via a requestcode...
-     *
-     * @param context
-     * @param myFile
-     * @param mimeType
      */
     public static void openIn(Fragment fr, File myFile, String mimeType, int requestCode)
     {
@@ -120,9 +109,6 @@ public class ActionManager
 
     /**
      * Allow to send a link to other application installed in the device.
-     *
-     * @param fr
-     * @param url
      */
     public static void actionShareLink(Fragment fr, String url)
     {
@@ -142,9 +128,6 @@ public class ActionManager
 
     /**
      * Allow user to share a file with other applications.
-     *
-     * @param fr
-     * @param contentFile
      */
     public static void actionShareContent(Fragment fr, File contentFile)
     {
@@ -173,8 +156,6 @@ public class ActionManager
 
     /**
      * Allow to pick file with other apps.
-     *
-     * @return Activity for Result.
      */
     public static void actionPickFile(Fragment f, int requestCode)
     {
@@ -186,10 +167,6 @@ public class ActionManager
 
     /**
      * Utils to get File path
-     *
-     * @param activity
-     * @param uri
-     * @return
      */
     public static String getPath(Context context, Uri uri)
     {
@@ -199,12 +176,14 @@ public class ActionManager
         {
             try
             {
-                String[] projection = { MediaStore.Files.FileColumns.DATA };
+                String[] projection = {MediaStore.Files.FileColumns.DATA};
                 Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
                 int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA);
                 cursor.moveToFirst();
                 s = cursor.getString(columnIndex);
-            } catch (Exception ex)
+                cursor.close();
+            }
+            catch (Exception ex)
             {
                 OdsLog.ex("ActionManager", ex);
             }

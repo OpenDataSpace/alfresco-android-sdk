@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,13 +40,13 @@ import android.view.View;
 /**
  * Provides access to activity entries and displays them as a view based on
  * GenericViewHolder.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, GenericViewHolder>
 {
 
-    private RenditionManager renditionManager;
+    private final RenditionManager renditionManager;
 
     public ActivityEventAdapter(Activity context, AlfrescoSession session, int textViewResourceId,
             List<ActivityEntry> listItems)
@@ -97,7 +97,7 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
     private void getCreatorAvatar(GenericViewHolder vh, ActivityEntry item)
     {
         String type = item.getType();
-        String tmp = null;
+        String tmp;
 
         if (type.startsWith(PREFIX_FILE))
         {
@@ -204,7 +204,7 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
     private static final String PARAM_CUSTOM = "{2}";
 
     private static final String PARAM_SITE_LINK = "{4}";
-    
+
     private static final String PARAM_SUBSCRIBER = "{5}";
 
     private static final String PARAM_STATUS = "{6}";

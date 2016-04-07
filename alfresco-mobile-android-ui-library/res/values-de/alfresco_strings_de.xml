@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   Copyright (C) 2005-2012 Alfresco Software Limited.
-  
+
   Diese Datei ist Teil des Alfresco Mobile-SDK.
-  
+
   Lizenziert unter der Apache-Lizenz, Version 2.0 ("Lizenz");
   diese Datei darf nur gemäß dieser Lizenz verwendet werden.
   Eine Kopie dieser Lizenz kann über
-   
+
    http://www.apache.org/licenses/LICENSE-2.0 bezogen werden.
-  
+
    Soweit nicht durch geltendes Recht erforderlich oder schriftlich vereinbart,
    wird die unter dieser Lizenz verteilte Software OHNE MÄNGELGEWÄHR,
    OHNE GARANTIEN ODER BEDINGUNGEN, weder ausdrücklich noch impliziert, verteilt.
@@ -54,7 +54,7 @@
     <string name="ok">OK</string>
     <string name="cancel">Abbrechen</string>
     <!-- Listing -->
-    <string name="load_more">Mehr laden...</string>
+    <string name="load_more">Mehr laden…</string>
     <string name="load_more_progress">Ladevorgang wird durchgeführt&#8230;</string>
     <string name="listing_nodata">Keine Daten.</string>
     <!-- Dialog -->
@@ -189,7 +189,7 @@
     <!-- Create Folder -->
     <string name="folder_create">Neuen Ordner anlegen</string>
     <string name="folder_name">Name</string>
-    <string name="folder_name_hint">Ordnernamen hier eingeben...</string>
+    <string name="folder_name_hint">Ordnernamen hier eingeben…</string>
     <!-- Update Properties -->
     <string name="edit">Bearbeiten</string>
     <string name="update">Aktualisieren</string>
@@ -198,7 +198,7 @@
     <string name="download">Herunterladen</string>
     <string name="download_complete">Download abgeschlossen</string>
     <string name="download_error">Beim Herunterladen ist ein Fehler aufgetreten.</string>
-    <string name="download_progress">Download wird durchgeführt...</string>
+    <string name="download_progress">Download wird durchgeführt…</string>
     <!-- Empty -->
     <string name="empty_child">Keine Dateien gefunden</string>
     <string name="empty_site">Keine Sites verfügbar</string>

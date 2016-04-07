@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,8 +19,6 @@ package org.alfresco.mobile.android.ui.documentfolder.actions;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.asynchronous.NodeDeleteLoader;
-import org.alfresco.mobile.android.api.model.Document;
-import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeDeleteListener;
@@ -32,11 +30,11 @@ import android.os.Bundle;
 
 public class DeleteLoaderCallback implements LoaderCallbacks<LoaderResult<Void>>
 {
-    private AlfrescoSession session;
+    private final AlfrescoSession session;
 
-    private Activity context;
+    private final Activity context;
 
-    private Node node;
+    private final Node node;
 
     private OnNodeDeleteListener mListener;
 
@@ -57,11 +55,11 @@ public class DeleteLoaderCallback implements LoaderCallbacks<LoaderResult<Void>>
         }
         if (node.isDocument())
         {
-            return new NodeDeleteLoader(context, session, (Document) node);
+            return new NodeDeleteLoader(context, session, node);
         }
         else if (node.isFolder())
         {
-            return new NodeDeleteLoader(context, session, (Folder) node);
+            return new NodeDeleteLoader(context, session, node);
         }
         else
         {
