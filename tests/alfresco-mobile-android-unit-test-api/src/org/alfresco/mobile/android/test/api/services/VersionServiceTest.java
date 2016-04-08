@@ -1,12 +1,6 @@
 package org.alfresco.mobile.android.test.api.services;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import junit.framework.Assert;
-
 import org.alfresco.cmis.client.AlfrescoDocument;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
@@ -23,6 +17,11 @@ import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.client.api.ObjectId;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.commons.impl.dataobjects.ContentStreamImpl;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class VersionServiceTest extends AlfrescoSDKTestCase
 {
@@ -48,7 +47,7 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
 
     /**
      * Test to check VersionService
-     * 
+     *
      * @Requirement 57S1, 57S2, 57S3, 58F5, 58F6, 58F7, 58F8
      */
     public void testVersionService()
@@ -103,10 +102,10 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals("1.0", vDocument.getVersionLabel());
         Assert.assertFalse(vDocument.isLatestVersion());
         Assert.assertEquals("Initial Version", vDocument.getVersionComment());
-        
-        
+
+
         AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
-        List<Document> sDocs = session.getServiceRegistry().getVersionService().getVersions(doc);;
+        List<Document> sDocs = session.getServiceRegistry().getVersionService().getVersions(doc);
         Assert.assertEquals(2, sDocs.size());
 
         vDocument = sDocs.get(0);
@@ -200,7 +199,7 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
             Assert.assertTrue(previousDocument.getVersionLabel().compareTo(pDoc.getVersionLabel()) >= 0);
             previousDocument = pDoc;
         }
-        
+
         // Incorrect settings in listingContext: Such as inappropriate
         // maxItems
         // (-1)
@@ -242,14 +241,14 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
         // Use cmissession because it's impossible to have a common behaviour
         // with 3.4 and 4.
         AlfrescoDocument cmisDoc = (AlfrescoDocument) cmisSession.getObject(doc.getIdentifier());
-        ObjectId iddoc = null;
+        ObjectId iddoc;
         for (int i = 0; i < versionNumber; i++)
         {
             ObjectId idpwc = cmisDoc.checkOut();
-            org.apache.chemistry.opencmis.client.api.Document cmisDocpwc = (org.apache.chemistry.opencmis.client.api.Document) cmisSession
-                    .getObject(idpwc);
-            iddoc = cmisDocpwc.checkIn(false, null, new ContentStreamImpl("test.txt", "plain/txt", "abc"), "V:"
-                    + versionNumber);
+            org.apache.chemistry.opencmis.client.api.Document cmisDocpwc =
+                    (org.apache.chemistry.opencmis.client.api.Document) cmisSession.getObject(idpwc);
+            iddoc = cmisDocpwc
+                    .checkIn(false, null, new ContentStreamImpl("test.txt", "plain/txt", "abc"), "V:" + versionNumber);
             cmisDoc = (AlfrescoDocument) cmisSession.getObject(iddoc);
             cmisDoc = (AlfrescoDocument) cmisDoc.getObjectOfLatestVersion(false);
         }
@@ -257,18 +256,19 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
 
     /**
      * Test to check VersionService methods error case.
-     * 
+     *
      * @Requirement 57F1, 57F2, 58F1, 58F2, 58F3
      */
     public void testVersionServiceError()
     {
-        
+
         // Create Root Test Folder
         Folder unitTestFolder = createUnitTestFolder(alfsession);
         Document deletedDocument = createDeletedDocument(unitTestFolder, SAMPLE_DATA_COMMENT_FILE);
-        Folder deletedFolder = createDeletedFolder(unitTestFolder, SAMPLE_DATA_DOCFOLDER_FOLDER);
+        /*Folder deletedFolder =*/
+        createDeletedFolder(unitTestFolder, SAMPLE_DATA_DOCFOLDER_FOLDER);
 
-        
+
         // ////////////////////////////////////////////////////
         // getVersions()
         // ////////////////////////////////////////////////////
@@ -281,7 +281,7 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
         {
             Assert.assertTrue(true);
         }
-        
+
         try
         {
             versionService.getVersions(deletedDocument);
@@ -292,8 +292,8 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
             Assert.assertTrue(true);
         }
 
-        AlfrescoSession session = null;
-        Node doc = null;
+        AlfrescoSession session;
+        Node doc;
         // User does not have access / privileges to the specified node
         session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
         doc = docfolderservice.getChildByPath(getSampleDataPath(alfsession) + SAMPLE_DATA_PATH_COMMENT_FILE);
@@ -306,8 +306,7 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
         {
             Assert.assertEquals(ErrorCodeRegistry.GENERAL_ACCESS_DENIED, e.getErrorCode());
         }
-        
-        
+
         // ////////////////////////////////////////////////////
         // getVersions(lc)
         // ////////////////////////////////////////////////////
@@ -323,7 +322,7 @@ public class VersionServiceTest extends AlfrescoSDKTestCase
         {
             Assert.assertTrue(true);
         }
-        
+
         try
         {
             session.getServiceRegistry().getVersionService().getVersions((Document) doc, lc);

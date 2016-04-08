@@ -1,31 +1,23 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.test.opencmis.extension.alfresco;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
+import android.test.AndroidTestCase;
 
 import org.alfresco.cmis.client.AlfrescoDocument;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
@@ -44,7 +36,15 @@ import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import org.apache.chemistry.opencmis.commons.enums.UnfileObject;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 
-import android.test.AndroidTestCase;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
 
 public class AlfrescoExtensionTest extends AndroidTestCase
 {
@@ -85,21 +85,21 @@ public class AlfrescoExtensionTest extends AndroidTestCase
         Folder rootFolder = null;
         if (session != null)
         {
-            String folders[] = { ROOT_TEST_FOLDER_NAME };
+            String folders[] = {ROOT_TEST_FOLDER_NAME};
             cleanup(session, folders);
             Map<String, Object> properties = new HashMap<String, Object>();
             properties.put(PropertyIds.OBJECT_TYPE_ID, "cmis:folder");
             properties.put(PropertyIds.NAME, ROOT_TEST_FOLDER_NAME);
-            rootFolder = (Folder) session.getRootFolder().createFolder(properties);
+            rootFolder = session.getRootFolder().createFolder(properties);
         }
         return rootFolder;
     }
 
     public static void cleanup(Session s, String[] folders)
     {
-        for (int i = 0; i < folders.length; i++)
+        for (String folder : folders)
         {
-            String path = "/" + folders[i];
+            String path = "/" + folder;
 
             CmisObject o = null;
             try
@@ -115,7 +115,7 @@ public class AlfrescoExtensionTest extends AndroidTestCase
             {
                 try
                 {
-                    ((org.apache.chemistry.opencmis.client.api.Folder) o).deleteTree(true, UnfileObject.DELETE, false);
+                    ((Folder) o).deleteTree(true, UnfileObject.DELETE, false);
                     s.removeObjectFromCache(o.getId());
                 }
                 catch (Exception e)
@@ -282,10 +282,10 @@ public class AlfrescoExtensionTest extends AndroidTestCase
 
         BigDecimal xResolution = new BigDecimal("1234567890.123456789");
         BigDecimal yResolution = new BigDecimal("0.000000000000000001");
-        GregorianCalendar dateTimeOriginal = new GregorianCalendar(2011, 01, 01, 10, 12, 30);
+        GregorianCalendar dateTimeOriginal = new GregorianCalendar(2011, 1, 1, 10, 12, 30);
         dateTimeOriginal.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-        boolean flash = true;
+        // boolean flash = true;
         int pixelXDimension = 1024;
         int pixelYDimension = 512;
 
@@ -293,7 +293,7 @@ public class AlfrescoExtensionTest extends AndroidTestCase
         properties.put("exif:xResolution", xResolution);
         properties.put("exif:yResolution", yResolution);
         properties.put("exif:dateTimeOriginal", dateTimeOriginal);
-        properties.put("exif:flash", flash);
+        properties.put("exif:flash", true);
         properties.put("exif:pixelXDimension", pixelXDimension);
         properties.put("exif:pixelYDimension", pixelYDimension);
 
@@ -303,7 +303,7 @@ public class AlfrescoExtensionTest extends AndroidTestCase
 
         assertEquals(dateTimeOriginal.getTimeInMillis(),
                 ((GregorianCalendar) doc.getPropertyValue("exif:dateTimeOriginal")).getTimeInMillis());
-        assertEquals(flash, doc.getPropertyValue("exif:flash"));
+        assertEquals(true, doc.getPropertyValue("exif:flash"));
         assertEquals(BigInteger.valueOf(pixelXDimension), doc.getPropertyValue("exif:pixelXDimension"));
         assertEquals(BigInteger.valueOf(pixelYDimension), doc.getPropertyValue("exif:pixelYDimension"));
 

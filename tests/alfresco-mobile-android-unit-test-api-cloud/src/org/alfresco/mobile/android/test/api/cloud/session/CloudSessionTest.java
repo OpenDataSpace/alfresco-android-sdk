@@ -1,30 +1,25 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.test.api.cloud.session;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import android.util.Log;
 
 import junit.framework.Assert;
-
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
@@ -34,13 +29,17 @@ import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.alfresco.mobile.android.test.ServerConfigFile;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 
-import android.util.Log;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CloudSessionTest extends AlfrescoSDKTestCase
 {
 
     public final static String NETWORK_ID = "alftester.com";
-    
+
     @Override
     protected void initSession()
     {
@@ -89,15 +88,15 @@ public class CloudSessionTest extends AlfrescoSDKTestCase
             // Base Url
             Assert.assertNotNull(session.getBaseUrl());
             Assert.assertEquals(settings.get(BASE_URL), session.getBaseUrl());
-            
+
             //Root Folder
             Assert.assertNotNull(session.getRootFolder());
-            
+
             CloudSession cloudSession = createCloudSession();
-            
+
             //Default Network root folder is not the same as other network root folder.
             Assert.assertFalse(cloudSession.getRootFolder().equals(session.getRootFolder()));
-            
+
         }
         catch (Exception e)
         {
@@ -108,7 +107,7 @@ public class CloudSessionTest extends AlfrescoSDKTestCase
 
     /**
      * Simple test about Networks.
-     * 
+     *
      * @Requirement 70S1, 70S2, 71S2, 71S1
      */
     public void testNetworksList()
@@ -119,7 +118,7 @@ public class CloudSessionTest extends AlfrescoSDKTestCase
         List<CloudNetwork> networks = cloudSession.getNetworks();
         Assert.assertNotNull(networks);
         Assert.assertTrue(networks.size() > 0);
-        
+
         String user = cloudSession.getPersonIdentifier();
         String networkId = user.substring(user.indexOf("@") + 1, user.length());
 
@@ -144,10 +143,10 @@ public class CloudSessionTest extends AlfrescoSDKTestCase
         }
 
         cloudSession = (CloudSession) createSession(CONSUMER, CONSUMER_PASSWORD, null);
-        
+
         user = cloudSession.getPersonIdentifier();
         networkId = user.substring(user.indexOf("@") + 1, user.length());
-        
+
         Assert.assertEquals(networkId, cloudSession.getNetwork().getIdentifier());
         CloudNetwork network = cloudSession.getNetwork();
         if (networkId.equals(network.getIdentifier()))
@@ -161,10 +160,10 @@ public class CloudSessionTest extends AlfrescoSDKTestCase
 
     /**
      * Success Test during CloudSession creation
-     * 
+     *
      * @Requirement 61S1, 62S1, 63S1, 64S1, 66S2, 67S1, 72F1, 72F2, 72S1, 72S2, 72S3,
-     *              72S4, 72S5, 72S6, 72S7,73F1, 73S1 73S2, 73S3, 73S4, 73S5,
-     *              73S6, 73S7, 74F1, 74F2, 74S1 74S2, 74S3, 74S4, 74S5, 75S1
+     * 72S4, 72S5, 72S6, 72S7,73F1, 73S1 73S2, 73S3, 73S4, 73S5,
+     * 73S6, 73S7, 74F1, 74F2, 74S1 74S2, 74S3, 74S4, 74S5, 75S1
      */
     public void testSuccessCloudSession()
     {
@@ -175,7 +174,7 @@ public class CloudSessionTest extends AlfrescoSDKTestCase
             config.parseFile(CLOUD_CONFIG_PATH);
         }
 
-        String user = null, password = null, url = null;
+        String user = null, password, url = null;
         Map<String, Serializable> tmp = new HashMap<String, Serializable>();
         try
         {
@@ -209,11 +208,11 @@ public class CloudSessionTest extends AlfrescoSDKTestCase
         // Repository INFO
         // /////////////////////
         Assert.assertNotNull(alfsession.getRepositoryInfo());
-
-        Assert.assertEquals(user.substring(user.indexOf("@") + 1, user.length()), alfsession.getRepositoryInfo()
-                .getName());
-        Assert.assertEquals(user.substring(user.indexOf("@") + 1, user.length()), alfsession.getRepositoryInfo()
-                .getDescription());
+        Assert.assertNotNull(user);
+        Assert.assertEquals(user.substring(user.indexOf("@") + 1, user.length()),
+                alfsession.getRepositoryInfo().getName());
+        Assert.assertEquals(user.substring(user.indexOf("@") + 1, user.length()),
+                alfsession.getRepositoryInfo().getDescription());
 
         // Edition Version number
         Assert.assertNull(alfsession.getRepositoryInfo().getVersion());
@@ -298,7 +297,9 @@ public class CloudSessionTest extends AlfrescoSDKTestCase
         alfsession.addParameter("Key 2", 4);
         Assert.assertEquals(4, alfsession.getParameter("Key 2"));
 
+        //noinspection deprecation
         alfsession.addParameter("Key 3", new Date(2012, 12, 12));
+        //noinspection deprecation
         Assert.assertEquals(new Date(2012, 12, 12), alfsession.getParameter("Key 3"));
 
         alfsession.addParameter("Key 4", "");

@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,7 +31,6 @@ import org.alfresco.mobile.android.ui.comment.listener.OnCommentCreateListener;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -99,7 +98,7 @@ public class CommentsFragment extends CommentFragment
         return v;
     }
 
-    private OnCommentCreateListener createListener = new OnCommentCreateListener()
+    private final OnCommentCreateListener createListener = new OnCommentCreateListener()
     {
         @Override
         public void beforeCommentCreation(String content)

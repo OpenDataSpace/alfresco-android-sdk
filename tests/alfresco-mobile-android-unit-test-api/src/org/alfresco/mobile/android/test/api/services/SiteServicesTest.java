@@ -1,27 +1,25 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.test.api.services;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.util.Log;
 
 import junit.framework.Assert;
-
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Folder;
@@ -38,17 +36,20 @@ import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
-import android.util.Log;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Test class for SiteService.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class SiteServicesTest extends AlfrescoSDKTestCase
 {
 
-    /** SiteService to test. */
+    /**
+     * SiteService to test.
+     */
     protected SiteService siteService;
 
     protected void initSession()
@@ -67,15 +68,15 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
 
     /**
      * @Requirement 45S1, 45S2, 45S3, 45S4, 45S5, 45S6, 46S3, 46S4, 46S5, 46S1,
-     *              46S2, 46S6, 46S7, 46S9, 46S10, 46S11
+     * 46S2, 46S6, 46S7, 46S9, 46S10, 46S11
      */
     public void testAllSiteService()
     {
         Assert.assertNotNull(siteService.getAllSites());
 
         ListingContext lc = new ListingContext();
-        PagingResult<Site> pagingSites = null;
-        Site s1 = null, s2 = null;
+        PagingResult<Site> pagingSites;
+        Site s1, s2;
 
         Assert.assertTrue(siteService.getAllSites().size() > 0);
         int totalItems = siteService.getAllSites().size();
@@ -119,14 +120,9 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
             // ////////////////////////////////////////////////////
             // Check Visibility
             // ////////////////////////////////////////////////////
-            Site s = null;
             List<Site> sites = siteService.getAllSites();
             for (Site site : sites)
             {
-                if (getSiteName(alfsession).equals(site.getShortName()))
-                {
-                    s = site;
-                }
                 if (PUBLIC_SITE.equalsIgnoreCase(site.getShortName()))
                 {
                     validateSite(site, PUBLIC_SITE, DESCRIPTION, SiteVisibility.PUBLIC);
@@ -144,7 +140,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
             // ////////////////////////////////////////////////////
             // Sort Order : Only available onPremise
             // ////////////////////////////////////////////////////
-            Site previousSite = null;
+            Site previousSite;
             if (isOnPremise() && !hasPublicAPI())
             {
                 lc.setSortProperty(SiteService.SORT_PROPERTY_SHORTNAME);
@@ -266,8 +262,8 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
     public void testSiteByUsername()
     {
         ListingContext lc = new ListingContext();
-        PagingResult<Site> pagingSites = null;
-        Site s1 = null, s2 = null;
+        PagingResult<Site> pagingSites;
+        Site s1, s2;
 
         int totalItems = siteService.getAllSites().size();
 
@@ -349,7 +345,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
             // ////////////////////////////////////////////////////
             // Sort Order : Only Onpremise
             // ////////////////////////////////////////////////////
-            Site previousSite = null;
+            Site previousSite;
             if (isOnPremise() && !hasPublicAPI())
             {
                 lc.setSortProperty(SiteService.SORT_PROPERTY_SHORTNAME);
@@ -453,7 +449,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
 
     /**
      * Simple test to check siteService getFavoriteSite methods.
-     * 
+     *
      * @Requirement 49S1, 49S4, 50S1, 50S2, 50S3, 50S4, 50S8, 50S9, 50S10
      */
     public void testFavoriteSite()
@@ -468,7 +464,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         Assert.assertEquals(4, sites.size());
 
         ListingContext lc = new ListingContext();
-        PagingResult<Site> pagingSites = null;
+        PagingResult<Site> pagingSites;
         // ////////////////////////////////////////////////////
         // Sort Order
         // ////////////////////////////////////////////////////
@@ -581,9 +577,9 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
 
     /**
      * Simple test to check siteService public methods.
-     * 
+     *
      * @Requirement 44F2, 44F3, 44F4, 44F5, 44F6, 44S1, 44S2, 44S3, 44S4, 51S2,
-     *              51S3, 51S4, 51S7
+     * 51S3, 51S4, 51S7
      */
     public void testSite()
     {
@@ -591,7 +587,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(siteService.getSites());
         Assert.assertNotNull(siteService.getFavoriteSites());
 
-        Site s2 = null;
+        Site s2;
 
         // Search SITENAME Site
         Site s = null;
@@ -621,7 +617,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
 
         // Get Site
         Assert.assertNull(siteService.getSite("FAKE"));
-        AlfrescoSession session = null;
+        AlfrescoSession session;
 
         // User does not have access / privileges to the specified site
         session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
@@ -679,7 +675,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
 
     /**
      * Tests related to memberships. Join + Leave
-     * 
+     *
      * @since 1.1.0
      */
     public void testSiteMembership()
@@ -691,7 +687,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         Site moderatedSite = siteService.getSite(MODERATED_SITE);
 
         // Prepare consumer session + Check there's no existing membership
-        AlfrescoSession session = null;
+        AlfrescoSession session;
         if (isAlfrescoV4() && !hasPublicAPI())
         {
             session = createSession(INVITED, INVITED_PASSWORD, null);
@@ -738,7 +734,8 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         List<Site> requestedSitesP = requestedSitesPaging.getList();
         Assert.assertFalse("User has no join request!", requestedSitesP.isEmpty());
         Assert.assertEquals("User has no join request!", 1, requestedSitesP.size());
-        Assert.assertEquals("Wrong Request identifier", request.getIdentifier(), requestedSitesP.get(0).getIdentifier());
+        Assert.assertEquals("Wrong Request identifier", request.getIdentifier(),
+                requestedSitesP.get(0).getIdentifier());
         Assert.assertEquals("Wrong Request Site identifier", MODERATED_SITE, request.getShortName());
 
         // Leave MODERATED Site + Check
@@ -950,7 +947,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
 
     /**
      * Tests related to favorite site.
-     * 
+     *
      * @since 1.1.0
      */
     public void testSiteFavorite()
@@ -1017,7 +1014,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
 
     /**
      * Test to check siteService methods error case.
-     * 
+     *
      * @Requirement 44F1, 51F1, 51F2, 51F3
      */
     public void testSiteServiceListMethodsError()
@@ -1074,7 +1071,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
 
     /**
      * Success Test for getMembers
-     * 
+     *
      * @since 1.3.0
      */
     public void testMemberships()
@@ -1082,8 +1079,8 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         // Check List sites
         Assert.assertNotNull(siteService.getSites());
         Site publicSite = siteService.getSite(PUBLIC_SITE);
-        Person referentialUser = alfsession.getServiceRegistry().getPersonService()
-                .getPerson(alfsession.getPersonIdentifier());
+        Person referentialUser =
+                alfsession.getServiceRegistry().getPersonService().getPerson(alfsession.getPersonIdentifier());
         Person consumerPerson = alfsession.getServiceRegistry().getPersonService().getPerson(getUsername(CONSUMER));
 
         List<Person> members = siteService.getAllMembers(publicSite);
@@ -1122,7 +1119,7 @@ public class SiteServicesTest extends AlfrescoSDKTestCase
         {
             try
             {
-                members = siteService.searchMembers(publicSite, alfsession.getPersonIdentifier());
+                siteService.searchMembers(publicSite, alfsession.getPersonIdentifier());
                 Assert.fail();
             }
             catch (UnsupportedOperationException e)

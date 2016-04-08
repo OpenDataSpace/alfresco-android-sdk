@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,11 +34,9 @@ import org.alfresco.mobile.android.api.services.RatingService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
-import android.util.Log;
-
 /**
  * Test class for Like Service.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class LikeServiceTest extends AlfrescoSDKTestCase
@@ -69,7 +67,7 @@ public class LikeServiceTest extends AlfrescoSDKTestCase
 
     /**
      * Simple test to check Alfresco Like Service.
-     * 
+     *
      * @Requirement 12S1, 12S2, 12S3, 37S1, 37S2, 37S4, 37S5, 37S6, 38S1,
      *              38S2, 38S4, 38S5, 38S6, 39S1, 39S2, 39S3, 39S4, 39S5, 39S6
      */
@@ -134,7 +132,7 @@ public class LikeServiceTest extends AlfrescoSDKTestCase
         session2.getServiceRegistry().getRatingService().unlike(folder);
         Assert.assertEquals(1, likeService.getLikeCount(folder));
         Assert.assertFalse(session2.getServiceRegistry().getRatingService().isLiked(folder));
-        
+
         checkSecondUnlike(folder);
 
         session.getServiceRegistry().getRatingService().unlike(folder);
@@ -161,12 +159,12 @@ public class LikeServiceTest extends AlfrescoSDKTestCase
     // //////////////////////////////////////////////////////////////////////
     /**
      * Failure Tests for LikeService public Method.
-     * 
+     *
      * @Requirement 12F1, 12F2, 37F1, 38F1, 38F2, 38F4, 39F1
      */
     public void testLikeServiceMethodsError()
     {
-        
+
         // Check Support Like
         if (!alfsession.getRepositoryInfo().getCapabilities().doesSupportLikingNodes())
         {
@@ -202,7 +200,7 @@ public class LikeServiceTest extends AlfrescoSDKTestCase
             Assert.assertTrue(true);
         }
 
-        Node doc = null;
+        Node doc;
         // User does not have access / privileges to the specified node
         AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
         doc = docFolderService.getChildByPath(getSampleDataPath(alfsession) + SAMPLE_DATA_PATH_COMMENT_FILE);
@@ -301,7 +299,7 @@ public class LikeServiceTest extends AlfrescoSDKTestCase
         {
             Assert.assertTrue(true);
         }
-        
+
         try
         {
             likeService.isLiked(null);

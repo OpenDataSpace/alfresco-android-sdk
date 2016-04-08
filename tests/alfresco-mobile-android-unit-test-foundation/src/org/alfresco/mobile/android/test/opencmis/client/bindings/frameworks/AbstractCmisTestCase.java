@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -35,15 +35,7 @@
  */
 package org.alfresco.mobile.android.test.opencmis.client.bindings.frameworks;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Set;
+import android.util.Log;
 
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
@@ -82,16 +74,24 @@ import org.apache.chemistry.opencmis.commons.spi.CmisBinding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import android.util.Log;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Base test case for CMIS tests.
- * 
+ *
  * @author <a href="mailto:fmueller@opentext.com">Florian M&uuml;ller</a>
- * 
  */
-public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
-    
+public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase
+{
+
     public static final String CHEMISTRY_INMEMORY_ATOMPUB_URL = "http://cmis.alfresco.com/cmisatom/";
     public static final String CHEMISTRY_INMEMORY_BASE_URL = "http:///cmis.alfresco.com/";
 
@@ -124,9 +124,11 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Read configuration file.
      */
-    static {
+    static
+    {
         String configFileName = System.getProperty(PROP_CONFIG_FILE);
-        if (configFileName != null) {
+        if (configFileName != null)
+        {
 
             InputStream is = null;
             try
@@ -135,14 +137,19 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
                 is = new FileInputStream(configFileName);
                 properties.load(is);
 
-                for (Enumeration<?> e = properties.propertyNames(); e.hasMoreElements();) {
+                for (Enumeration<?> e = properties.propertyNames(); e.hasMoreElements(); )
+                {
                     String key = (String) e.nextElement();
                     String value = properties.getProperty(key);
                     System.setProperty(key, value);
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 System.err.println("Could not load test properties: " + e.toString());
-            } finally {
+            }
+            finally
+            {
                 IOUtils.closeStream(is);
             }
         }
@@ -151,8 +158,10 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Returns the binding object or creates one if does not exist.
      */
-    protected CmisBinding getBinding() {
-        if (binding == null) {
+    protected CmisBinding getBinding()
+    {
+        if (binding == null)
+        {
             LOG.info("Creating binding...");
             binding = createBinding();
         }
@@ -173,13 +182,16 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Returns the test repository id.
      */
-    protected String getTestRepositoryId() {
-        if (fTestRepositoryId != null) {
+    protected String getTestRepositoryId()
+    {
+        if (fTestRepositoryId != null)
+        {
             return fTestRepositoryId;
         }
 
         fTestRepositoryId = System.getProperty(PROP_REPOSITORY);
-        if (fTestRepositoryId != null) {
+        if (fTestRepositoryId != null)
+        {
             LOG.info("Test repository: " + fTestRepositoryId);
             return fTestRepositoryId;
         }
@@ -193,13 +205,16 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Returns the test root folder id.
      */
-    protected String getTestRootFolder() {
-        if (fTestFolderId != null) {
+    protected String getTestRootFolder()
+    {
+        if (fTestFolderId != null)
+        {
             return fTestFolderId;
         }
 
         fTestFolderId = System.getProperty(PROP_TESTFOLDER);
-        if (fTestFolderId != null) {
+        if (fTestFolderId != null)
+        {
             LOG.info("Test root folder: " + fTestFolderId);
             return fTestFolderId;
         }
@@ -213,10 +228,12 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Returns if the test is enabled.
      */
-    protected boolean isEnabled(String name) {
+    protected boolean isEnabled(String name)
+    {
         boolean testsEnabled = Boolean.parseBoolean(System.getProperty(PROP_TESTS_ENABLED, DEFAULT_TESTS_ENABLED));
 
-        if (testsEnabled && getEnabledTests().contains(name)) {
+        if (testsEnabled && getEnabledTests().contains(name))
+        {
             return true;
         }
 
@@ -228,49 +245,56 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Returns the test username.
      */
-    protected String getUsername() {
+    protected String getUsername()
+    {
         return System.getProperty(PROP_USERNAME, DEFAULT_USERNAME);
     }
 
     /**
      * Returns the test password.
      */
-    protected String getPassword() {
+    protected String getPassword()
+    {
         return System.getProperty(PROP_PASSWORD, DEFAULT_PASSWORD);
     }
 
     /**
      * Returns the default document type.
      */
-    protected String getDefaultDocumentType() {
+    protected String getDefaultDocumentType()
+    {
         return System.getProperty(PROP_DOCTYPE, DEFAULT_DOCTYPE);
     }
 
     /**
      * Returns the default folder type.
      */
-    protected String getDefaultFolderType() {
+    protected String getDefaultFolderType()
+    {
         return System.getProperty(PROP_FOLDERTYPE, DEFAULT_FOLDERTYPE);
     }
 
     /**
      * Returns the AtomPub URL.
      */
-    protected String getAtomPubURL() {
+    protected String getAtomPubURL()
+    {
         return System.getProperty(PROP_ATOMPUB_URL, DEFAULT_ATOMPUB_URL);
     }
 
     /**
      * Returns the object factory.
      */
-    protected BindingsObjectFactory getObjectFactory() {
+    protected BindingsObjectFactory getObjectFactory()
+    {
         return getBinding().getObjectFactory();
     }
 
     /**
      * Returns the id of the first repository.
      */
-    protected String getFirstRepositoryId() {
+    protected String getFirstRepositoryId()
+    {
         List<RepositoryInfo> repositories = getBinding().getRepositoryService().getRepositoryInfos(null);
 
         assertNotNull(repositories);
@@ -283,9 +307,10 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Returns the info object of the test repository.
      */
-    protected RepositoryInfo getRepositoryInfo() {
-        RepositoryInfo repositoryInfo = getBinding().getRepositoryService().getRepositoryInfo(getTestRepositoryId(),
-                null);
+    protected RepositoryInfo getRepositoryInfo()
+    {
+        RepositoryInfo repositoryInfo =
+                getBinding().getRepositoryService().getRepositoryInfo(getTestRepositoryId(), null);
 
         assertNotNull(repositoryInfo);
         assertNotNull(repositoryInfo.getId());
@@ -297,7 +322,8 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Returns the root folder of the test repository.
      */
-    protected String getRootFolderId() {
+    protected String getRootFolderId()
+    {
         RepositoryInfo repository = getRepositoryInfo();
 
         assertNotNull(repository.getRootFolderId());
@@ -308,7 +334,8 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Returns if the test repository supports reading ACLs.
      */
-    protected boolean supportsDiscoverACLs() {
+    protected boolean supportsDiscoverACLs()
+    {
         RepositoryInfo repository = getRepositoryInfo();
 
         assertNotNull(repository.getCapabilities());
@@ -319,7 +346,8 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Returns if the test repository supports setting ACLs.
      */
-    protected boolean supportsManageACLs() {
+    protected boolean supportsManageACLs()
+    {
         RepositoryInfo repository = getRepositoryInfo();
 
         assertNotNull(repository.getCapabilities());
@@ -330,27 +358,28 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Returns if the test repository supports renditions.
      */
-    protected boolean supportsRenditions() {
+    protected boolean supportsRenditions()
+    {
         RepositoryInfo repository = getRepositoryInfo();
 
         assertNotNull(repository.getCapabilities());
 
-        if (repository.getCapabilities().getRenditionsCapability() == null) {
-            return false;
-        }
+        return repository.getCapabilities().getRenditionsCapability() != null &&
+                repository.getCapabilities().getRenditionsCapability() != CapabilityRenditions.NONE;
 
-        return repository.getCapabilities().getRenditionsCapability() != CapabilityRenditions.NONE;
     }
 
     /**
      * Returns if the test repository supports descendants.
      */
-    protected boolean supportsDescendants() {
+    protected boolean supportsDescendants()
+    {
         RepositoryInfo repository = getRepositoryInfo();
 
         assertNotNull(repository.getCapabilities());
 
-        if (repository.getCapabilities().isGetDescendantsSupported() == null) {
+        if (repository.getCapabilities().isGetDescendantsSupported() == null)
+        {
             return false;
         }
 
@@ -360,12 +389,14 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Returns if the test repository supports descendants.
      */
-    protected boolean supportsFolderTree() {
+    protected boolean supportsFolderTree()
+    {
         RepositoryInfo repository = getRepositoryInfo();
 
         assertNotNull(repository.getCapabilities());
 
-        if (repository.getCapabilities().isGetFolderTreeSupported() == null) {
+        if (repository.getCapabilities().isGetFolderTreeSupported() == null)
+        {
             return false;
         }
 
@@ -375,43 +406,45 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Returns if the test repository supports content changes.
      */
-    protected boolean supportsContentChanges() {
+    protected boolean supportsContentChanges()
+    {
         RepositoryInfo repository = getRepositoryInfo();
 
         assertNotNull(repository.getCapabilities());
 
-        if (repository.getCapabilities().getChangesCapability() == null) {
-            return false;
-        }
+        return repository.getCapabilities().getChangesCapability() != null &&
+                repository.getCapabilities().getChangesCapability() != CapabilityChanges.NONE;
 
-        return repository.getCapabilities().getChangesCapability() != CapabilityChanges.NONE;
     }
 
     /**
      * Returns if the test repository supports query.
      */
-    protected boolean supportsQuery() {
+    protected boolean supportsQuery()
+    {
         RepositoryInfo repository = getRepositoryInfo();
 
         assertNotNull(repository.getCapabilities());
 
-        if (repository.getCapabilities().getQueryCapability() == null) {
-            return false;
-        }
+        return repository.getCapabilities().getQueryCapability() != null &&
+                repository.getCapabilities().getQueryCapability() != CapabilityQuery.NONE;
 
-        return repository.getCapabilities().getQueryCapability() != CapabilityQuery.NONE;
     }
 
     /**
      * Returns if the test repository supports relationships.
      */
-    protected boolean supportsRelationships() {
-        TypeDefinition relType = null;
+    protected boolean supportsRelationships()
+    {
+        TypeDefinition relType;
 
-        try {
-            relType = getBinding().getRepositoryService().getTypeDefinition(getTestRepositoryId(), "cmis:relationship",
-                    null);
-        } catch (CmisObjectNotFoundException e) {
+        try
+        {
+            relType = getBinding().getRepositoryService()
+                    .getTypeDefinition(getTestRepositoryId(), "cmis:relationship", null);
+        }
+        catch (CmisObjectNotFoundException e)
+        {
             return false;
         }
 
@@ -421,12 +454,16 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Returns if the test repository supports policies.
      */
-    protected boolean supportsPolicies() {
-        TypeDefinition relType = null;
+    protected boolean supportsPolicies()
+    {
+        TypeDefinition relType;
 
-        try {
+        try
+        {
             relType = getBinding().getRepositoryService().getTypeDefinition(getTestRepositoryId(), "cmis:policy", null);
-        } catch (CmisObjectNotFoundException e) {
+        }
+        catch (CmisObjectNotFoundException e)
+        {
             return false;
         }
 
@@ -436,12 +473,14 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Returns the AclPropagation from the ACL capabilities.
      */
-    protected AclPropagation getAclPropagation() {
+    protected AclPropagation getAclPropagation()
+    {
         RepositoryInfo repository = getRepositoryInfo();
 
         assertNotNull(repository.getCapabilities());
 
-        if (repository.getAclCapabilities().getAclPropagation() == null) {
+        if (repository.getAclCapabilities().getAclPropagation() == null)
+        {
             return AclPropagation.REPOSITORYDETERMINED;
         }
 
@@ -453,14 +492,16 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Prints a warning.
      */
-    protected void warning(String message) {
+    protected void warning(String message)
+    {
         Log.i(TAG, "**** " + message);
     }
 
     /**
      * Creates a ContentStreamData object from a byte array.
      */
-    protected ContentStream createContentStreamData(String mimeType, byte[] content) {
+    protected ContentStream createContentStreamData(String mimeType, byte[] content)
+    {
         assertNotNull(content);
 
         return getObjectFactory().createContentStream("test", BigInteger.valueOf(content.length), mimeType,
@@ -470,14 +511,15 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Extracts the path from a folder object.
      */
-    protected String getPath(ObjectData folderObject) {
+    protected String getPath(ObjectData folderObject)
+    {
         assertNotNull(folderObject);
         assertNotNull(folderObject.getProperties());
         assertNotNull(folderObject.getProperties().getProperties());
         assertTrue(folderObject.getProperties().getProperties().get(PropertyIds.PATH) instanceof PropertyString);
 
-        PropertyString pathProperty = (PropertyString) folderObject.getProperties().getProperties().get(
-                PropertyIds.PATH);
+        PropertyString pathProperty =
+                (PropertyString) folderObject.getProperties().getProperties().get(PropertyIds.PATH);
 
         assertNotNull(pathProperty.getValues());
         assertEquals(1, pathProperty.getValues().size());
@@ -492,8 +534,9 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
      * Retrieves an object.
      */
     protected ObjectData getObject(String objectId, String filter, Boolean includeAllowableActions,
-            IncludeRelationships includeRelationships, String renditionFilter, Boolean includePolicyIds,
-            Boolean includeACL, ExtensionsData extension) {
+                                   IncludeRelationships includeRelationships, String renditionFilter,
+                                   Boolean includePolicyIds, Boolean includeACL, ExtensionsData extension)
+    {
         ObjectData object = getBinding().getObjectService()
                 .getObject(getTestRepositoryId(), objectId, filter, includeAllowableActions, includeRelationships,
                         renditionFilter, includePolicyIds, includeACL, extension);
@@ -506,9 +549,11 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Retrieves a full blown object.
      */
-    protected ObjectData getObject(String objectId) {
-        ObjectData object = getObject(objectId, "*", Boolean.TRUE, IncludeRelationships.BOTH, null, Boolean.TRUE,
-                Boolean.TRUE, null);
+    protected ObjectData getObject(String objectId)
+    {
+        ObjectData object =
+                getObject(objectId, "*", Boolean.TRUE, IncludeRelationships.BOTH, null, Boolean.TRUE, Boolean.TRUE,
+                        null);
 
         assertBasicProperties(object.getProperties());
 
@@ -519,8 +564,9 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
      * Retrieves an object by path.
      */
     protected ObjectData getObjectByPath(String path, String filter, Boolean includeAllowableActions,
-            IncludeRelationships includeRelationships, String renditionFilter, Boolean includePolicyIds,
-            Boolean includeACL, ExtensionsData extension) {
+                                         IncludeRelationships includeRelationships, String renditionFilter,
+                                         Boolean includePolicyIds, Boolean includeACL, ExtensionsData extension)
+    {
         ObjectData object = getBinding().getObjectService()
                 .getObjectByPath(getTestRepositoryId(), path, filter, includeAllowableActions, includeRelationships,
                         renditionFilter, includePolicyIds, includeACL, extension);
@@ -533,9 +579,11 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Retrieves a full blown object by path.
      */
-    protected ObjectData getObjectByPath(String path) {
-        ObjectData object = getObjectByPath(path, "*", Boolean.TRUE, IncludeRelationships.BOTH, null, Boolean.TRUE,
-                Boolean.TRUE, null);
+    protected ObjectData getObjectByPath(String path)
+    {
+        ObjectData object =
+                getObjectByPath(path, "*", Boolean.TRUE, IncludeRelationships.BOTH, null, Boolean.TRUE, Boolean.TRUE,
+                        null);
 
         assertBasicProperties(object.getProperties());
 
@@ -546,14 +594,19 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
      * Returns <code>true</code> if the object with the given id exists,
      * <code>false</code> otherwise.
      */
-    protected boolean existsObject(String objectId) {
-        try {
-            ObjectData object = getObject(objectId, PropertyIds.OBJECT_ID, Boolean.FALSE, IncludeRelationships.NONE,
-                    null, Boolean.FALSE, Boolean.FALSE, null);
+    protected boolean existsObject(String objectId)
+    {
+        try
+        {
+            ObjectData object =
+                    getObject(objectId, PropertyIds.OBJECT_ID, Boolean.FALSE, IncludeRelationships.NONE, null,
+                            Boolean.FALSE, Boolean.FALSE, null);
 
             assertNotNull(object);
             assertNotNull(object.getId());
-        } catch (CmisObjectNotFoundException e) {
+        }
+        catch (CmisObjectNotFoundException e)
+        {
             return false;
         }
 
@@ -563,19 +616,23 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Returns the child of a folder.
      */
-    protected ObjectInFolderData getChild(String folderId, String objectId) {
+    protected ObjectInFolderData getChild(String folderId, String objectId)
+    {
         boolean hasMore = true;
 
-        while (hasMore) {
-            ObjectInFolderList children = getBinding().getNavigationService().getChildren(getTestRepositoryId(),
-                    folderId, "*", null, Boolean.TRUE, IncludeRelationships.BOTH, null, Boolean.TRUE, null, null, null);
+        while (hasMore)
+        {
+            ObjectInFolderList children = getBinding().getNavigationService()
+                    .getChildren(getTestRepositoryId(), folderId, "*", null, Boolean.TRUE, IncludeRelationships.BOTH,
+                            null, Boolean.TRUE, null, null, null);
 
             assertNotNull(children);
             assertTrue(children.getObjects().size() > 0);
 
-            hasMore = (children.hasMoreItems() == null ? false : children.hasMoreItems().booleanValue());
+            hasMore = (children.hasMoreItems() != null && children.hasMoreItems());
 
-            for (ObjectInFolderData object : children.getObjects()) {
+            for (ObjectInFolderData object : children.getObjects())
+            {
                 assertNotNull(object);
                 assertNotNull(object.getPathSegment());
                 assertNotNull(object.getObject());
@@ -583,7 +640,8 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
 
                 assertBasicProperties(object.getObject().getProperties());
 
-                if (object.getObject().getId().equals(objectId)) {
+                if (object.getObject().getId().equals(objectId))
+                {
                     return object;
                 }
             }
@@ -597,7 +655,8 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Gets the version series id of an object.
      */
-    protected String getVersionSeriesId(ObjectData object) {
+    protected String getVersionSeriesId(ObjectData object)
+    {
         PropertyData<?> versionSeriesId = object.getProperties().getProperties().get(PropertyIds.VERSION_SERIES_ID);
         assertNotNull(versionSeriesId);
         assertTrue(versionSeriesId instanceof PropertyId);
@@ -608,7 +667,8 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Gets the version series id of an object.
      */
-    protected String getVersionSeriesId(String docId) {
+    protected String getVersionSeriesId(String docId)
+    {
         return getVersionSeriesId(getObject(docId));
     }
 
@@ -616,9 +676,10 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
      * Creates a folder.
      */
     protected String createFolder(Properties properties, String folderId, List<String> policies, Acl addACEs,
-            Acl removeACEs) {
-        String objectId = getBinding().getObjectService().createFolder(getTestRepositoryId(), properties, folderId,
-                policies, addACEs, removeACEs, null);
+                                  Acl removeACEs)
+    {
+        String objectId = getBinding().getObjectService()
+                .createFolder(getTestRepositoryId(), properties, folderId, policies, addACEs, removeACEs, null);
         assertNotNull(objectId);
         assertTrue(existsObject(objectId));
 
@@ -629,7 +690,8 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
 
         // check name
         PropertyData<?> nameProp = properties.getProperties().get(PropertyIds.NAME);
-        if (nameProp != null) {
+        if (nameProp != null)
+        {
             assertPropertyValue(folderChild.getObject().getProperties(), PropertyIds.NAME, PropertyString.class,
                     nameProp.getFirstValue());
         }
@@ -641,8 +703,8 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
                 typeProp.getFirstValue());
 
         // check parent
-        ObjectData parent = getBinding().getNavigationService().getFolderParent(getTestRepositoryId(), objectId, null,
-                null);
+        ObjectData parent =
+                getBinding().getNavigationService().getFolderParent(getTestRepositoryId(), objectId, null, null);
         assertNotNull(parent);
         assertNotNull(parent.getProperties());
         assertNotNull(parent.getProperties().getProperties());
@@ -655,7 +717,8 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Creates a folder with the default type.
      */
-    protected String createDefaultFolder(String folderId, String name) {
+    protected String createDefaultFolder(String folderId, String name)
+    {
         List<PropertyData<?>> propList = new ArrayList<PropertyData<?>>();
         propList.add(getObjectFactory().createPropertyStringData(PropertyIds.NAME, name));
         propList.add(getObjectFactory().createPropertyIdData(PropertyIds.OBJECT_TYPE_ID, getDefaultFolderType()));
@@ -669,27 +732,32 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
      * Creates a document.
      */
     protected String createDocument(Properties properties, String folderId, ContentStream contentStream,
-            VersioningState versioningState, List<String> policies, Acl addACEs, Acl removeACEs) {
-        String objectId = getBinding().getObjectService().createDocument(getTestRepositoryId(), properties, folderId,
-                contentStream, versioningState, policies, addACEs, removeACEs, null);
+                                    VersioningState versioningState, List<String> policies, Acl addACEs, Acl removeACEs)
+    {
+        String objectId = getBinding().getObjectService()
+                .createDocument(getTestRepositoryId(), properties, folderId, contentStream, versioningState, policies,
+                        addACEs, removeACEs, null);
         assertNotNull(objectId);
         assertTrue(existsObject(objectId));
 
-        if (folderId != null) {
+        if (folderId != null)
+        {
             ObjectInFolderData folderChild = getChild(folderId, objectId);
 
             // check canGetProperties
             assertAllowableAction(folderChild.getObject().getAllowableActions(), Action.CAN_GET_PROPERTIES, true);
 
             // check canGetContentStream
-            if (contentStream != null) {
+            if (contentStream != null)
+            {
                 assertAllowableAction(folderChild.getObject().getAllowableActions(), Action.CAN_GET_CONTENT_STREAM,
                         true);
             }
 
             // check name
             PropertyData<?> nameProp = properties.getProperties().get(PropertyIds.NAME);
-            if (nameProp != null) {
+            if (nameProp != null)
+            {
                 assertPropertyValue(folderChild.getObject().getProperties(), PropertyIds.NAME, PropertyString.class,
                         nameProp.getFirstValue());
             }
@@ -701,9 +769,9 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
                     typeProp.getFirstValue());
 
             // check parent
-            List<ObjectParentData> parents = getBinding().getNavigationService().getObjectParents(
-                    getTestRepositoryId(), objectId, "*", Boolean.TRUE, IncludeRelationships.BOTH, null, Boolean.TRUE,
-                    null);
+            List<ObjectParentData> parents = getBinding().getNavigationService()
+                    .getObjectParents(getTestRepositoryId(), objectId, "*", Boolean.TRUE, IncludeRelationships.BOTH,
+                            null, Boolean.TRUE, null);
             assertNotNull(parents);
             assertEquals(1, parents.size());
 
@@ -713,24 +781,26 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
             assertNotNull(parent.getObject());
             assertNotNull(parent.getObject().getProperties().getProperties());
             assertNotNull(parent.getObject().getProperties().getProperties().get(PropertyIds.OBJECT_ID));
-            assertEquals(folderId, parent.getObject().getProperties().getProperties().get(PropertyIds.OBJECT_ID)
-                    .getFirstValue());
+            assertEquals(folderId,
+                    parent.getObject().getProperties().getProperties().get(PropertyIds.OBJECT_ID).getFirstValue());
 
             // get document by path (check relative path segment)
             assertNotNull(parent.getObject().getProperties().getProperties().get(PropertyIds.PATH));
-            String parentPath = parent.getObject().getProperties().getProperties().get(PropertyIds.PATH)
-                    .getFirstValue().toString();
+            String parentPath =
+                    parent.getObject().getProperties().getProperties().get(PropertyIds.PATH).getFirstValue().toString();
 
-            ObjectData docByPath = getObjectByPath((parentPath.equals("/") ? "" : parentPath) + "/"
-                    + folderChild.getPathSegment());
+            ObjectData docByPath =
+                    getObjectByPath((parentPath.equals("/") ? "" : parentPath) + "/" + folderChild.getPathSegment());
 
             PropertyData<?> idProp = docByPath.getProperties().getProperties().get(PropertyIds.OBJECT_ID);
             assertNotNull(idProp);
             assertEquals(objectId, idProp.getFirstValue());
-        } else {
-            List<ObjectParentData> parents = getBinding().getNavigationService().getObjectParents(
-                    getTestRepositoryId(), objectId, null, Boolean.TRUE, IncludeRelationships.BOTH, null, Boolean.TRUE,
-                    null);
+        }
+        else
+        {
+            List<ObjectParentData> parents = getBinding().getNavigationService()
+                    .getObjectParents(getTestRepositoryId(), objectId, null, Boolean.TRUE, IncludeRelationships.BOTH,
+                            null, Boolean.TRUE, null);
             assertNotNull(parents);
             assertEquals(0, parents.size());
         }
@@ -741,7 +811,8 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Creates a document with the default type.
      */
-    protected String createDefaultDocument(String folderId, String name, String contentType, byte[] content) {
+    protected String createDefaultDocument(String folderId, String name, String contentType, byte[] content)
+    {
         VersioningState vs = (isVersionable(getDefaultDocumentType()) ? VersioningState.MAJOR : VersioningState.NONE);
 
         List<PropertyData<?>> propList = new ArrayList<PropertyData<?>>();
@@ -759,26 +830,31 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
      * Creates a document from source.
      */
     protected String createDocumentFromSource(String sourceId, Properties properties, String folderId,
-            VersioningState versioningState, List<String> policies, Acl addACEs, Acl removeACEs) {
-        String objectId = getBinding().getObjectService().createDocumentFromSource(getTestRepositoryId(), sourceId,
-                properties, folderId, versioningState, policies, addACEs, removeACEs, null);
+                                              VersioningState versioningState, List<String> policies, Acl addACEs,
+                                              Acl removeACEs)
+    {
+        String objectId = getBinding().getObjectService()
+                .createDocumentFromSource(getTestRepositoryId(), sourceId, properties, folderId, versioningState,
+                        policies, addACEs, removeACEs, null);
         assertNotNull(objectId);
         assertTrue(existsObject(objectId));
 
-        if (folderId != null) {
+        if (folderId != null)
+        {
             ObjectInFolderData folderChild = getChild(folderId, objectId);
 
             // check name
             PropertyData<?> nameProp = properties.getProperties().get(PropertyIds.NAME);
-            if (nameProp != null) {
+            if (nameProp != null)
+            {
                 assertPropertyValue(folderChild.getObject().getProperties(), PropertyIds.NAME, PropertyString.class,
                         nameProp.getValues().get(0));
             }
 
             // check parent
-            List<ObjectParentData> parents = getBinding().getNavigationService().getObjectParents(
-                    getTestRepositoryId(), objectId, null, Boolean.TRUE, IncludeRelationships.BOTH, null, Boolean.TRUE,
-                    null);
+            List<ObjectParentData> parents = getBinding().getNavigationService()
+                    .getObjectParents(getTestRepositoryId(), objectId, null, Boolean.TRUE, IncludeRelationships.BOTH,
+                            null, Boolean.TRUE, null);
             assertNotNull(parents);
             assertEquals(1, parents.size());
 
@@ -788,8 +864,8 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
             assertNotNull(parent.getObject());
             assertNotNull(parent.getObject().getProperties().getProperties());
             assertNotNull(parent.getObject().getProperties().getProperties().get(PropertyIds.OBJECT_ID));
-            assertEquals(folderId, parent.getObject().getProperties().getProperties().get(PropertyIds.OBJECT_ID)
-                    .getFirstValue());
+            assertEquals(folderId,
+                    parent.getObject().getProperties().getProperties().get(PropertyIds.OBJECT_ID).getFirstValue());
         }
 
         return objectId;
@@ -798,7 +874,8 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Deletes an object.
      */
-    protected void delete(String objectId, boolean allVersions) {
+    protected void delete(String objectId, boolean allVersions)
+    {
         getBinding().getObjectService().deleteObject(getTestRepositoryId(), objectId, allVersions, null);
         assertFalse(existsObject(objectId));
     }
@@ -806,18 +883,20 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Deletes a tree.
      */
-    protected void deleteTree(String folderId) {
-        getBinding().getObjectService().deleteTree(getTestRepositoryId(), folderId, Boolean.TRUE, UnfileObject.DELETE,
-                Boolean.TRUE, null);
+    protected void deleteTree(String folderId)
+    {
+        getBinding().getObjectService()
+                .deleteTree(getTestRepositoryId(), folderId, Boolean.TRUE, UnfileObject.DELETE, Boolean.TRUE, null);
         assertFalse(existsObject(folderId));
     }
 
     /**
      * Gets a content stream.
      */
-    protected ContentStream getContent(String objectId, String streamId) {
-        ContentStream contentStream = getBinding().getObjectService().getContentStream(getTestRepositoryId(), objectId,
-                streamId, null, null, null);
+    protected ContentStream getContent(String objectId, String streamId)
+    {
+        ContentStream contentStream = getBinding().getObjectService()
+                .getContentStream(getTestRepositoryId(), objectId, streamId, null, null, null);
         assertNotNull(contentStream);
         assertNotNull(contentStream.getMimeType());
         assertNotNull(contentStream.getStream());
@@ -828,7 +907,8 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Reads the content from a content stream into a byte array.
      */
-    protected byte[] readContent(ContentStream contentStream) throws Exception {
+    protected byte[] readContent(ContentStream contentStream) throws Exception
+    {
         assertNotNull(contentStream);
         assertNotNull(contentStream.getStream());
 
@@ -837,7 +917,8 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
 
         byte[] buffer = new byte[4096];
         int b;
-        while ((b = stream.read(buffer)) > -1) {
+        while ((b = stream.read(buffer)) > -1)
+        {
             baos.write(buffer, 0, b);
         }
 
@@ -847,9 +928,10 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Returns a type definition.
      */
-    protected TypeDefinition getTypeDefinition(String typeName) {
-        TypeDefinition typeDef = getBinding().getRepositoryService().getTypeDefinition(getTestRepositoryId(), typeName,
-                null);
+    protected TypeDefinition getTypeDefinition(String typeName)
+    {
+        TypeDefinition typeDef =
+                getBinding().getRepositoryService().getTypeDefinition(getTestRepositoryId(), typeName, null);
 
         assertNotNull(typeDef);
         assertNotNull(typeDef.getId());
@@ -860,7 +942,8 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
     /**
      * Returns if the type is versionable.
      */
-    protected boolean isVersionable(String typeName) {
+    protected boolean isVersionable(String typeName)
+    {
         TypeDefinition type = getTypeDefinition(typeName);
 
         assertTrue(type instanceof DocumentTypeDefinition);
@@ -873,16 +956,20 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
 
     // ---- asserts ----
 
-    protected void assertEquals(TypeDefinition expected, TypeDefinition actual, boolean checkPropertyDefintions) {
-        if (expected == null && actual == null) {
+    protected void assertEquals(TypeDefinition expected, TypeDefinition actual, boolean checkPropertyDefintions)
+    {
+        if (expected == null && actual == null)
+        {
             return;
         }
 
-        if (expected == null) {
+        if (expected == null)
+        {
             fail("Expected type definition is null!");
         }
 
-        if (actual == null) {
+        if (actual == null)
+        {
             fail("Actual type definition is null!");
         }
 
@@ -895,41 +982,50 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
         assertEquals("TypeDefinition parent id:", expected.getParentTypeId(), actual.getParentTypeId());
         assertEquals("TypeDefinition base id:", expected.getBaseTypeId(), actual.getBaseTypeId());
 
-        if (!checkPropertyDefintions) {
+        if (!checkPropertyDefintions)
+        {
             return;
         }
 
-        if (expected.getPropertyDefinitions() == null && actual.getPropertyDefinitions() == null) {
+        if (expected.getPropertyDefinitions() == null && actual.getPropertyDefinitions() == null)
+        {
             return;
         }
 
-        if (expected.getPropertyDefinitions() == null) {
+        if (expected.getPropertyDefinitions() == null)
+        {
             fail("Expected property definition list is null!");
         }
 
-        if (actual.getPropertyDefinitions() == null) {
+        if (actual.getPropertyDefinitions() == null)
+        {
             fail("Actual property definition list is null!");
         }
 
         assertEquals(expected.getPropertyDefinitions().size(), actual.getPropertyDefinitions().size());
 
-        for (PropertyDefinition<?> expectedPropDef : expected.getPropertyDefinitions().values()) {
+        for (PropertyDefinition<?> expectedPropDef : expected.getPropertyDefinitions().values())
+        {
             PropertyDefinition<?> actualPropDef = actual.getPropertyDefinitions().get(expectedPropDef.getId());
 
             assertEquals(expectedPropDef, actualPropDef);
         }
     }
 
-    protected void assertEquals(PropertyDefinition<?> expected, PropertyDefinition<?> actual) {
-        if (expected == null && actual == null) {
+    protected void assertEquals(PropertyDefinition<?> expected, PropertyDefinition<?> actual)
+    {
+        if (expected == null && actual == null)
+        {
             return;
         }
 
-        if (expected == null) {
+        if (expected == null)
+        {
             fail("Expected property definition is null!");
         }
 
-        if (actual == null) {
+        if (actual == null)
+        {
             fail("Actual property definition is null!");
         }
 
@@ -940,50 +1036,49 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
 
         assertEquals("PropertyDefinition " + id + " id:", expected.getId(), actual.getId());
         assertEquals("PropertyDefinition " + id + " local name:", expected.getLocalName(), actual.getLocalName());
-        assertEquals("PropertyDefinition " + id + " local namespace:", expected.getLocalNamespace(), actual
-                .getLocalNamespace());
+        assertEquals("PropertyDefinition " + id + " local namespace:", expected.getLocalNamespace(),
+                actual.getLocalNamespace());
         assertEquals("PropertyDefinition " + id + " query name:", expected.getQueryName(), actual.getQueryName());
         assertEquals("PropertyDefinition " + id + " display name:", expected.getDisplayName(), actual.getDisplayName());
         assertEquals("PropertyDefinition " + id + " description:", expected.getDescription(), actual.getDescription());
-        assertEquals("PropertyDefinition " + id + " property type:", expected.getPropertyType(), actual
-                .getPropertyType());
+        assertEquals("PropertyDefinition " + id + " property type:", expected.getPropertyType(),
+                actual.getPropertyType());
         assertEquals("PropertyDefinition " + id + " cardinality:", expected.getCardinality(), actual.getCardinality());
-        assertEquals("PropertyDefinition " + id + " updatability:", expected.getUpdatability(), actual
-                .getUpdatability());
+        assertEquals("PropertyDefinition " + id + " updatability:", expected.getUpdatability(),
+                actual.getUpdatability());
     }
 
-    protected void assertEquals(Properties expected, Properties actual) {
-        if (expected == null && actual == null) {
+    protected void assertEquals(Properties expected, Properties actual)
+    {
+        if (expected == null && actual == null)
+        {
             return;
         }
 
-        if (expected == null) {
+        if (expected == null)
+        {
             fail("Expected properties data is null!");
         }
 
-        if (actual == null) {
+        if (actual == null)
+        {
             fail("Actual properties data is null!");
         }
 
-        if (expected.getProperties() == null && actual.getProperties() == null) {
+        if (expected.getProperties() == null && actual.getProperties() == null)
+        {
             return;
         }
 
-        if (expected.getProperties() == null || actual.getProperties() == null) {
+        if (expected.getProperties() == null || actual.getProperties() == null)
+        {
             fail("Properties are null!");
-        }
-
-        if (expected.getProperties() == null) {
-            fail("Expected properties are null!");
-        }
-
-        if (actual.getProperties() == null) {
-            fail("Actual properties are null!");
         }
 
         assertEquals(expected.getProperties().size(), actual.getProperties().size());
 
-        for (String id : expected.getProperties().keySet()) {
+        for (String id : expected.getProperties().keySet())
+        {
             PropertyData<?> expectedProperty = expected.getProperties().get(id);
             assertNotNull(expectedProperty);
             assertEquals(id, expectedProperty.getId());
@@ -996,12 +1091,15 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
         }
     }
 
-    protected void assertEquals(PropertyData<?> expected, PropertyData<?> actual) {
-        if (expected == null && actual == null) {
+    protected void assertEquals(PropertyData<?> expected, PropertyData<?> actual)
+    {
+        if (expected == null && actual == null)
+        {
             return;
         }
 
-        if (expected == null || actual == null) {
+        if (expected == null || actual == null)
+        {
             fail("Properties data is null!");
         }
 
@@ -1014,13 +1112,15 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
 
         assertEquals("PropertyData " + id + " values:", expected.getValues().size(), actual.getValues().size());
 
-        for (int i = 0; i < expected.getValues().size(); i++) {
-            assertEquals("PropertyData " + id + " value[" + i + "]:", expected.getValues().get(i), actual.getValues()
-                    .get(i));
+        for (int i = 0; i < expected.getValues().size(); i++)
+        {
+            assertEquals("PropertyData " + id + " value[" + i + "]:", expected.getValues().get(i),
+                    actual.getValues().get(i));
         }
     }
 
-    protected void assertBasicProperties(Properties properties) {
+    protected void assertBasicProperties(Properties properties)
+    {
         assertNotNull(properties);
         assertNotNull(properties.getProperties());
 
@@ -1040,7 +1140,8 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
                 PropertyIds.LAST_MODIFICATION_DATE, PropertyDateTime.class);
     }
 
-    protected void assertProperty(PropertyData<?> property, String id, Class<?> clazz) {
+    protected void assertProperty(PropertyData<?> property, String id, Class<?> clazz)
+    {
         assertNotNull(property);
         assertNotNull(property.getId());
         assertEquals("PropertyData " + id + " id:", id, property.getId());
@@ -1049,19 +1150,22 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
         assertFalse(property.getValues().isEmpty());
     }
 
-    protected void assertPropertyValue(PropertyData<?> property, String id, Class<?> clazz, Object... values) {
+    protected void assertPropertyValue(PropertyData<?> property, String id, Class<?> clazz, Object... values)
+    {
         assertProperty(property, id, clazz);
 
         assertEquals("Property " + id + " values:", values.length, property.getValues().size());
 
         int i = 0;
-        for (Object value : property.getValues()) {
+        for (Object value : property.getValues())
+        {
             assertEquals("Property " + id + " value[" + i + "]:", values[i], value);
             i++;
         }
     }
 
-    protected void assertPropertyValue(Properties properties, String id, Class<?> clazz, Object... values) {
+    protected void assertPropertyValue(Properties properties, String id, Class<?> clazz, Object... values)
+    {
         assertNotNull(properties);
         assertNotNull(properties.getProperties());
 
@@ -1071,26 +1175,31 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
         assertPropertyValue(property, id, clazz, values);
     }
 
-    protected void assertEquals(AllowableActions expected, AllowableActions actual) {
-        if (expected == null && actual == null) {
+    protected void assertEquals(AllowableActions expected, AllowableActions actual)
+    {
+        if (expected == null && actual == null)
+        {
             return;
         }
 
-        if (expected == null) {
+        if (expected == null)
+        {
             fail("Expected allowable action data is null!");
         }
 
-        if (actual == null) {
+        if (actual == null)
+        {
             fail("Actual allowable action data is null!");
         }
 
         assertNotNull(expected.getAllowableActions());
         assertNotNull(actual.getAllowableActions());
 
-        assertEquals("Allowable action size:", expected.getAllowableActions().size(), actual.getAllowableActions()
-                .size());
+        assertEquals("Allowable action size:", expected.getAllowableActions().size(),
+                actual.getAllowableActions().size());
 
-        for (Action action : expected.getAllowableActions()) {
+        for (Action action : expected.getAllowableActions())
+        {
             boolean expectedBoolean = expected.getAllowableActions().contains(action);
             boolean actualBoolean = actual.getAllowableActions().contains(action);
 
@@ -1098,58 +1207,71 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
         }
     }
 
-    protected void assertAllowableAction(AllowableActions allowableActions, Action action, boolean expected) {
+    protected void assertAllowableAction(AllowableActions allowableActions, Action action, boolean expected)
+    {
         assertNotNull(allowableActions);
         assertNotNull(allowableActions.getAllowableActions());
         assertNotNull(action);
 
-        assertEquals("Allowable action \"" + action + "\":", expected, allowableActions.getAllowableActions().contains(
-                action));
+        assertEquals("Allowable action \"" + action + "\":", expected,
+                allowableActions.getAllowableActions().contains(action));
     }
 
-    protected void assertEquals(Acl expected, Acl actual) {
-        if (expected == null && actual == null) {
+    protected void assertEquals(Acl expected, Acl actual)
+    {
+        if (expected == null && actual == null)
+        {
             return;
         }
 
-        if (expected == null) {
+        if (expected == null)
+        {
             fail("Expected ACL data is null!");
         }
 
-        if (actual == null) {
+        if (actual == null)
+        {
             fail("Actual ACL data is null!");
         }
 
-        if (expected.getAces() == null && actual.getAces() == null) {
+        if (expected.getAces() == null && actual.getAces() == null)
+        {
             return;
         }
 
-        if (expected.getAces() == null) {
+        if (expected.getAces() == null)
+        {
             fail("Expected ACE data is null!");
         }
 
-        if (actual.getAces() == null) {
+        if (actual.getAces() == null)
+        {
             fail("Actual ACE data is null!");
         }
 
         // assertEquals(expected.isExact(), actual.isExact());
         assertEquals(expected.getAces().size(), actual.getAces().size());
 
-        for (int i = 0; i < expected.getAces().size(); i++) {
+        for (int i = 0; i < expected.getAces().size(); i++)
+        {
             assertEquals(expected.getAces().get(i), actual.getAces().get(i));
         }
     }
 
-    protected void assertEquals(Ace expected, Ace actual) {
-        if (expected == null && actual == null) {
+    protected void assertEquals(Ace expected, Ace actual)
+    {
+        if (expected == null && actual == null)
+        {
             return;
         }
 
-        if (expected == null) {
+        if (expected == null)
+        {
             fail("Expected ACE data is null!");
         }
 
-        if (actual == null) {
+        if (actual == null)
+        {
             fail("Actual ACE data is null!");
         }
 
@@ -1162,16 +1284,20 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
         assertEqualLists(expected.getPermissions(), actual.getPermissions());
     }
 
-    protected void assertEquals(RenditionData expected, RenditionData actual) {
-        if (expected == null && actual == null) {
+    protected void assertEquals(RenditionData expected, RenditionData actual)
+    {
+        if (expected == null && actual == null)
+        {
             return;
         }
 
-        if (expected == null) {
+        if (expected == null)
+        {
             fail("Expected rendition is null!");
         }
 
-        if (actual == null) {
+        if (actual == null)
+        {
             fail("Actual rendition is null!");
         }
 
@@ -1185,45 +1311,54 @@ public abstract class AbstractCmisTestCase extends AlfrescoSDKTestCase {
         assertEquals("Rendition document id:", expected.getRenditionDocumentId(), actual.getRenditionDocumentId());
     }
 
-    protected void assertContent(byte[] expected, byte[] actual) {
+    protected void assertContent(byte[] expected, byte[] actual)
+    {
         assertNotNull(expected);
         assertNotNull(actual);
 
         assertEquals("Content size:", expected.length, actual.length);
 
-        for (int i = 0; i < expected.length; i++) {
+        for (int i = 0; i < expected.length; i++)
+        {
             assertEquals("Content not equal.", expected[i], actual[i]);
         }
     }
 
-    protected void assertMimeType(String expected, String actual) {
+    protected void assertMimeType(String expected, String actual)
+    {
         assertNotNull(expected);
         assertNotNull(actual);
 
         int paramIdx = actual.indexOf(';');
-        if (paramIdx != -1) {
+        if (paramIdx != -1)
+        {
             actual = actual.substring(0, paramIdx);
         }
 
         assertEquals(expected, actual);
     }
 
-    protected void assertEqualLists(List<?> expected, List<?> actual) {
-        if (expected == null && actual == null) {
+    protected void assertEqualLists(List<?> expected, List<?> actual)
+    {
+        if (expected == null && actual == null)
+        {
             return;
         }
 
-        if (expected == null) {
+        if (expected == null)
+        {
             fail("Expected list is null!");
         }
 
-        if (actual == null) {
+        if (actual == null)
+        {
             fail("Actual list is null!");
         }
 
         assertEquals("List size:", expected.size(), actual.size());
 
-        for (int i = 0; i < expected.size(); i++) {
+        for (int i = 0; i < expected.size(); i++)
+        {
             assertEquals("List element " + i + ":", expected.get(i), actual.get(i));
         }
     }

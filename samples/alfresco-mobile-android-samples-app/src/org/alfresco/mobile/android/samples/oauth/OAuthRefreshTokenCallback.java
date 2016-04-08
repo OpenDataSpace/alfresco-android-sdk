@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of Alfresco Mobile for Android.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,12 +17,6 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.samples.oauth;
 
-import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
-import org.alfresco.mobile.android.api.session.CloudSession;
-import org.alfresco.mobile.android.api.session.authentication.OAuthData;
-import org.alfresco.mobile.android.samples.R;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -30,16 +24,22 @@ import android.content.Loader;
 import android.os.Bundle;
 import android.util.Log;
 
+import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
+import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.session.authentication.OAuthData;
+import org.alfresco.mobile.android.samples.R;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
+
 @TargetApi(11)
 public class OAuthRefreshTokenCallback implements LoaderCallbacks<LoaderResult<OAuthData>>
 {
 
-    public static final String TAG = "OAuthRefreshTokenCallback";
+    public static final String TAG = "OAuthRefreshTokenCb";
 
-    private Activity activity;
+    private final Activity activity;
 
-    private CloudSession session;
-    
+    private final CloudSession session;
+
     public OAuthRefreshTokenCallback(Activity activity, CloudSession session)
     {
         this.activity = activity;
@@ -50,8 +50,7 @@ public class OAuthRefreshTokenCallback implements LoaderCallbacks<LoaderResult<O
     public Loader<LoaderResult<OAuthData>> onCreateLoader(final int id, Bundle args)
     {
         MessengerManager.showLongToast(activity, activity.getString(R.string.refresh_token_start));
-        Loader<LoaderResult<OAuthData>> loader = new OAuthRefreshTokenLoader(activity, session);
-        return loader;
+        return new OAuthRefreshTokenLoader(activity, session);
     }
 
     @Override

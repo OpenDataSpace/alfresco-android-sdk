@@ -1,30 +1,31 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.samples.activity;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import android.app.Activity;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
+import android.content.Intent;
+import android.content.Loader;
+import android.os.Bundle;
+import android.os.Environment;
 
 import org.alfresco.mobile.android.api.asynchronous.CloudSessionLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
@@ -40,27 +41,26 @@ import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.StorageManager;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 
-import android.app.Activity;
-import android.app.LoaderManager.LoaderCallbacks;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
-import android.content.Intent;
-import android.content.Loader;
-import android.os.Bundle;
-import android.os.Environment;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Responsible to create the Alfresco Repository session and affect to the
  * global session object.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderCallbacks<LoaderResult<AlfrescoSession>>
 {
 
     public static final String ALFRESCO_CLOUD_URL = "http://my.alfresco.com";
-    
+
     private static final String BASE_URL = "org.alfresco.mobile.binding.internal.baseurl";
 
     protected static final String USER = "org.alfresco.mobile.internal.credential.user";
@@ -69,8 +69,8 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
 
     private static final String CLOUD_BASIC_AUTH = "org.alfresco.mobile.binding.internal.cloud.basic";
 
-    public static final String CLOUD_CONFIG_PATH = Environment.getExternalStorageDirectory().getPath()
-            + "/alfresco-mobile/cloud-config.properties";
+    public static final String CLOUD_CONFIG_PATH =
+            Environment.getExternalStorageDirectory().getPath() + "/alfresco-mobile/cloud-config.properties";
 
     public static final boolean ENABLE_CONFIG_FILE = true;
 
@@ -101,15 +101,16 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
     @Override
     public Loader<LoaderResult<AlfrescoSession>> onCreateLoader(final int id, Bundle args)
     {
-        mProgressDialog = ProgressDialog.show(context, context.getText(R.string.dialog_wait),
-                context.getText(R.string.contact_server_progress), true, true, new OnCancelListener()
-                {
-                    @Override
-                    public void onCancel(DialogInterface dialog)
-                    {
-                        context.getLoaderManager().destroyLoader(id);
-                    }
-                });
+        mProgressDialog = ProgressDialog
+                .show(context, context.getText(R.string.dialog_wait), context.getText(R.string.contact_server_progress),
+                        true, true, new OnCancelListener()
+                        {
+                            @Override
+                            public void onCancel(DialogInterface dialog)
+                            {
+                                context.getLoaderManager().destroyLoader(id);
+                            }
+                        });
 
         // Default Session Settings
         Map<String, Serializable> settings = new HashMap<String, Serializable>();
@@ -122,12 +123,12 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
         // Specific for Test Instance server
         if (oauth != null || (url != null && url.startsWith(ALFRESCO_CLOUD_URL)))
         {
-            String tmpurl = null, oauthUrl = null, apikey = null, apisecret = null, callback = null;
+            String tmpurl = null, oauthUrl = null;
             // Check Properties available inside the device
             if (ENABLE_CONFIG_FILE)
             {
                 File f = new File(CLOUD_CONFIG_PATH);
-                if (f.exists() && ENABLE_CONFIG_FILE)
+                if (f.exists())
                 {
                     Properties prop = new Properties();
                     InputStream is = null;
@@ -138,9 +139,6 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
                         prop.load(is);
                         tmpurl = prop.getProperty("url");
                         oauthUrl = prop.getProperty("oauth_url");
-                        apikey = prop.getProperty("apikey");
-                        apisecret = prop.getProperty("apisecret");
-                        callback = prop.getProperty("callback");
                     }
                     catch (IOException ex)
                     {
@@ -182,7 +180,7 @@ public class SessionLoaderCallback extends BaseLoaderCallback implements LoaderC
         {
             //Uncomment to use Context save for Session Object.
             //SessionUtils.setsession(context, results.getData());
-            
+
             //Test Serializable / Deserializable of Session object.
             Bundle b = new Bundle();
             b.putParcelable(MainActivity.PARAM_SESSION, results.getData());

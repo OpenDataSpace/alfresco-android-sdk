@@ -1,29 +1,25 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.test.api.services;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import android.util.Log;
 
 import junit.framework.Assert;
-
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
@@ -36,11 +32,14 @@ import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.services.SearchService;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
-import android.util.Log;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Test class for Services.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class SearchServiceTest extends AlfrescoSDKTestCase
@@ -53,7 +52,8 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
 
     private static final String KEYWORD_2 = "test";
 
-    private static final String LARGE_QUERY = "SELECT * FROM cmis:document WHERE  cmis:name LIKE '%alfresco%' OR cmis:name LIKE '%test%' OR contains ('alfresco') OR contains ('test')";
+    private static final String LARGE_QUERY =
+            "SELECT * FROM cmis:document WHERE  cmis:name LIKE '%alfresco%' OR cmis:name LIKE '%test%' OR contains ('alfresco') OR contains ('test')";
 
     protected void initSession()
     {
@@ -71,7 +71,7 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
 
     /**
      * Test to check simple CMIS query.
-     * 
+     *
      * @Requirement 40S1, 40S2, 40S3
      */
     public void testSearchService()
@@ -189,7 +189,7 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
         //@since 1.1 we disable SORT_PROPERTY_TITLE & SORT_PROPERTY_DESCRIPTION
         /*List<Node> result = searchService.keywordSearch(keywords, options, lc).getList();
         Assert.assertEquals(1, result.size());*/
-        
+
         /*lc.setSortProperty(SearchService.SORT_PROPERTY_DESCRIPTION);
         result = searchService.keywordSearch(keywords, options, lc).getList();
         Assert.assertEquals(1, result.size());*/
@@ -218,8 +218,8 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals(1, result.size());
 
         // Access to fixed sample data informations
-        Folder f = (Folder) docfolderservice.getChildByPath(AlfrescoSDKTestCase.getSampleDataPath(alfsession) + "/"
-                + SAMPLE_DATA_SEARCH_FOLDER);
+        Folder f = (Folder) docfolderservice
+                .getChildByPath(AlfrescoSDKTestCase.getSampleDataPath(alfsession) + "/" + SAMPLE_DATA_SEARCH_FOLDER);
         Assert.assertNotNull(f);
 
         options.setFolder(f);
@@ -249,7 +249,7 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
         // Query Search
         // ///////////////////////////////////////////////////////////////////////////
         quickSearch("SELECT * from cmis:folder where cmis:name = 'testsearch'", 0);
-        
+
         quickSearch("SELECT * FROM cmis:folder WHERE CONTAINS ('QNAME:\"app:company_home/app:dictionary\"')", 1);
 
         // 3.4 D CE : 0
@@ -314,8 +314,8 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
             Assert.assertEquals(5, pagingResult2.getList().size());
             if (isOnPremise())
             {
-                Assert.assertEquals(pagingResult.getList().get(1).getIdentifier(), pagingResult2.getList().get(0)
-                        .getIdentifier());
+                Assert.assertEquals(pagingResult.getList().get(1).getIdentifier(),
+                        pagingResult2.getList().get(0).getIdentifier());
             }
         }
         catch (Exception e)
@@ -328,16 +328,18 @@ public class SearchServiceTest extends AlfrescoSDKTestCase
     // //////////////////////////////////////////////////////////////////////
     // FAILURE TESTS
     // //////////////////////////////////////////////////////////////////////
+
     /**
      * Failure Tests for SearchService public Method.
-     * 
+     *
      * @Requirement 40F1, 40F2, 40F3, 42F1, 42F2
      */
     public void testSearchServiceMethodsError()
     {
         // Create Root Test Folder
         Folder unitTestFolder = createUnitTestFolder(alfsession);
-        Document deletedDocument = createDeletedDocument(unitTestFolder, SAMPLE_DATA_COMMENT_FILE);
+        @SuppressWarnings("UnusedAssignment") Document deletedDocument =
+                createDeletedDocument(unitTestFolder, SAMPLE_DATA_COMMENT_FILE);
 
         // ////////////////////////////////////////////////////
         // Error on search()

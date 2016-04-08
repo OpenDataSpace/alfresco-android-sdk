@@ -1,7 +1,6 @@
 package org.alfresco.mobile.android.test.api.cloud.services;
 
 import junit.framework.Assert;
-
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.services.impl.AbstractPersonService;
@@ -15,7 +14,7 @@ public class CloudPersonServiceTest extends PersonServiceTest
         if (alfsession == null)
         {
             alfsession = createCloudSession();
-        }   
+        }
         // Check Services
         Assert.assertNotNull(alfsession.getServiceRegistry());
         personService = alfsession.getServiceRegistry().getPersonService();
@@ -47,7 +46,7 @@ public class CloudPersonServiceTest extends PersonServiceTest
             Assert.assertEquals(ErrorCodeRegistry.PERSON_NOT_FOUND, e.getErrorCode());
         }
     }
-    
+
     @Override
     public void testFullPropertiesPerson()
     {

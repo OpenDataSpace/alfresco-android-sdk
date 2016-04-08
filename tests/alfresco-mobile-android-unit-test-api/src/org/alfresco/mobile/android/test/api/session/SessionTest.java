@@ -1,29 +1,25 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.test.api.session;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import android.util.Log;
 
 import junit.framework.Assert;
-
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.model.ListingContext;
@@ -31,7 +27,10 @@ import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.alfresco.mobile.android.test.ServerConfigFile;
 
-import android.util.Log;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SessionTest extends AlfrescoSDKTestCase
 {
@@ -58,8 +57,8 @@ public class SessionTest extends AlfrescoSDKTestCase
             // atompub binding
             // Start the authentication and get all informations from the
             // repository
-            RepositorySession session = RepositorySession.connect(ALFRESCO_CMIS_BASE_URL, ALFRESCO_CMIS_USER,
-                    ALFRESCO_CMIS_PASSWORD);
+            RepositorySession session =
+                    RepositorySession.connect(ALFRESCO_CMIS_BASE_URL, ALFRESCO_CMIS_USER, ALFRESCO_CMIS_PASSWORD);
 
             // Check informations has been collected from repository
             Assert.assertNotNull(session);
@@ -78,7 +77,7 @@ public class SessionTest extends AlfrescoSDKTestCase
     /**
      * Simple test to create a session with basic parameters. </br> Check
      * repository informations, edition, version number.
-     * 
+     *
      * @Requirement 78S1, 79S1, 80S1
      */
     public void testCreateSessionAndRepositoryInformation()
@@ -93,8 +92,8 @@ public class SessionTest extends AlfrescoSDKTestCase
         // ALFRESCO_CMIS_ATOMPUB_URL = "http://cmis.alfresco.com/cmisatom";
         // Start the authentication and get all informations from the
         // repository
-        alfsession = RepositorySession.connect(ALFRESCO_CMIS_ATOMPUB_URL, ALFRESCO_CMIS_USER, ALFRESCO_CMIS_PASSWORD,
-                settings);
+        alfsession = RepositorySession
+                .connect(ALFRESCO_CMIS_ATOMPUB_URL, ALFRESCO_CMIS_USER, ALFRESCO_CMIS_PASSWORD, settings);
 
         // Check informations has been collected from repository
         Assert.assertNotNull(alfsession);
@@ -156,10 +155,10 @@ public class SessionTest extends AlfrescoSDKTestCase
 
     /**
      * Success test during creation of RepositorySession
-     * 
+     *
      * @Requirement 78S1, 78S2, 79S1, 80S1, 81S1, 82S1, 82S2, 82S3, 83S1, 84S1,
-     *              85S1, 85S2, 85S3, 85S4, 85S5, 85S6, 85S7, 85S8, 85S9, 86S1,
-     *              86S2, 86S3, 86S4, 86S5, 86S6, 86S7, 87F1, 87F2, 88S1, 89S3
+     * 85S1, 85S2, 85S3, 85S4, 85S5, 85S6, 85S7, 85S8, 85S9, 86S1,
+     * 86S2, 86S3, 86S4, 86S5, 86S6, 86S7, 87F1, 87F2, 88S1, 89S3
      */
     public void testRepositoryInformation()
     {
@@ -197,12 +196,16 @@ public class SessionTest extends AlfrescoSDKTestCase
         // /////////////////////
         Assert.assertNotNull(alfsession.getRepositoryInfo());
 
-        if (hasPublicAPI()){
+        if (hasPublicAPI())
+        {
             Assert.assertEquals("", alfsession.getRepositoryInfo().getName());
-        } else {
+        }
+        else
+        {
             Assert.assertEquals(ALFRESCO_CMIS_NAME, alfsession.getRepositoryInfo().getName());
         }
-        if (alfsession.getRepositoryInfo().getDescription() != null && !alfsession.getRepositoryInfo().getDescription().isEmpty())
+        if (alfsession.getRepositoryInfo().getDescription() != null &&
+                !alfsession.getRepositoryInfo().getDescription().isEmpty())
         {
             Assert.assertEquals(ALFRESCO_CMIS_NAME, alfsession.getRepositoryInfo().getDescription());
         }
@@ -237,7 +240,9 @@ public class SessionTest extends AlfrescoSDKTestCase
                 Assert.assertEquals(alfsession.getRepositoryInfo().getEdition(),
                         OnPremiseConstant.ALFRESCO_EDITION_COMMUNITY, alfsession.getRepositoryInfo().getEdition());
             }
-        } else {
+        }
+        else
+        {
             if (alfsession.getRepositoryInfo().getEdition().contains("Enterprise"))
             {
                 Assert.assertEquals(alfsession.getRepositoryInfo().getEdition(),
@@ -339,7 +344,9 @@ public class SessionTest extends AlfrescoSDKTestCase
         alfsession.addParameter("Key 2", 4);
         Assert.assertEquals(4, alfsession.getParameter("Key 2"));
 
+        //noinspection deprecation
         alfsession.addParameter("Key 3", new Date(2012, 12, 12));
+        //noinspection deprecation
         Assert.assertEquals(new Date(2012, 12, 12), alfsession.getParameter("Key 3"));
 
         alfsession.addParameter("Key 4", "");
@@ -375,7 +382,7 @@ public class SessionTest extends AlfrescoSDKTestCase
 
     /**
      * Failure test during creation of RepositorySession
-     * 
+     *
      * @Requirement 77F1, 77F2, 77F3, 77F4, 77F5, 77F6, 77F7, 77F8, 77F9
      */
     public void testFailureSessionCreation()

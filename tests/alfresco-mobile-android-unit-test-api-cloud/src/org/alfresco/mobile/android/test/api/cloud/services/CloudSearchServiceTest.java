@@ -1,7 +1,6 @@
 package org.alfresco.mobile.android.test.api.cloud.services;
 
 import junit.framework.Assert;
-
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.alfresco.mobile.android.test.api.services.SearchServiceTest;
@@ -13,7 +12,7 @@ public class CloudSearchServiceTest extends SearchServiceTest
         if (alfsession == null)
         {
             alfsession = createCloudSession();
-        }   
+        }
         // Check Services
         Assert.assertNotNull(alfsession.getServiceRegistry());
         searchService = alfsession.getServiceRegistry().getSearchService();
@@ -66,19 +65,20 @@ public class CloudSearchServiceTest extends SearchServiceTest
         quickSearch(
                 "SELECT d.* FROM cmis:document as d  JOIN cm:titled as t ON d.cmis:objectId = t.cmis:objectId WHERE d.cmis:name LIKE '%documentTestSearch%' OR UPPER(d.cmis:name) = 'DOCUMENTTESTSEARCH' OR CONTAINS(d,'cmis:name :\\\'\\*documentTestSearch\\*\\\'') ",
                 1);
-        
+
         //Access to fixed sample data informations
-        Folder f = (Folder) docfolderservice.getChildByPath(AlfrescoSDKTestCase.getSampleDataPath(alfsession) + "/" + SAMPLE_DATA_SEARCH_FOLDER);
+        Folder f = (Folder) docfolderservice
+                .getChildByPath(AlfrescoSDKTestCase.getSampleDataPath(alfsession) + "/" + SAMPLE_DATA_SEARCH_FOLDER);
         Assert.assertNotNull(f);
-        
+
         //quickSearch("SELECT * from cmis:document where IN_FOLDER('"+f.getIdentifier()+"')", 1);
         //quickSearch("SELECT * from cmis:document where IN_FOLDER('"+f.getIdentifier()+"') AND cmis:name = 'DOCUMENTTESTSEARCH'", 1);
 
-        
+
         /*KeywordSearchOptions options = new KeywordSearchOptions();
         options.setFolder(f);
         options.setIncludeDescendants(false);
-        
+
         String keywords = "documentTestSearch";
         List<Node> result = searchService.keywordSearch(keywords, options, null).getList();
         Assert.assertEquals(1, result.size());*/

@@ -1,32 +1,23 @@
 /*******************************************************************************
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.test.api.services;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import junit.framework.Assert;
-
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.constants.PublicAPIConstant;
 import org.alfresco.mobile.android.api.constants.WorkflowModel;
@@ -55,6 +46,14 @@ import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class WorkflowServiceTest extends AlfrescoSDKTestCase
 {
     protected WorkflowService workflowService;
@@ -65,7 +64,9 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
 
     protected static final String COMMENT_1 = "This is my comment!";
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     protected void initSession()
     {
         if (alfsession == null)
@@ -121,7 +122,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals(nbProcessDefinitions, pagingResult.getList().size());
         Assert.assertFalse(pagingResult.hasMoreItems());
 
-        ProcessDefinition def = null;
+        ProcessDefinition def;
         Map<String, Serializable> data;
         for (ProcessDefinition processDefinition : definitions)
         {
@@ -273,7 +274,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         Assert.assertNull(taskInProgress.getEndedAt());
         Assert.assertNotNull(taskInProgress.getDueAt());
         Assert.assertNotNull(taskInProgress.getDescription());
-        Assert.assertEquals(WorkflowModel.PRIORITY_HIGH, (int) taskInProgress.getPriority());
+        Assert.assertEquals(WorkflowModel.PRIORITY_HIGH, taskInProgress.getPriority());
         Assert.assertEquals(user.getIdentifier(), taskInProgress.getAssigneeIdentifier());
         Assert.assertNotNull(taskInProgress.getVariables());
         if (taskInProgress.hasAllVariables())
@@ -337,8 +338,8 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         // Completed first Task
         ListingContext lc = new ListingContext();
         ListingFilter lf = new ListingFilter();
-        PagingResult<Task> pagingTasks = null;
-        Task taskComplete = null;
+        PagingResult<Task> pagingTasks;
+        Task taskComplete;
         if (!hasPublicAPI())
         {
             lf.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_COMPLETE);
@@ -497,10 +498,10 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals(followingTask.getPriority(), taskCompleted.getPriority());
         Assert.assertEquals(followingTask.getAssigneeIdentifier(), taskCompleted.getAssigneeIdentifier());
         Assert.assertEquals(followingTask.getIdentifier(), taskCompleted.getIdentifier());
-        if (taskCompleted.hasAllVariables())
-        {
-            // Assert.assertNull(taskCompleted.getVariables().get(WorkflowModel.PROP_COMMENT));
-        }
+//        if (taskCompleted.hasAllVariables())
+//        {
+//            Assert.assertNull(taskCompleted.getVariables().get(WorkflowModel.PROP_COMMENT));
+//        }
 
         // Check the process is present
         try
@@ -579,7 +580,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         // Filter on status COMPLETED
         ListingContext lc = new ListingContext();
         ListingFilter lf = new ListingFilter();
-        PagingResult<Task> pagingTasks = null;
+        PagingResult<Task> pagingTasks;
         Task taskComplete = null;
         if (!hasPublicAPI())
         {
@@ -633,6 +634,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
             }
             else if (!hasPublicAPI())
             {
+                Assert.assertNotNull(taskComplete);
                 Assert.assertEquals(taskComplete.getIdentifier(), task.getIdentifier());
             }
         }
@@ -697,7 +699,10 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
      */
     public void testPooledWorkflow()
     {
-        if (!isOnPremise()) { return; }
+        if (!isOnPremise())
+        {
+            return;
+        }
 
         // Start Process : Prepare Variables
         Map<String, Serializable> variables = new HashMap<String, Serializable>();
@@ -797,8 +802,8 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         // Search unassigned task
         ListingContext lc = new ListingContext();
         ListingFilter lf = new ListingFilter();
-        PagingResult<Task> pagingTasks = null;
-        Task taskUnassigned = null;
+        PagingResult<Task> pagingTasks;
+        Task taskUnassigned;
         lf.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_ACTIVE);
         lf.addFilter(WorkflowService.FILTER_KEY_ASSIGNEE, WorkflowService.FILTER_ASSIGNEE_UNASSIGNED);
         lc.setFilter(lf);
@@ -846,8 +851,8 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
 
             // Reassign Task & check it's unassigned
             Person assignee = alfsession.getServiceRegistry().getPersonService().getPerson(getUsername(CONSUMER));
+            //noinspection UnusedAssignment
             Task reassignedTask = workflowService.reassignTask(unClaimedTask, assignee);
-
             reassignedTask = workflowService.getTask(unClaimedTask.getIdentifier());
 
             Assert.assertNotNull(reassignedTask);
@@ -891,7 +896,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(pagingTasks);
         Assert.assertEquals(1, pagingTasks.getTotalItems());
         Assert.assertEquals(pagingTasks.getList().size(), pagingTasks.getTotalItems());
-        Assert.assertTrue(taskCompleted.getIdentifier() != pagingTasks.getList().get(0).getIdentifier());
+        Assert.assertTrue(!taskCompleted.getIdentifier().equals(pagingTasks.getList().get(0).getIdentifier()));
         if (isAlfrescoV4() || hasPublicAPI())
         {
             Assert.assertEquals(WorkflowModel.TASK_REJECTED, pagingTasks.getList().get(0).getKey());
@@ -987,7 +992,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         // Filter on status COMPLETED
         ListingContext lc = new ListingContext();
         ListingFilter lf = new ListingFilter();
-        PagingResult<Task> pagingTasks = null;
+        PagingResult<Task> pagingTasks;
         Task taskComplete = null;
         if (!hasPublicAPI())
         {
@@ -1041,6 +1046,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
             }
             else if (!hasPublicAPI())
             {
+                Assert.assertNotNull(taskComplete);
                 Assert.assertEquals(taskComplete.getIdentifier(), task.getIdentifier());
             }
         }
@@ -1079,6 +1085,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
 
         // Complete next Task : Complete process
         // No active task
+        //noinspection UnusedAssignment
         taskCompleted = workflowService.completeTask(taskT, null);
         tasks = workflowService.getTasks(reviewProcess);
         Assert.assertNotNull(tasks);
@@ -1128,7 +1135,10 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
      */
     public void testParallelWorkflow()
     {
-        if (!isOnPremise()) { return; }
+        if (!isOnPremise())
+        {
+            return;
+        }
 
         // Start Process : Prepare Variables
         Map<String, Serializable> variables = new HashMap<String, Serializable>();
@@ -1159,10 +1169,10 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         // SPECIFIC data for parallel workflow
         Person user = alfsession.getServiceRegistry().getPersonService().getPerson(alfsession.getPersonIdentifier());
         Person assigneeConsumer = alfsession.getServiceRegistry().getPersonService().getPerson(getUsername(CONSUMER));
-        Person assigneeContributor = alfsession.getServiceRegistry().getPersonService()
-                .getPerson(getUsername(CONTRIBUTOR));
-        Person assigneeCollaborator = alfsession.getServiceRegistry().getPersonService()
-                .getPerson(getUsername(COLLABORATOR));
+        Person assigneeContributor =
+                alfsession.getServiceRegistry().getPersonService().getPerson(getUsername(CONTRIBUTOR));
+        Person assigneeCollaborator =
+                alfsession.getServiceRegistry().getPersonService().getPerson(getUsername(COLLABORATOR));
         List<Person> users = new ArrayList<Person>();
         users.add(user);
         users.add(assigneeConsumer);
@@ -1249,6 +1259,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
                 tmpSession = createSession(COLLABORATOR, COLLABORATOR_PASSWORD, null);
             }
             variables.put(WorkflowModel.PROP_REVIEW_OUTCOME, WorkflowModel.TRANSITION_REJECT);
+            Assert.assertNotNull(tmpSession);
             tmpSession.getServiceRegistry().getWorkflowService().completeTask(task, variables);
         }
 
@@ -1288,7 +1299,8 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
     // ////////////////////////////////////////////////////////////////////////////////////
     // UTILS
     // ////////////////////////////////////////////////////////////////////////////////////
-    protected static final String URL_PERSON_GUID = "api/forms/picker/authority/children?selectableType=cm:authorityContainer&searchTerm={group}&size=1";
+    protected static final String URL_PERSON_GUID =
+            "api/forms/picker/authority/children?selectableType=cm:authorityContainer&searchTerm={group}&size=1";
 
     protected static String getGroupGUIDUrl(AlfrescoSession session, String groupName)
     {
@@ -1304,8 +1316,8 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
         {
             String url = getGroupGUIDUrl(alfsession, groupName);
             UrlBuilder builder = new UrlBuilder(url);
-            Response resp = NetworkHttpInvoker.invokeGET(builder, ((AbstractAlfrescoSessionImpl) alfsession)
-                    .getAuthenticationProvider().getHTTPHeaders());
+            Response resp = NetworkHttpInvoker.invokeGET(builder,
+                    ((AbstractAlfrescoSessionImpl) alfsession).getAuthenticationProvider().getHTTPHeaders());
 
             Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
             if (json != null)
@@ -1318,7 +1330,7 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
                 }
             }
         }
-        catch (Exception e)
+        catch (Exception ignored)
         {
 
         }
@@ -1327,33 +1339,69 @@ public class WorkflowServiceTest extends AlfrescoSDKTestCase
 
     protected String getAdHocWorkflowkey()
     {
-        if (hasPublicAPI()) { return WorkflowModel.KEY_ADHOC_PUBLIC_API; }
-        if (isAlfrescoV4()) { return WorkflowModel.KEY_ADHOC_ACTIVITI; }
-        if (isOnPremise()) { return WorkflowModel.KEY_ADHOC_JBPM; }
+        if (hasPublicAPI())
+        {
+            return WorkflowModel.KEY_ADHOC_PUBLIC_API;
+        }
+        if (isAlfrescoV4())
+        {
+            return WorkflowModel.KEY_ADHOC_ACTIVITI;
+        }
+        if (isOnPremise())
+        {
+            return WorkflowModel.KEY_ADHOC_JBPM;
+        }
         return WorkflowModel.KEY_ADHOC_PUBLIC_API;
     }
 
     protected String getPoolWorkflowkey()
     {
-        if (hasPublicAPI()) { return WorkflowModel.KEY_POOLED_REVIEW_KEY_PUBLIC_API; }
-        if (isAlfrescoV4()) { return WorkflowModel.KEY_POOLED_REVIEW_ACTIVITI; }
-        if (isOnPremise()) { return WorkflowModel.KEY_POOLED_REVIEW_JBPM; }
+        if (hasPublicAPI())
+        {
+            return WorkflowModel.KEY_POOLED_REVIEW_KEY_PUBLIC_API;
+        }
+        if (isAlfrescoV4())
+        {
+            return WorkflowModel.KEY_POOLED_REVIEW_ACTIVITI;
+        }
+        if (isOnPremise())
+        {
+            return WorkflowModel.KEY_POOLED_REVIEW_JBPM;
+        }
         return WorkflowModel.KEY_POOLED_REVIEW_KEY_PUBLIC_API;
     }
 
     protected String getReviewProcessKey()
     {
-        if (hasPublicAPI()) { return WorkflowModel.KEY_REVIEW_PUBLIC_API; }
-        if (isAlfrescoV4()) { return WorkflowModel.KEY_REVIEW_ACTIVITI; }
-        if (isOnPremise()) { return WorkflowModel.KEY_REVIEW_JBPM; }
+        if (hasPublicAPI())
+        {
+            return WorkflowModel.KEY_REVIEW_PUBLIC_API;
+        }
+        if (isAlfrescoV4())
+        {
+            return WorkflowModel.KEY_REVIEW_ACTIVITI;
+        }
+        if (isOnPremise())
+        {
+            return WorkflowModel.KEY_REVIEW_JBPM;
+        }
         return WorkflowModel.KEY_REVIEW_PUBLIC_API;
     }
 
     protected String getParellelReviewWorkflowkey()
     {
-        if (hasPublicAPI()) { return WorkflowModel.KEY_PARALLEL_REVIEW_PUBLIC_API; }
-        if (isAlfrescoV4()) { return WorkflowModel.KEY_PARALLEL_REVIEW_ACTIVITI; }
-        if (isOnPremise()) { return WorkflowModel.KEY_PARALLEL_REVIEW_JBPM; }
+        if (hasPublicAPI())
+        {
+            return WorkflowModel.KEY_PARALLEL_REVIEW_PUBLIC_API;
+        }
+        if (isAlfrescoV4())
+        {
+            return WorkflowModel.KEY_PARALLEL_REVIEW_ACTIVITI;
+        }
+        if (isOnPremise())
+        {
+            return WorkflowModel.KEY_PARALLEL_REVIEW_JBPM;
+        }
         return WorkflowModel.KEY_PARALLEL_REVIEW_PUBLIC_API;
     }
 

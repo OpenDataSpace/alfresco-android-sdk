@@ -1,21 +1,37 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.test.api.model;
+
+import junit.framework.Assert;
+import org.alfresco.mobile.android.api.constants.ContentModel;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
+import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.model.Permissions;
+import org.alfresco.mobile.android.api.services.DocumentFolderService;
+import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.utils.NodeRefUtils;
+import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
+import org.apache.chemistry.opencmis.commons.PropertyIds;
+import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -26,28 +42,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.Assert;
-
-import org.alfresco.mobile.android.api.constants.ContentModel;
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
-import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
-import org.alfresco.mobile.android.api.model.Document;
-import org.alfresco.mobile.android.api.model.Folder;
-import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.model.Permissions;
-import org.alfresco.mobile.android.api.model.Site;
-import org.alfresco.mobile.android.api.services.DocumentFolderService;
-import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
-import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.api.utils.NodeRefUtils;
-import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
-import org.apache.chemistry.opencmis.client.api.ObjectType;
-import org.apache.chemistry.opencmis.commons.PropertyIds;
-import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
-
 /**
  * Test class for Folder Object.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class FolderTest extends AlfrescoSDKTestCase
@@ -69,8 +66,8 @@ public class FolderTest extends AlfrescoSDKTestCase
 
     /**
      * Test to create a folder. (Check properties, aspects and method)
-     * 
-     * @Requirement  32F4, 32S1, 32S2, 32S3, 32S4, 32S5, 32S6, 32S9
+     *
+     * @Requirement 32F4, 32S1, 32S2, 32S3, 32S4, 32S5, 32S6, 32S9
      */
     public void testFolderMethod()
     {
@@ -90,7 +87,8 @@ public class FolderTest extends AlfrescoSDKTestCase
         // Type
         Assert.assertNotNull(folder.getType());
         Assert.assertEquals(ContentModel.TYPE_FOLDER, folder.getType());
-        Assert.assertEquals(BaseTypeId.CMIS_FOLDER.value(), folder.getProperty(PropertyIds.OBJECT_TYPE_ID).getValue().toString());
+        Assert.assertEquals(BaseTypeId.CMIS_FOLDER.value(),
+                folder.getProperty(PropertyIds.OBJECT_TYPE_ID).getValue().toString());
 
 
         // Check Properties Methods
@@ -104,16 +102,16 @@ public class FolderTest extends AlfrescoSDKTestCase
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME, folder.getProperty(ContentModel.PROP_NAME).getValue().toString());
 
         Assert.assertEquals(alfsession.getPersonIdentifier(), folder.getCreatedBy());
-        Assert.assertEquals(alfsession.getPersonIdentifier(), folder.getProperty(PropertyIds.CREATED_BY).getValue()
-                .toString());
-        Assert.assertEquals(alfsession.getPersonIdentifier(), folder.getProperty(ContentModel.PROP_CREATOR).getValue()
-                .toString());
+        Assert.assertEquals(alfsession.getPersonIdentifier(),
+                folder.getProperty(PropertyIds.CREATED_BY).getValue().toString());
+        Assert.assertEquals(alfsession.getPersonIdentifier(),
+                folder.getProperty(ContentModel.PROP_CREATOR).getValue().toString());
 
         Assert.assertEquals(alfsession.getPersonIdentifier(), folder.getModifiedBy());
-        Assert.assertEquals(alfsession.getPersonIdentifier(), folder.getProperty(PropertyIds.LAST_MODIFIED_BY)
-                .getValue().toString());
-        Assert.assertEquals(alfsession.getPersonIdentifier(), folder.getProperty(ContentModel.PROP_MODIFIER).getValue()
-                .toString());
+        Assert.assertEquals(alfsession.getPersonIdentifier(),
+                folder.getProperty(PropertyIds.LAST_MODIFIED_BY).getValue().toString());
+        Assert.assertEquals(alfsession.getPersonIdentifier(),
+                folder.getProperty(ContentModel.PROP_MODIFIER).getValue().toString());
 
         Assert.assertNotNull(folder.getCreatedAt());
         Assert.assertNotNull(folder.getModifiedBy());
@@ -214,7 +212,7 @@ public class FolderTest extends AlfrescoSDKTestCase
         Assert.assertNotNull(tmpfolder);
         Assert.assertEquals("007", tmpfolder.getName());
         docfolderservice.deleteNode(tmpfolder);
-        
+
         tmpfolder = docfolderservice.createFolder(folder, "007^", null);
         Assert.assertNotNull(tmpfolder);
         Assert.assertEquals("007^", tmpfolder.getName());
@@ -224,47 +222,49 @@ public class FolderTest extends AlfrescoSDKTestCase
         docfolderservice.deleteNode(childFolder);
         nodes = docfolderservice.getChildren(folder);
         Assert.assertEquals(0, nodes.size());
-        
-        
+
+
         //17S4
         //Public Site user is member
         //We retrieve the folder (site) object
         AlfrescoSession session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
-        
+
         Node node = docfolderservice.getChildByPath(getSitePath(session));
-        Node siteNode = session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(node.getIdentifier());
-        
+        Node siteNode =
+                session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(node.getIdentifier());
+
         Assert.assertEquals(siteNode.getIdentifier(), node.getIdentifier());
         Assert.assertEquals(siteNode.getName(), node.getName());
         Assert.assertFalse(ContentModel.TYPE_FOLDER.equals(siteNode.getType()));
         Assert.assertFalse("cm:site".equals(siteNode.getType()));
         Assert.assertTrue(siteNode.isFolder());
         Assert.assertFalse(siteNode.isDocument());
-        
+
         //Moderated Site user is not member
         siteNode = session.getServiceRegistry().getDocumentFolderService().getChildByPath(getSitePath(MODERATED_SITE));
         Assert.assertFalse(ContentModel.TYPE_FOLDER.equals(siteNode.getType()));
         Assert.assertFalse("cm:site".equals(siteNode.getType()));
         Assert.assertTrue(siteNode.isFolder());
         Assert.assertFalse(siteNode.isDocument());
-        
+
         //Private site, user is not member
         //Returns you don't have right
         try
         {
-            node = session.getServiceRegistry().getDocumentFolderService().getChildByPath(getSitePath(PRIVATE_SITE));
+            session.getServiceRegistry().getDocumentFolderService().getChildByPath(getSitePath(PRIVATE_SITE));
             Assert.fail();
         }
         catch (AlfrescoServiceException e)
         {
             Assert.assertEquals(ErrorCodeRegistry.GENERAL_ACCESS_DENIED, e.getErrorCode());
         }
-        
+
         //32F14
         GregorianCalendar gc = new GregorianCalendar();
         gc.setTime(new Date());
         HashMap<String, Serializable> props = new HashMap<String, Serializable>();
         props.clear();
+        //noinspection deprecation
         props.put(PropertyIds.CREATION_DATE, new Date(2000, 1, 1));
         Folder folderUp = docfolderservice.createFolder(folder, "Hello", props);
         GregorianCalendar gc2 = folderUp.getPropertyValue(PropertyIds.CREATION_DATE);
@@ -275,29 +275,32 @@ public class FolderTest extends AlfrescoSDKTestCase
 
         // 32S3
         AlfrescoSession sessionCollaborator = createSession(COLLABORATOR, COLLABORATOR_PASSWORD, null);
-        folderUp = sessionCollaborator.getServiceRegistry().getDocumentFolderService().createFolder(folder, FOREIGN_CHARACTER, props);
+        folderUp = sessionCollaborator.getServiceRegistry().getDocumentFolderService()
+                .createFolder(folder, FOREIGN_CHARACTER, props);
         Assert.assertNotNull(folderUp);
         Assert.assertEquals(FOREIGN_CHARACTER, folderUp.getName());
         Assert.assertTrue(siteNode.isFolder());
         Assert.assertFalse(siteNode.isDocument());
         sessionCollaborator.getServiceRegistry().getDocumentFolderService().deleteNode(folderUp);
-        
+
         // 32S4
-        folderUp = sessionCollaborator.getServiceRegistry().getDocumentFolderService().createFolder(folder, FOREIGN_CHARACTER_DOUBLE_BYTE, props);
+        folderUp = sessionCollaborator.getServiceRegistry().getDocumentFolderService()
+                .createFolder(folder, FOREIGN_CHARACTER_DOUBLE_BYTE, props);
         Assert.assertNotNull(folderUp);
         Assert.assertEquals(FOREIGN_CHARACTER_DOUBLE_BYTE, folderUp.getName());
         Assert.assertTrue(siteNode.isFolder());
         Assert.assertFalse(siteNode.isDocument());
         sessionCollaborator.getServiceRegistry().getDocumentFolderService().deleteNode(folderUp);
-        
+
         // 32S9
-        folderUp = sessionCollaborator.getServiceRegistry().getDocumentFolderService().createFolder(folder, FOREIGN_CHARACTER_DOUBLE_BYTE, null);
+        folderUp = sessionCollaborator.getServiceRegistry().getDocumentFolderService()
+                .createFolder(folder, FOREIGN_CHARACTER_DOUBLE_BYTE, null);
         Assert.assertNotNull(folderUp);
         Assert.assertEquals(FOREIGN_CHARACTER_DOUBLE_BYTE, folderUp.getName());
         Assert.assertTrue(siteNode.isFolder());
         Assert.assertFalse(siteNode.isDocument());
         sessionCollaborator.getServiceRegistry().getDocumentFolderService().deleteNode(folderUp);
-        
+
     }
 
     /**
@@ -308,8 +311,8 @@ public class FolderTest extends AlfrescoSDKTestCase
     {
 
         // Manager & owner
-        Folder permissionFolder = (Folder) docfolderservice.getChildByPath(getSampleDataPath(alfsession) + "/"
-                + SAMPLE_DATA_PERMISSIONS_FOLDER);
+        Folder permissionFolder = (Folder) docfolderservice
+                .getChildByPath(getSampleDataPath(alfsession) + "/" + SAMPLE_DATA_PERMISSIONS_FOLDER);
         Permissions permissions = docfolderservice.getPermissions(permissionFolder);
         Assert.assertTrue(permissions.canAddChildren());
         Assert.assertTrue(permissions.canComment());
@@ -371,18 +374,22 @@ public class FolderTest extends AlfrescoSDKTestCase
 
         // Check Aspects
         Assert.assertNotNull(folder.getAspects());
-        
+
         //Check getAspects results don't start with a P:
         List<String> aspects = folder.getAspects();
         for (String aspect : aspects)
         {
-            Assert.assertFalse("P: present in aspect " + aspect, aspect.startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_ASPECTS));
+            Assert.assertFalse("P: present in aspect " + aspect,
+                    aspect.startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_ASPECTS));
         }
 
         // Titled + Localized + Geographic
         // Localized depends on alfresco version (3.4 no, >4 ok)
         int totalAspects = 2;
-        if (folder.hasAspect(ContentModel.ASPECT_LOCALIZED)){ totalAspects += 1;}
+        if (folder.hasAspect(ContentModel.ASPECT_LOCALIZED))
+        {
+            totalAspects += 1;
+        }
         Assert.assertEquals(totalAspects, folder.getAspects().size());
         Assert.assertTrue(folder.hasAspect(ContentModel.ASPECT_TITLED));
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME, folder.getTitle());

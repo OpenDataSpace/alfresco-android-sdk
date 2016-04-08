@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -50,6 +50,7 @@ import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListen
 import org.alfresco.mobile.android.ui.manager.ActionManager;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -361,7 +362,7 @@ public class ChildrenFragment extends NavigationFragment
         if (loadState == LOAD_MANUAL)
         {
             LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            final View footer = inflater.inflate(R.layout.sdk_list_loading, null, false);
+            @SuppressLint("InflateParams") final View footer = inflater.inflate(R.layout.sdk_list_loading, null, false);
             footer.findViewById(R.id.loading_progress).setVisibility(View.GONE);
             footer.findViewById(R.id.loading_label).setVisibility(View.GONE);
             Button b = (Button) footer.findViewById(R.id.loading_button);

@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -35,10 +35,6 @@
  */
 package org.alfresco.mobile.android.test.opencmis.client.bindings.frameworks;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.data.ObjectData;
@@ -50,6 +46,11 @@ import org.apache.chemistry.opencmis.commons.enums.UnfileObject;
 import org.apache.chemistry.opencmis.commons.enums.VersioningState;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisNotSupportedException;
 import org.apache.chemistry.opencmis.commons.spi.Holder;
+import org.junit.Assert;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Simple read-write test.
@@ -81,7 +82,6 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase
 
     private static final String CONTENT_TYPE = "text/plain";
 
-    @Override
     protected void initSession()
     {
     }
@@ -91,13 +91,17 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase
      */
     public void testCreateFolder()
     {
-        if (!isEnabled(TEST_CREATE_FOLDER)) { return; }
+        if (!isEnabled(TEST_CREATE_FOLDER))
+        {
+            return;
+        }
 
         // timestamp
 
         // create folder
         List<PropertyData<?>> propList = new ArrayList<PropertyData<?>>();
-        propList.add(getObjectFactory().createPropertyStringData(PropertyIds.NAME, "testfolder" + new Date().getTime()));
+        propList.add(
+                getObjectFactory().createPropertyStringData(PropertyIds.NAME, "testfolder" + new Date().getTime()));
         propList.add(getObjectFactory().createPropertyIdData(PropertyIds.OBJECT_TYPE_ID, getDefaultFolderType()));
 
         Properties properties = getObjectFactory().createPropertiesData(propList);
@@ -113,14 +117,17 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase
      */
     public void testCreateDocument() throws Exception
     {
-        if (!isEnabled(TEST_CREATE_DOCUMENT)) { return; }
+        if (!isEnabled(TEST_CREATE_DOCUMENT))
+        {
+            return;
+        }
 
         VersioningState vs = (isVersionable(getDefaultDocumentType()) ? VersioningState.MAJOR : VersioningState.NONE);
 
         // create document
         List<PropertyData<?>> propList = new ArrayList<PropertyData<?>>();
-        propList.add(getObjectFactory().createPropertyStringData(PropertyIds.NAME,
-                "testdoc" + new Date().getTime() + ".txt"));
+        propList.add(getObjectFactory()
+                .createPropertyStringData(PropertyIds.NAME, "testdoc" + new Date().getTime() + ".txt"));
         propList.add(getObjectFactory().createPropertyIdData(PropertyIds.OBJECT_TYPE_ID, getDefaultDocumentType()));
 
         Properties properties = getObjectFactory().createPropertiesData(propList);
@@ -134,7 +141,7 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase
         assertMimeType(CONTENT_TYPE, contentStream2.getMimeType());
         if (contentStream2.getBigLength() != null)
         {
-            assertEquals(CONTENT.length, contentStream2.getBigLength().intValue());
+            Assert.assertEquals(CONTENT.length, contentStream2.getBigLength().intValue());
         }
 
         byte[] content = readContent(contentStream2);
@@ -165,7 +172,10 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase
      */
     public void testCreateDocumentFromSource() throws Exception
     {
-        if (!isEnabled(TEST_CREATE_FROM_SOURCE)) { return; }
+        if (!isEnabled(TEST_CREATE_FROM_SOURCE))
+        {
+            return;
+        }
 
         VersioningState vs = (isVersionable(getDefaultDocumentType()) ? VersioningState.MAJOR : VersioningState.NONE);
 
@@ -187,8 +197,8 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase
         ContentStream contentStream2 = getContent(docId, null);
         ContentStream contentStream3 = getContent(docId2, null);
 
-        assertEquals(contentStream2.getMimeType(), contentStream3.getMimeType());
-        assertEquals(contentStream2.getBigLength(), contentStream3.getBigLength());
+        Assert.assertEquals(contentStream2.getMimeType(), contentStream3.getMimeType());
+        Assert.assertEquals(contentStream2.getBigLength(), contentStream3.getBigLength());
 
         byte[] content2 = readContent(contentStream2);
         byte[] content3 = readContent(contentStream3);
@@ -204,9 +214,13 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase
      */
     public void testSetAndDeleteContent() throws Exception
     {
-        if (!isEnabled(TEST_SET_AND_DELETE_CONTENT)) { return; }
+        if (!isEnabled(TEST_SET_AND_DELETE_CONTENT))
+        {
+            return;
+        }
 
-        boolean requiresCheckOut = getRepositoryInfo().getCapabilities().getContentStreamUpdatesCapability() == CapabilityContentStreamUpdates.PWCONLY;
+        boolean requiresCheckOut = getRepositoryInfo().getCapabilities().getContentStreamUpdatesCapability() ==
+                CapabilityContentStreamUpdates.PWCONLY;
 
         boolean isVersionable = isVersionable(getDefaultDocumentType());
 
@@ -244,8 +258,8 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase
         ContentStream contentStream2 = createContentStreamData(CONTENT_TYPE, CONTENT2);
 
         docIdHolder = new Holder<String>(docIdWorkingCopy);
-        getBinding().getObjectService().setContentStream(getTestRepositoryId(), docIdHolder, true, null,
-                contentStream2, null);
+        getBinding().getObjectService()
+                .setContentStream(getTestRepositoryId(), docIdHolder, true, null, contentStream2, null);
 
         // read and assert content
         String newVersionDocId = (docIdHolder.getValue() == null ? docIdWorkingCopy : docIdHolder.getValue());
@@ -253,7 +267,7 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase
         assertMimeType(CONTENT_TYPE, contentStream3.getMimeType());
         if (contentStream3.getBigLength() != null)
         {
-            assertEquals(CONTENT2.length, contentStream3.getBigLength().intValue());
+            Assert.assertEquals(CONTENT2.length, contentStream3.getBigLength().intValue());
         }
 
         byte[] content = readContent(contentStream3);
@@ -274,7 +288,10 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase
      */
     public void testUpdateProperties()
     {
-        if (!isEnabled(TEST_UPDATE_PROPERTIES)) { return; }
+        if (!isEnabled(TEST_UPDATE_PROPERTIES))
+        {
+            return;
+        }
 
         String name1 = "updateTest1.txt";
         String name2 = "updateTest2.txt";
@@ -289,17 +306,17 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase
         Properties updateProperties = getObjectFactory().createPropertiesData(updatePropList);
 
         Holder<String> docIdHolder = new Holder<String>(docId);
-        getBinding().getObjectService().updateProperties(getTestRepositoryId(), docIdHolder, null, updateProperties,
-                null);
+        getBinding().getObjectService()
+                .updateProperties(getTestRepositoryId(), docIdHolder, null, updateProperties, null);
 
         // get new id and check name property
         docId = docIdHolder.getValue();
 
         ObjectData updatedObject = getObject(docId);
-        String updatedName = (String) updatedObject.getProperties().getProperties().get(PropertyIds.NAME)
-                .getFirstValue();
-        assertNotNull(updatedName);
-        assertEquals(name2, updatedName);
+        String updatedName =
+                (String) updatedObject.getProperties().getProperties().get(PropertyIds.NAME).getFirstValue();
+        Assert.assertNotNull(updatedName);
+        Assert.assertEquals(name2, updatedName);
 
         // delete document
         delete(docId, true);
@@ -310,7 +327,10 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase
      */
     public void testDeleteTree()
     {
-        if (!isEnabled(TEST_DELETE_TREE)) { return; }
+        if (!isEnabled(TEST_DELETE_TREE))
+        {
+            return;
+        }
 
         // create a folder tree
         String folder1 = createDefaultFolder(getTestRootFolder(), "folder1");
@@ -324,16 +344,16 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase
         String doc1221 = createDefaultDocument(folder122, "doc1221.txt", CONTENT_TYPE, CONTENT2);
 
         // delete the tree
-        getBinding().getObjectService().deleteTree(getTestRepositoryId(), folder1, Boolean.TRUE, UnfileObject.DELETE,
-                Boolean.TRUE, null);
+        getBinding().getObjectService()
+                .deleteTree(getTestRepositoryId(), folder1, Boolean.TRUE, UnfileObject.DELETE, Boolean.TRUE, null);
 
-        assertFalse(existsObject(folder1));
-        assertFalse(existsObject(folder11));
-        assertFalse(existsObject(folder12));
-        assertFalse(existsObject(folder121));
-        assertFalse(existsObject(folder122));
-        assertFalse(existsObject(doc111));
-        assertFalse(existsObject(doc1221));
+        Assert.assertFalse(existsObject(folder1));
+        Assert.assertFalse(existsObject(folder11));
+        Assert.assertFalse(existsObject(folder12));
+        Assert.assertFalse(existsObject(folder121));
+        Assert.assertFalse(existsObject(folder122));
+        Assert.assertFalse(existsObject(doc111));
+        Assert.assertFalse(existsObject(doc1221));
     }
 
     /**
@@ -341,7 +361,10 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase
      */
     public void testMoveObject()
     {
-        if (!isEnabled(TEST_MOVE_OBJECT)) { return; }
+        if (!isEnabled(TEST_MOVE_OBJECT))
+        {
+            return;
+        }
 
         // create folders
         String folder1 = createDefaultFolder(getTestRootFolder(), "folder1");
@@ -353,9 +376,9 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase
         // move it
         Holder<String> docIdHolder = new Holder<String>(docId);
         getBinding().getObjectService().moveObject(getTestRepositoryId(), docIdHolder, folder2, folder1, null);
-        assertNotNull(docIdHolder.getValue());
+        Assert.assertNotNull(docIdHolder.getValue());
 
-        assertTrue(existsObject(docIdHolder.getValue()));
+        Assert.assertTrue(existsObject(docIdHolder.getValue()));
         getChild(folder2, docIdHolder.getValue());
 
         deleteTree(folder1);
@@ -367,7 +390,10 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase
      */
     public void testCopyObject()
     {
-        if (!isEnabled(TEST_COPY_OBJECT)) { return; }
+        if (!isEnabled(TEST_COPY_OBJECT))
+        {
+            return;
+        }
 
         // create folders
         String folder1 = createDefaultFolder(getTestRootFolder(), "folder1");
@@ -381,15 +407,16 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase
         updatePropList.add(getObjectFactory().createPropertyStringData(PropertyIds.NAME, "newdocname"));
         Properties updateProperties = getObjectFactory().createPropertiesData(updatePropList);
 
-        String copyId = getBinding().getObjectService().createDocumentFromSource(getTestRepositoryId(), docId,
-                updateProperties, folder2, null, null, null, null, null);
-        assertNotNull(copyId);
+        String copyId = getBinding().getObjectService()
+                .createDocumentFromSource(getTestRepositoryId(), docId, updateProperties, folder2, null, null, null,
+                        null, null);
+        Assert.assertNotNull(copyId);
 
-        assertTrue(existsObject(copyId));
+        Assert.assertTrue(existsObject(copyId));
         ObjectInFolderData copy = getChild(folder2, copyId);
-        String updatedName = (String) copy.getObject().getProperties().getProperties().get(PropertyIds.NAME)
-                .getFirstValue();
-        assertEquals("newdocname", updatedName);
+        String updatedName =
+                (String) copy.getObject().getProperties().getProperties().get(PropertyIds.NAME).getFirstValue();
+        Assert.assertEquals("newdocname", updatedName);
 
         deleteTree(folder1);
         deleteTree(folder2);
@@ -400,7 +427,10 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase
      */
     public void testVersioning()
     {
-        if (!isEnabled(TEST_VERSIONING)) { return; }
+        if (!isEnabled(TEST_VERSIONING))
+        {
+            return;
+        }
 
         if (!isVersionable(getDefaultDocumentType()))
         {
@@ -412,12 +442,12 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase
         String docId = createDefaultDocument(getTestRootFolder(), "versionTest.txt", CONTENT_TYPE, CONTENT);
 
         // there must be only one version in the version series
-        List<ObjectData> allVersions = getBinding().getVersioningService().getAllVersions(getTestRepositoryId(), docId,
-                getVersionSeriesId(docId), "*", Boolean.FALSE, null);
-        assertNotNull(allVersions);
-        assertEquals(1, allVersions.size());
+        List<ObjectData> allVersions = getBinding().getVersioningService()
+                .getAllVersions(getTestRepositoryId(), docId, getVersionSeriesId(docId), "*", Boolean.FALSE, null);
+        Assert.assertNotNull(allVersions);
+        Assert.assertEquals(1, allVersions.size());
 
-        assertEquals(docId, allVersions.get(0).getId());
+        Assert.assertEquals(docId, allVersions.get(0).getId());
 
         // check out
         Holder<String> versionIdHolder = new Holder<String>(docId);
@@ -425,13 +455,13 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase
         String versionId = versionIdHolder.getValue();
 
         // object must be marked as checked out
-        assertTrue(isCheckedOut(docId));
+        Assert.assertTrue(isCheckedOut(docId));
 
         // cancel check out
         getBinding().getVersioningService().cancelCheckOut(getTestRepositoryId(), versionId, null);
 
         // object must NOT be marked as checked out
-        assertFalse(isCheckedOut(docId));
+        Assert.assertFalse(isCheckedOut(docId));
 
         // check out again
         versionIdHolder.setValue(docId);
@@ -439,21 +469,22 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase
         versionId = versionIdHolder.getValue();
 
         // object must be marked as checked out
-        assertTrue(isCheckedOut(docId));
+        Assert.assertTrue(isCheckedOut(docId));
 
         versionIdHolder.setValue(versionId);
-        getBinding().getVersioningService().checkIn(getTestRepositoryId(), versionIdHolder, Boolean.TRUE, null, null,
-                "Test Version 2", null, null, null, null);
+        getBinding().getVersioningService()
+                .checkIn(getTestRepositoryId(), versionIdHolder, Boolean.TRUE, null, null, "Test Version 2", null, null,
+                        null, null);
         docId = versionIdHolder.getValue();
 
         // object must NOT be marked as checked out
-        assertFalse(isCheckedOut(docId));
+        Assert.assertFalse(isCheckedOut(docId));
 
         // there must be exactly two versions in the version series
-        allVersions = getBinding().getVersioningService().getAllVersions(getTestRepositoryId(), docId,
-                getVersionSeriesId(docId), "*", Boolean.FALSE, null);
-        assertNotNull(allVersions);
-        assertEquals(2, allVersions.size());
+        allVersions = getBinding().getVersioningService()
+                .getAllVersions(getTestRepositoryId(), docId, getVersionSeriesId(docId), "*", Boolean.FALSE, null);
+        Assert.assertNotNull(allVersions);
+        Assert.assertEquals(2, allVersions.size());
 
         // delete document
         delete(docId, true);
@@ -462,11 +493,11 @@ public abstract class AbstractSimpleReadWriteTests extends AbstractCmisTestCase
     private boolean isCheckedOut(String docId)
     {
         ObjectData object = getObject(docId);
-        PropertyData<?> isCheckedOut = object.getProperties().getProperties()
-                .get(PropertyIds.IS_VERSION_SERIES_CHECKED_OUT);
-        assertNotNull(isCheckedOut);
-        assertTrue(isCheckedOut.getFirstValue() instanceof Boolean);
+        PropertyData<?> isCheckedOut =
+                object.getProperties().getProperties().get(PropertyIds.IS_VERSION_SERIES_CHECKED_OUT);
+        Assert.assertNotNull(isCheckedOut);
+        Assert.assertTrue(isCheckedOut.getFirstValue() instanceof Boolean);
 
-        return ((Boolean) isCheckedOut.getFirstValue()).booleanValue();
+        return (Boolean) isCheckedOut.getFirstValue();
     }
 }

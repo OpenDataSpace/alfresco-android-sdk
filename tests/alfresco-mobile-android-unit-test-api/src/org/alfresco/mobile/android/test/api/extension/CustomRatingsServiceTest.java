@@ -1,28 +1,25 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.test.api.extension;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import android.util.Log;
 
 import junit.framework.Assert;
-
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.model.Folder;
@@ -33,12 +30,14 @@ import org.alfresco.mobile.android.extension.api.services.CustomRatingsService;
 import org.alfresco.mobile.android.extension.api.services.impl.CustomRatingsServiceImpl;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
-import android.util.Log;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CustomRatingsServiceTest extends AlfrescoSDKTestCase
 {
 
-    private static final String TAG = "CustomRatingsServiceTest";
+    private static final String TAG = "CusRatingsServiceTest";
 
     private static final String STAR_FOLDER = "5StarServiceTestFolder";
 
@@ -96,7 +95,7 @@ public class CustomRatingsServiceTest extends AlfrescoSDKTestCase
 
     /**
      * Simple test to check Services Extension point
-     * 
+     *
      * @throws AlfrescoSessionException
      */
     public void testServicesExtension()

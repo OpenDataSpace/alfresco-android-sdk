@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,14 +37,13 @@ import org.alfresco.mobile.android.api.model.impl.CommentImpl;
 import org.alfresco.mobile.android.api.services.CommentService;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
 /**
  * Test class for CommentService. This test requires an Alfresco session and the
  * Sample Data 'Cloud folder"
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class CommentServiceTest extends AlfrescoSDKTestCase
@@ -80,7 +79,7 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
 
     /**
      * All Tests for CommentService public methods which don't create an error.
-     * 
+     *
      * @Requirement 7S1, 7S2, 7S4, 7S6, 7S7, 9S1, 9S3, 9S4, 9S5, 9S6, 10F3,
      *              10S1, 10S2, 10S3, 10S4, 11S1, 11S2
      */
@@ -264,7 +263,7 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
     /**
      * All Tests for CommentService public listing methods which don't create an
      * error.
-     * 
+     *
      * @Requirement 8F3, 8F4, 8F5, 8F6, 8S1, 8S2, 8S4, 8S10, 8S11, 8S12
      */
     public void testPagingCommentService()
@@ -495,7 +494,7 @@ public class CommentServiceTest extends AlfrescoSDKTestCase
     // //////////////////////////////////////////////////////////////////////
     /**
      * All Tests for CommentsService public methods which create an error.
-     * 
+     *
      * @Requirement 7F1, 7F2, 8F1, 8F2, 9F1, 9F4, 10F1, 11F1
      */
     public void testCommentsMethodsError()

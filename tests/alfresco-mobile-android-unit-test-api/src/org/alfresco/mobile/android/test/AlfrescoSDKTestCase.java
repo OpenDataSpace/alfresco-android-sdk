@@ -1,36 +1,28 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.test;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.test.InstrumentationTestCase;
+import android.util.Log;
 
 import junit.framework.Assert;
-
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoException;
@@ -53,10 +45,17 @@ import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.test.InstrumentationTestCase;
-import android.util.Log;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implements ServerConfiguration, TestConstant
 {
@@ -112,10 +111,9 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
     // //////////////////////////////////////////////////////////////////////
     // CREATE ON PREMISE SESSION
     // //////////////////////////////////////////////////////////////////////
+
     /**
      * Default creation of a repositorySession
-     * 
-     * @return
      */
     public RepositorySession createRepositorySession()
     {
@@ -124,14 +122,9 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
 
     /**
      * Creation with a specific username
-     * 
-     * @param username
-     * @param password
-     * @param parameters
-     * @return
      */
     protected AlfrescoSession createRepositorySession(String username, String password,
-            Map<String, Serializable> parameters)
+                                                      Map<String, Serializable> parameters)
     {
         AlfrescoSession session = null;
         Map<String, Serializable> tmp = parameters;
@@ -154,9 +147,6 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
 
     /**
      * Create a repositorySession with parameters.
-     * 
-     * @param parameters
-     * @return
      */
     public RepositorySession createRepositorySession(Map<String, Serializable> parameters)
     {
@@ -208,7 +198,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
         }
         return tmpusername;
     }
-    
+
     public AlfrescoSession createSession(String username, String password, Map<String, Serializable> parameters)
     {
         String tmpusername = username, tmppassword = password;
@@ -308,9 +298,10 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
     // //////////////////////////////////////////////////////////////////////////
     // UTILS TO CREATE SAMPLES
     // //////////////////////////////////////////////////////////////////////////
+
     /**
      * Create Root Folder Sandbox for unit Test.<br>
-     * 
+     *
      * @return folder object.
      */
     public Folder createUnitTestFolder(AlfrescoSession session)
@@ -327,14 +318,14 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
 
     /**
      * Create new folder (delete if already exists and if possible)
-     * 
-     * @param session : session currently use to create the new Folder.
+     *
+     * @param session      : session currently use to create the new Folder.
      * @param parentFolder : parent Folder
-     * @param properties : map of properties that folder must include.
+     * @param properties   : map of properties that folder must include.
      * @return newly created folder.
      */
     public Folder createNewFolder(AlfrescoSession session, Folder parentFolder, String folderName,
-            Map<String, Serializable> properties)
+                                  Map<String, Serializable> properties)
     {
         DocumentFolderService docfolderservice = session.getServiceRegistry().getDocumentFolderService();
         Assert.assertNotNull(docfolderservice);
@@ -364,7 +355,8 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
             {
                 wait(3000);
                 folder = (Folder) docfolderservice.getChildByPath(parentFolder, folderName);
-                if (folder != null){
+                if (folder != null)
+                {
                     docfolderservice.deleteNode(folder);
                 }
                 wait(3000);
@@ -386,7 +378,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
 
     /**
      * Creates a list of sample folder
-     * 
+     *
      * @param root - parent folder
      * @param size - number of folders to create
      * @throws AlfrescoException
@@ -413,9 +405,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
 
     /**
      * Create a list of sample Documents.
-     * 
-     * @param root
-     * @param size
+     *
      * @throws AlfrescoException
      */
     protected void createDocuments(Folder root, int size)
@@ -425,10 +415,10 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
 
         HashMap<String, Serializable> newFolderProps = new HashMap<String, Serializable>();
 
-        File f = null;
-        String content = null;
-        byte[] buf = null;
-        ByteArrayInputStream input = null;
+        File f;
+        String content;
+        byte[] buf;
+        ByteArrayInputStream input;
 
         for (int i = 0; i < size; i++)
         {
@@ -438,7 +428,6 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
             f = new File(getTargetContext().getCacheDir(), SAMPLE_DOC_NAME + ".txt");
 
             content = SAMPLE_DOC_NAME + "-" + i;
-            buf = null;
             try
             {
                 buf = content.getBytes("UTF-8");
@@ -449,20 +438,19 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
             {
                 Log.e(TAG, Log.getStackTraceString(e));
             }
-            docfolderservice.createDocument(root, SAMPLE_DOC_NAME + "-" + i + ".txt", newFolderProps,
-                    new ContentFileImpl(f));
+            docfolderservice
+                    .createDocument(root, SAMPLE_DOC_NAME + "-" + i + ".txt", newFolderProps, new ContentFileImpl(f));
             // wait(3000);
         }
     }
 
     protected ContentFile createContentFile(String contentValue)
     {
-        File f = null;
-        byte[] buf = null;
-        ByteArrayInputStream input = null;
+        File f;
+        byte[] buf;
+        ByteArrayInputStream input;
 
         f = new File(getTargetContext().getCacheDir(), SAMPLE_DOC_NAME + ".txt");
-        buf = null;
         try
         {
             buf = contentValue.getBytes("UTF-8");
@@ -474,8 +462,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
             Log.e(TAG, Log.getStackTraceString(e));
         }
 
-        ContentFile cf = new ContentFileImpl(f);
-        return cf;
+        return new ContentFileImpl(f);
     }
 
     protected Document createDocument(Folder folder, String docName)
@@ -485,7 +472,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
 
     /**
      * Reads the content from a content stream into a byte array.
-     * 
+     *
      * @throws IOException
      */
     protected String readContent(ContentStream contentStream) throws IOException
@@ -604,9 +591,10 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
     // //////////////////////////////////////////////////////////////////////////
     // UTILS TO GET CONTEXT
     // //////////////////////////////////////////////////////////////////////////
+
     /**
      * Retrieve the context of the test application.
-     * 
+     *
      * @return test context
      */
     protected Context getContext()
@@ -616,7 +604,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
 
     /**
      * Retrieve the context of the sample application.
-     * 
+     *
      * @return tested application context
      */
     protected Context getTargetContext()
@@ -627,11 +615,12 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
     // //////////////////////////////////////////////////////////////////////////
     // UTILS
     // //////////////////////////////////////////////////////////////////////////
+
     /**
      * Sometimes we have to wait...
-     * 
+     *
      * @param milliseconds : milliseconds you want to wait before continuing
-     *            test.
+     *                     test.
      */
     protected void wait(int milliseconds)
     {
@@ -651,25 +640,25 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
         Calendar cal2 = Calendar.getInstance();
         cal1.setTime(date1);
         cal2.setTime(date2);
-        return (cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) && cal1.get(Calendar.DAY_OF_YEAR) == cal2
-                .get(Calendar.DAY_OF_YEAR));
+        return (cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR));
     }
 
     /**
      * Detect if Alfresco repository server is on version 4 or above.
-     * 
+     *
      * @return true if version 4 or below. False if version below or not
-     *         Alfresco server.
+     * Alfresco server.
      */
     protected boolean isAlfrescoV4()
     {
-        if (!RepositoryVersionHelper.isAlfrescoProduct(alfsession)) { return false; }
-        return (alfsession.getRepositoryInfo().getMajorVersion() >= OnPremiseConstant.ALFRESCO_VERSION_4);
+        return RepositoryVersionHelper.isAlfrescoProduct(alfsession) &&
+                (alfsession.getRepositoryInfo().getMajorVersion() >= OnPremiseConstant.ALFRESCO_VERSION_4);
     }
 
     /**
      * Detect if it's an Alfresco Repository server.
-     * 
+     *
      * @return true if alfresco vendor is Alfresco.
      */
     protected boolean isAlfresco()
@@ -679,7 +668,7 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
 
     /**
      * Detect if the repository test server is OnPremise
-     * 
+     *
      * @param session : specific alfresco session.
      * @return true if on premise, else cloud.
      */
@@ -690,17 +679,17 @@ public abstract class AlfrescoSDKTestCase extends InstrumentationTestCase implem
 
     /**
      * Detect if the repository test server is OnPremise
-     * 
+     *
      * @return true if on premise, else cloud.
      */
     protected boolean isOnPremise()
     {
         return isOnPremise(alfsession);
     }
-    
+
     protected boolean hasPublicAPI()
     {
-       return isOnPremise() && ((RepositorySessionImpl) alfsession).hasPublicAPI();
+        return isOnPremise() && ((RepositorySessionImpl) alfsession).hasPublicAPI();
     }
 
     protected AuthenticationProvider getAuthenticationProvider()

@@ -1,7 +1,6 @@
 package org.alfresco.mobile.android.test.publicapi.services;
 
 import junit.framework.Assert;
-
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.services.impl.AbstractPersonService;

@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,17 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.test.api.services;
 
-import java.io.File;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import junit.framework.Assert;
-
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
@@ -44,9 +34,18 @@ import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
+import java.io.File;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Test class for DocumentFolderService.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
@@ -88,7 +87,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
 
     /**
      * Test Paging and navigation.
-     * 
+     *
      * @Requirement 13S1, 13S2, 13S5, 14F3, 14F4, 14F5, 14F6, 14S1, 14S2, 14S3,
      *              18S1, 18S2, 18S3, 18S4, 20S1, 20S2, 20S3, 19F3
      */
@@ -182,7 +181,6 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // ////////////////////////////////////////////////////
         // getChildren with listing context + skipcount
         lc.setSkipCount(FOLDERS_NUMBER);
-        pagingResult = null;
         pagingResult = docfolderservice.getChildren(unitTestFolder, lc);
         Assert.assertNotNull(pagingResult);
         Assert.assertEquals(ITEMS_NUMBER, pagingResult.getTotalItems());
@@ -447,7 +445,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
 
     /**
      * Test parent, child navigation.
-     * 
+     *
      * @Requirement 15S1, 15S2, 15S3, 15S4, 16S1, 16S2, 16S4, 17S1, 17S5, 17S6,
      *              23S2, 23S3, 23S4, 13S3, 13S4,
      */
@@ -569,17 +567,17 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals(f2.getName() + " != " + f3.getName(), f2.getIdentifier(), f3.getIdentifier());
 
         // 16S3 Test relative parent path
-        Assert.assertNull((Document) docfolderservice.getChildByPath(unitTestFolder, ".."));
-        Assert.assertNull((Document) docfolderservice.getChildByPath(unitTestFolder, "../.."));
+        Assert.assertNull(docfolderservice.getChildByPath(unitTestFolder, ".."));
+        Assert.assertNull(docfolderservice.getChildByPath(unitTestFolder, "../.."));
 
         // 16S5 Test relative current path
-        Assert.assertNull((Document) docfolderservice.getChildByPath(unitTestFolder, "."));
+        Assert.assertNull(docfolderservice.getChildByPath(unitTestFolder, "."));
 
     }
 
     /**
      * Test CRUD operation on Document and Folder.
-     * 
+     *
      * @Requirement 13S3, 13S4, 24F1, 24S1, 24S2, 28S2, 31S1, 31S2, 30F3
      */
     public void testCRUDNode()
@@ -656,7 +654,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME, folder.getTitle());
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME, folder.getDescription());
 
-        Document doc = null;
+        Document doc;
         // Rename Document
         int size = docfolderservice.getDocuments(unitTestFolder).size();
         while (size != 1)
@@ -664,7 +662,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             size = docfolderservice.getDocuments(unitTestFolder).size();
             wait(5000);
         }
-        doc = (Document) docfolderservice.getDocuments(unitTestFolder).get(0);
+        doc = docfolderservice.getDocuments(unitTestFolder).get(0);
         properties = new HashMap<String, Serializable>();
         properties.put(ContentModel.PROP_NAME, ROOT_TEST_FOLDER_NAME + timestamp + ".txt");
         Document doc2 = (Document) docfolderservice.updateProperties(doc, properties);
@@ -723,7 +721,6 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         }
         Assert.assertFalse(doc.getName().equals(doc2.getName()));
         Assert.assertEquals(ROOT_TEST_FOLDER_NAME + timestamp + ".txt", doc2.getName());
-        sessionCollaborator = null;
 
         // 31S3
         properties = new HashMap<String, Serializable>();
@@ -821,6 +818,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         File f = new File(getContext().getCacheDir(), "tempMobile.txt");
         if (f.length() > 0)
         {
+            //noinspection ResultOfMethodCallIgnored
             f.delete();
         }
         Assert.assertEquals(0, f.length());
@@ -888,7 +886,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
 
     /**
      * Test Rendition after content Creation + (eventually) metadata extraction.
-     * 
+     *
      * @Requirement 26S5, 28S1, 28S3, 28S4, 29S1, 28S3, 28S4
      */
     public void testRenditionExtractionAfterUpload()
@@ -912,7 +910,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
                 .getIdentifier()));
 
         // Rendition
-        ContentFile rendition = null;
+        ContentFile rendition;
         int i = 0;
         while (i < 4)
         {
@@ -981,10 +979,10 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
                 Assert.assertTrue("2.0".equals(docRendition.getPropertyValue(ContentModel.PROP_LONGITUDE).toString())
                         || "2".equals(docRendition.getPropertyValue(ContentModel.PROP_LONGITUDE).toString()));
             }
-            else
-            {
-                //Assert.fail("No Metadata available");
-            }
+//            else
+//            {
+//                Assert.fail("No Metadata available");
+//            }
         }
     }
 
@@ -993,7 +991,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
     // //////////////////////////////////////////////////////////////////////
     /**
      * Failure Tests for DocumentFolderService public Method.
-     * 
+     *
      * @Requirement 13F1, 13F2, 14F1, 14F2, 15F1, 15F2, 16F1, 16F2, 16F3, 17F1,
      *              17F2, 18F1, 18F3, 20F1, 20F2, 23F1, 23F2, 23S1, 24F1, 24F2,
      *              24F3, 25F1, 25F2, 26F1, 26F2, 27F1, 27F2, 28F1, 28F2, 28F3,
@@ -1037,9 +1035,9 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
             Assert.assertTrue(true);
         }
 
-        AlfrescoSession session = null;
-        Folder folder = null;
-        Document doc = null;
+        AlfrescoSession session;
+        Folder folder;
+        Document doc;
         // User does not have access / privileges to the specified node
         session = createSession(CONSUMER, CONSUMER_PASSWORD, null);
 
@@ -1055,8 +1053,8 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
 
         String permissionFolderPath = "PermissionsFolder/OnlyManager/Everyone";
 
-        String sampleDataPathFolder = null;
-        String sampleDataPathFile = null;
+        String sampleDataPathFolder;
+        String sampleDataPathFile;
 
         if (isOnPremise())
         {
@@ -1797,7 +1795,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         docfolderservice.createFolder(unitTestFolder, SAMPLE_FOLDER_DESCRIPTION, copy);
         Assert.assertTrue(copy.equals(properties));
     }
-    
+
     /**
      * @since 1.2
      */
@@ -1805,21 +1803,21 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         // Create Root Test Folder
         Folder unitTestFolder = createUnitTestFolder(alfsession);
         Assert.assertTrue(unitTestFolder.hasAllProperties());
-        
+
         //CHECK EMPTY FAVORITE LIST
         List<Document> listDocuments = docfolderservice.getFavoriteDocuments();
         Assert.assertNotNull(listDocuments);
         Assert.assertTrue(listDocuments.size() + "", listDocuments.isEmpty());
-        
+
         List<Folder> listFolders = docfolderservice.getFavoriteFolders();
         Assert.assertNotNull(listFolders);
         Assert.assertTrue(listFolders.size() + "", listFolders.isEmpty());
-        
+
         Assert.assertFalse(docfolderservice.isFavorite(unitTestFolder));
-        
+
         //ADD FAVORITE
         docfolderservice.addFavorite(unitTestFolder);
-        
+
         listFolders = docfolderservice.getFavoriteFolders();
         Assert.assertNotNull(listFolders);
         Assert.assertEquals(listFolders.size() + "", 1, listFolders.size());
@@ -1834,26 +1832,26 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
 
         Assert.assertNotNull(listDocuments);
         Assert.assertTrue(listDocuments.size() + "", listDocuments.isEmpty());
-        
+
         //REMOVE FAVORITE
         docfolderservice.removeFavorite(unitTestFolder);
-        
+
         listFolders = docfolderservice.getFavoriteFolders();
         Assert.assertNotNull(listFolders);
         Assert.assertTrue(listFolders.size() + "", listFolders.isEmpty());
-        
+
         Assert.assertNotNull(listDocuments);
         Assert.assertTrue(listDocuments.size() + "", listDocuments.isEmpty());
-        
-        
+
+
         // Create sample document
         Document doc = createDocument(unitTestFolder, "Doc1.txt");
         Document doc2 = createDocument(unitTestFolder, "Doc2.txt");
         Document doc3 = createDocument(unitTestFolder, "Doc3.txt");
-        
+
         //ADD FAVORITE
         docfolderservice.addFavorite(doc);
-        
+
         listDocuments = docfolderservice.getFavoriteDocuments();
         Assert.assertNotNull(listDocuments);
         Assert.assertEquals(listDocuments.size() + "", 1, listDocuments.size());
@@ -1868,7 +1866,7 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
 
         Assert.assertNotNull(listFolders);
         Assert.assertTrue(listFolders.size() + "", listFolders.isEmpty());
-        
+
         //ADD MULTIPLE FAVORITES
         docfolderservice.addFavorite(doc2);
         docfolderservice.addFavorite(doc3);
@@ -1877,25 +1875,25 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         {
             Assert.assertFalse(d.hasAllProperties());
         }
-        
+
         Assert.assertNotNull(listDocuments);
         Assert.assertEquals(listDocuments.size() + "", 3, listDocuments.size());
-        
-        
+
+
         //REMOVE 1 FAVORITE
         docfolderservice.removeFavorite(refreshDocument);
-        
+
         listDocuments = docfolderservice.getFavoriteDocuments();
         for (Document d : listDocuments)
         {
             Assert.assertFalse(d.hasAllProperties());
         }
-        
+
         Assert.assertNotNull(listDocuments);
         Assert.assertEquals(listDocuments.size() + "", 2, listDocuments.size());
         Assert.assertFalse(docfolderservice.isFavorite(refreshDocument));
 
-        
+
         //REMOVE 1 FAVORITES
         docfolderservice.removeFavorite(doc2);
         listDocuments = docfolderservice.getFavoriteDocuments();
@@ -1905,42 +1903,42 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         }
         Assert.assertFalse(docfolderservice.isFavorite(doc2));
 
-        
+
         Assert.assertNotNull(listDocuments);
         Assert.assertEquals(listDocuments.size() + "", 1, listDocuments.size());
-        
+
         //REMOVE LAST FAVORITES
         docfolderservice.removeFavorite(doc3);
-        
+
         listDocuments = docfolderservice.getFavoriteDocuments();
         Assert.assertNotNull(listFolders);
         Assert.assertTrue(listFolders.size() + "", listFolders.isEmpty());
-        
+
         Assert.assertNotNull(listDocuments);
         Assert.assertTrue(listDocuments.size() + "", listDocuments.isEmpty());
     }
-    
+
     public void testFavoriteErrors(){
         // Create Root Test Folder
         Folder unitTestFolder = createUnitTestFolder(alfsession);
         Assert.assertTrue(unitTestFolder.hasAllProperties());
-        
+
         //CHECK EMPTY FAVORITE LIST
         List<Document> listDocuments = docfolderservice.getFavoriteDocuments();
         Assert.assertNotNull(listDocuments);
         Assert.assertTrue(listDocuments.size() + "", listDocuments.isEmpty());
-        
+
         List<Folder> listFolders = docfolderservice.getFavoriteFolders();
         Assert.assertNotNull(listFolders);
         Assert.assertTrue(listFolders.size() + "", listFolders.isEmpty());
-        
+
         Assert.assertFalse(docfolderservice.isFavorite(unitTestFolder));
-        
+
         //ADD FAVORITE
         docfolderservice.addFavorite(unitTestFolder);
         docfolderservice.addFavorite(unitTestFolder);
         docfolderservice.addFavorite(unitTestFolder);
-        
+
         listFolders = docfolderservice.getFavoriteFolders();
         Assert.assertNotNull(listFolders);
         Assert.assertEquals(listFolders.size() + "", 1, listFolders.size());
@@ -1949,5 +1947,5 @@ public class DocumentFolderServiceTest extends AlfrescoSDKTestCase
         Assert.assertFalse(folder.hasAllProperties());
         Assert.assertTrue(docfolderservice.isFavorite(folder));
     }
-    
+
 }

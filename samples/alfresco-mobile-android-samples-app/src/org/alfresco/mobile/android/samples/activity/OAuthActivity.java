@@ -1,27 +1,30 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.samples.activity;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import android.app.Activity;
+import android.app.FragmentTransaction;
+import android.app.LoaderManager;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
+import android.os.Bundle;
+import android.view.Window;
 
 import org.alfresco.mobile.android.api.asynchronous.OAuthAccessTokenLoader;
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
@@ -37,14 +40,11 @@ import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.oauth.OAuthFragment;
 import org.alfresco.mobile.android.ui.oauth.listener.OnOAuthAccessTokenListener;
 
-import android.app.Activity;
-import android.app.FragmentTransaction;
-import android.app.LoaderManager;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
-import android.os.Bundle;
-import android.view.Window;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 /**
  * @author Jean Marie Pascal
@@ -65,12 +65,12 @@ public class OAuthActivity extends Activity
     {
         super.onResume();
 
-        String tmpurl = null, oauthUrl = null, apikey = null, apisecret = null, callback = null;
+        String oauthUrl = null, apikey = null, apisecret = null;
         // Check Properties available inside the device
         if (SessionLoaderCallback.ENABLE_CONFIG_FILE)
         {
             File f = new File(SessionLoaderCallback.CLOUD_CONFIG_PATH);
-            if (f.exists() && SessionLoaderCallback.ENABLE_CONFIG_FILE)
+            if (f.exists())
             {
                 Properties prop = new Properties();
                 InputStream is = null;
@@ -82,7 +82,6 @@ public class OAuthActivity extends Activity
                     oauthUrl = prop.getProperty("oauth_url");
                     apikey = prop.getProperty("apikey");
                     apisecret = prop.getProperty("apisecret");
-                    callback = prop.getProperty("callback");
                 }
                 catch (IOException ex)
                 {
@@ -95,7 +94,7 @@ public class OAuthActivity extends Activity
             }
         }
 
-        OAuthFragment oauthFragment = null;
+        OAuthFragment oauthFragment;
         if (oauthUrl == null || oauthUrl.isEmpty())
         {
             oauthFragment = new OAuthSampleAppFragment();
@@ -117,12 +116,11 @@ public class OAuthActivity extends Activity
                 }
 
                 String message = e.getMessage();
-                if (e instanceof AlfrescoSessionException
-                        && ((AlfrescoSessionException) e).getAlfrescoErrorContent() instanceof OAuthErrorContent)
+                if (e instanceof AlfrescoSessionException &&
+                        ((AlfrescoSessionException) e).getAlfrescoErrorContent() instanceof OAuthErrorContent)
                 {
-                    message = ((OAuthErrorContent) ((AlfrescoSessionException) e).getAlfrescoErrorContent())
-                            .getMessage()
-                            + " " + ((OAuthErrorContent) ((AlfrescoSessionException) e).getAlfrescoErrorContent())
+                    message = ((AlfrescoSessionException) e).getAlfrescoErrorContent().getMessage() + " " +
+                            ((OAuthErrorContent) ((AlfrescoSessionException) e).getAlfrescoErrorContent())
                                     .getDescription();
                 }
 

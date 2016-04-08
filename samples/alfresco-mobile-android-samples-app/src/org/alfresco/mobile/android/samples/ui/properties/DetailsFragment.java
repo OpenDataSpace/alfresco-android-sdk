@@ -1,23 +1,34 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.samples.ui.properties;
 
-import java.io.File;
+import android.annotation.SuppressLint;
+import android.os.Bundle;
+import android.os.Environment;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import org.alfresco.mobile.android.api.asynchronous.DownloadTask;
 import org.alfresco.mobile.android.api.model.Document;
@@ -35,17 +46,7 @@ import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 import org.alfresco.mobile.android.ui.manager.RenditionManager;
 import org.apache.chemistry.opencmis.commons.enums.Action;
 
-import android.os.Bundle;
-import android.os.Environment;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
+import java.io.File;
 
 public class DetailsFragment extends BaseFragment
 {
@@ -98,7 +99,10 @@ public class DetailsFragment extends BaseFragment
     {
         alfSession = SessionUtils.getsession(getActivity());
 
-        if (container == null) { return null; }
+        if (container == null)
+        {
+            return null;
+        }
         View v = inflater.inflate(R.layout.sdk_custom_properties, container, false);
 
         node = (Node) getArguments().get(ARGUMENT_NODE);
@@ -139,11 +143,13 @@ public class DetailsFragment extends BaseFragment
         addRow(inflater, grouprootview, R.string.metadata_prop_title, node.getTitle());
         addRow(inflater, grouprootview, R.string.metadata_prop_description, node.getDescription());
         addRow(inflater, grouprootview, R.string.metadata_prop_creator, node.getCreatedBy());
-        addRow(inflater, grouprootview, R.string.metadata_prop_creationdate, node.getCreatedAt().getTime()
-                .toLocaleString());
+        //noinspection deprecation
+        addRow(inflater, grouprootview, R.string.metadata_prop_creationdate,
+                node.getCreatedAt().getTime().toLocaleString());
         addRow(inflater, grouprootview, R.string.metadata_prop_modifier, node.getModifiedBy());
-        addRow(inflater, grouprootview, R.string.metadata_prop_modificationdate, node.getModifiedAt().getTime()
-                .toLocaleString());
+        //noinspection deprecation
+        addRow(inflater, grouprootview, R.string.metadata_prop_modificationdate,
+                node.getModifiedAt().getTime().toLocaleString());
 
         Button b = (Button) v.findViewById(R.id.display_comments);
         if (alfSession != null && alfSession.getServiceRegistry().getCommentService() != null)
@@ -194,7 +200,7 @@ public class DetailsFragment extends BaseFragment
 
     private void addRow(LayoutInflater inflater, ViewGroup grouprootview, Integer title, String value)
     {
-        View v = inflater.inflate(R.layout.sdk_property_row, null);
+        @SuppressLint("InflateParams") View v = inflater.inflate(R.layout.sdk_property_row, null);
         TextView tv = (TextView) v.findViewById(R.id.propertyName);
         tv.setText(title);
         tv = (TextView) v.findViewById(R.id.propertyValue);
@@ -232,8 +238,7 @@ public class DetailsFragment extends BaseFragment
 
         if (node.isDocument() && (((DocumentImpl) node).hasAllowableAction(Action.CAN_GET_CONTENT_STREAM.value())))
         {
-            mi = menu.add(Menu.NONE, MenuActionItem.OPEN_IN, Menu.FIRST + MenuActionItem.OPEN_IN,
-                    R.string.download);
+            mi = menu.add(Menu.NONE, MenuActionItem.OPEN_IN, Menu.FIRST + MenuActionItem.OPEN_IN, R.string.download);
             mi.setIcon(R.drawable.ic_download);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }

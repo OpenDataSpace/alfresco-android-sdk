@@ -1,32 +1,23 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.samples.ui.accounts;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
-import org.alfresco.mobile.android.samples.R;
-import org.alfresco.mobile.android.samples.activity.SessionLoaderCallback;
-import org.alfresco.mobile.android.samples.utils.SessionUtils;
-import org.alfresco.mobile.android.ui.fragments.BaseFragment;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
-
+import android.annotation.SuppressLint;
 import android.app.LoaderManager;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -37,6 +28,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
+import org.alfresco.mobile.android.samples.R;
+import org.alfresco.mobile.android.samples.activity.SessionLoaderCallback;
+import org.alfresco.mobile.android.samples.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.fragments.BaseFragment;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class LoginFragment extends BaseFragment
 {
 
@@ -44,7 +45,9 @@ public class LoginFragment extends BaseFragment
 
     public static final String ARGUMENT_ACCOUNT_ID = "accountID";
 
-    private String url = null, host = null, username = null, password = null;
+    private String host = null;
+    private String username = null;
+    private String password = null;
 
     private View vRoot;
 
@@ -55,7 +58,10 @@ public class LoginFragment extends BaseFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        if (container == null) { return null; }
+        if (container == null)
+        {
+            return null;
+        }
 
         vRoot = inflater.inflate(R.layout.sdkapp_account_details, container, false);
 
@@ -75,6 +81,7 @@ public class LoginFragment extends BaseFragment
         Button advanced = (Button) v.findViewById(R.id.browse_document);
         advanced.setOnClickListener(new OnClickListener()
         {
+            @SuppressLint("CommitPrefEdits")
             @Override
             public void onClick(View view)
             {
@@ -130,18 +137,17 @@ public class LoginFragment extends BaseFragment
         formValue = (EditText) vRoot.findViewById(R.id.repository_password);
         password = formValue.getText().toString();
 
-        URL u = null;
+        //URL u;
         try
         {
-            u = new URL(host);
+            new URL(host);
         }
         catch (MalformedURLException e)
         {
             MessengerManager.showToast(getActivity(), R.string.error_login);
-            return;
         }
 
-        url = u.toString();
+        //String url = u.toString();
     }
 
     @Override

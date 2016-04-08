@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="account_host_hint">http://hostname:port/alfresco for example (required)</string>
+    <string name="acount_label_server">Server</string>
+    <string name="account_connect">Connect</string>
+    <string name="search">Search</string>
+    <string name="filltext">FullText</string>
+    <string name="exact">Exact</string>
+</resources>

@@ -1,31 +1,25 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * <p/>
  * This file is part of the Alfresco Mobile SDK.
- * 
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.test.api.services;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import android.util.Log;
 
 import junit.framework.Assert;
-
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
@@ -43,17 +37,20 @@ import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.Output;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
-import org.apache.http.HttpStatus;
 
-import android.util.Log;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Test class for ActivityStreamService. This test requires an Alfresco session
  * and the default sample share site Sample: Web Site Design Project.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
@@ -65,7 +62,9 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
 
     public static final String PREFIX_FILE = "org.alfresco.documentlibrary.file";
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     protected void initSession()
     {
         if (alfsession == null)
@@ -86,10 +85,10 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
     /**
      * All Tests forActivityStreamService public methods which don't create an
      * error.
-     * 
+     *
      * @Requirement 1S3, 1S4, 2F1,2F2, 2F3, 2F4, 2S1, 2S6, 2S7, 2S8, 2S9, 3S3,
-     *              3S4, 4F1, 4F2, 4F3, 4F4, 4S6, 4S7, 4S8, 4S9, 5S3, 6F4, 6F6,
-     *              6F7, 6S6, 6S7, 6S8, 6S9
+     * 3S4, 4F1, 4F2, 4F3, 4F4, 4S6, 4S7, 4S8, 4S9, 5S3, 6F4, 6F6,
+     * 6F7, 6S6, 6S7, 6S8, 6S9
      */
     public void testActivityStreamService()
     {
@@ -172,8 +171,9 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
             pagingFeed = activityStreamService.getActivityStream(lc);
             Assert.assertNotNull(pagingFeed);
             Assert.assertEquals(getTotalItems(totalItems), pagingFeed.getTotalItems());
-            Assert.assertEquals((totalItems > ListingContext.DEFAULT_MAX_ITEMS) ? ListingContext.DEFAULT_MAX_ITEMS
-                    : totalItems, pagingFeed.getList().size());
+            Assert.assertEquals(
+                    (totalItems > ListingContext.DEFAULT_MAX_ITEMS) ? ListingContext.DEFAULT_MAX_ITEMS : totalItems,
+                    pagingFeed.getList().size());
             Assert.assertEquals(Boolean.TRUE, pagingFeed.hasMoreItems());
 
             // Incorrect settings in listingContext: Such as inappropriate
@@ -184,8 +184,9 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
             pagingFeed = activityStreamService.getActivityStream(lc);
             Assert.assertNotNull(pagingFeed);
             Assert.assertEquals(getTotalItems(totalItems), pagingFeed.getTotalItems());
-            Assert.assertEquals((totalItems > ListingContext.DEFAULT_MAX_ITEMS) ? ListingContext.DEFAULT_MAX_ITEMS
-                    : totalItems, pagingFeed.getList().size());
+            Assert.assertEquals(
+                    (totalItems > ListingContext.DEFAULT_MAX_ITEMS) ? ListingContext.DEFAULT_MAX_ITEMS : totalItems,
+                    pagingFeed.getList().size());
             Assert.assertEquals(Boolean.TRUE, pagingFeed.hasMoreItems());
 
             // Incorrect settings in listingContext: Such as inappropriate
@@ -272,9 +273,10 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
     // //////////////////////////////////////////////////////////////////////
     // FAILURE TESTS
     // //////////////////////////////////////////////////////////////////////
+
     /**
      * All Tests forActivityStreamService public methods which create an error.
-     * 
+     *
      * @Requirement 3F1, 5F1, 5F2, 6F1, 6F2
      */
     public void testActivityServiceMethodsError()
@@ -315,7 +317,7 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
             // ///////////////////////////////////////////////////////////////////////////
             try
             {
-                Assert.assertNotNull(activityStreamService.getSiteActivityStream((String) null));
+                Assert.assertNotNull(activityStreamService.getSiteActivityStream(null));
                 Assert.fail();
             }
             catch (IllegalArgumentException e)
@@ -358,12 +360,14 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
                 else
                 {
                     // @since site service management it's not null.
-                    Assert.assertTrue(session.getServiceRegistry().getActivityStreamService()
-                            .getSiteActivityStream("privatesite").isEmpty());
+                    Assert.assertTrue(
+                            session.getServiceRegistry().getActivityStreamService().getSiteActivityStream("privatesite")
+                                    .isEmpty());
                 }
 
-                Assert.assertTrue(session.getServiceRegistry().getActivityStreamService()
-                        .getSiteActivityStream("moderatedsite").isEmpty());
+                Assert.assertTrue(
+                        session.getServiceRegistry().getActivityStreamService().getSiteActivityStream("moderatedsite")
+                                .isEmpty());
             }
             checkSession(session);
         }
@@ -381,7 +385,7 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
     /**
      * Utility method to help creating a default activity. Create a script and
      * run against the server.
-     * 
+     *
      * @return Document : reference to the script document executed.
      */
     public Document prepareScriptData()
@@ -395,7 +399,8 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
             Map<String, Serializable> properties = new HashMap<String, Serializable>();
             properties.put(ContentModel.PROP_TITLE, SAMPLE_FOLDER_DESCRIPTION);
 
-            String s = "activities.postActivity(\"org.alfresco.links.link-created\", \"swsdp\", \"calendarComponent\", '{ \"lastName\":\"\", \"title\":\"What\", \"page\":\"links-view?linkId=link-1340783835487-2803\", \"firstName\":\"Administrator\"}');";
+            String s =
+                    "activities.postActivity(\"org.alfresco.links.link-created\", \"swsdp\", \"calendarComponent\", '{ \"lastName\":\"\", \"title\":\"What\", \"page\":\"links-view?linkId=link-1340783835487-2803\", \"firstName\":\"Administrator\"}');";
 
             try
             {
@@ -425,8 +430,6 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
 
     /**
      * Execute a script file inside an onpremise server.
-     * 
-     * @param identifier
      */
     private void executeScript(String identifier)
     {
@@ -446,7 +449,8 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
             final JsonDataWriter formData = new JsonDataWriter(jo);
 
             // send and parse
-            Response response = NetworkHttpInvoker.invokePOST(url, formData.getContentType(), new Output()
+/*            Response response =*/
+            NetworkHttpInvoker.invokePOST(url, formData.getContentType(), new Output()
             {
                 public void write(OutputStream out) throws IOException
                 {
@@ -454,10 +458,10 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
                 }
             }, getAuthenticationProvider().getHTTPHeaders());
 
-            if (response.getResponseCode() == HttpStatus.SC_OK)
-            {
-                // Log.d(TAG, "Execute script : ok");
-            }
+//            if (response.getResponseCode() == HttpStatus.SC_OK)
+//            {
+//                 Log.d(TAG, "Execute script : ok");
+//            }
         }
         catch (Exception e)
         {
@@ -472,7 +476,7 @@ public class ActivityStreamServiceTest extends AlfrescoSDKTestCase
 
     /**
      * In case of cloud, there's no limitation.
-     * 
+     *
      * @return false for onpremise, true for cloud.
      */
     protected Boolean hasMoreItem()

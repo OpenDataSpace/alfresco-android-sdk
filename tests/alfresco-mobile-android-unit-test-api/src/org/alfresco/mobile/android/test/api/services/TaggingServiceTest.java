@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,7 +42,7 @@ import org.alfresco.mobile.android.test.AlfrescoSDKTestCase;
 
 /**
  * Test class for Tagging Service.
- * 
+ *
  * @author Jean Marie Pascal
  */
 public class TaggingServiceTest extends AlfrescoSDKTestCase
@@ -71,7 +71,7 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
 
     /**
      * Simple test to check Alfresco Like Service.
-     * 
+     *
      * @Requirement 52S2, 52S3, 52S4, 53S2, 53S3, 53S4, 53S5, 53S8, 53S11, 54S1,
      *              54S2, 54S3, 56F6, 56F7, 56S1, 56S2, 56S3, 56S4, 56S6
      */
@@ -328,7 +328,7 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
 
     /**
      * Test to check siteService methods error case.
-     * 
+     *
      * @Requirement 54F1, 54F2, 56F1, 56F2, 56F3, 56F4, 56F5
      */
     public void testTaggingServiceMethodsError()
@@ -382,7 +382,7 @@ public class TaggingServiceTest extends AlfrescoSDKTestCase
             Assert.assertTrue(true);
         }
 
-        AlfrescoSession session = null;
+        AlfrescoSession session;
         Node doc = docfolderservice.getChildByPath(getSampleDataPath(alfsession) + SAMPLE_DATA_PATH_COMMENT_FILE);
         Assert.assertNotNull("Comment file is null", doc);
         // User does not have access / privileges to the specified node
