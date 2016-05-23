@@ -329,24 +329,20 @@
         </plugins>
     </build>
 
-
-    <repositories>
-        <repository>
-            <id>apache-repository</id>
-            <name>Apache Maven Repository</name>
-            <url>https://repository.apache.org/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>artifacts.alfresco.com</id>
-            <name>Alfresco Maven Repository</name>
+	<repositories>
+		<repository>
+			<id>central-android</id>
+			<url>https://artifactory.dataspace.cc/artifactory/android-sdk</url>
+		</repository>
+		<repository>
+			<id>central-libs</id>
+			<url>https://artifactory.dataspace.cc/artifactory/libs-release</url>
+		</repository>
+		<repository>
+            <id>alfresco</id>
             <url>https://artifacts.alfresco.com/nexus/content/repositories/releases</url>
         </repository>
-        <repository>
-            <id>central</id>
-            <name>central</name>
-            <url>https://artifactory.dataspace.cc/artifactory/repo</url>
-        </repository>
-    </repositories>
+	</repositories>
 
     <reporting>
         <plugins>
