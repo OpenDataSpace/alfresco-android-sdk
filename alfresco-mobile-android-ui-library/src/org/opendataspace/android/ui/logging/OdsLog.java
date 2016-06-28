@@ -72,7 +72,7 @@ public class OdsLog
         try
         {
             FileHandler fh = new FileHandler(dir + "/trace-%u%g.log", 50000, 2, true);
-            fh.setLevel(Level.WARNING);
+            fh.setLevel(Level.INFO);
             fh.setFormatter(new SimpleFormatter());
             enable(enabled);
             lg.addHandler(fh);
@@ -120,11 +120,6 @@ public class OdsLog
                 return p.matcher(file.getName()).matches() && file.exists() && file.length() > 0;
             }
         });
-
-        if (flist.length == 0)
-        {
-            return;
-        }
 
         final ArrayList<Uri> uris = new ArrayList<Uri>();
         final Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
